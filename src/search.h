@@ -1,9 +1,11 @@
 #ifndef SEARCH_H_
 #define SEARCH_H_
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
 #include <windows.h>
 #endif
+
+
 #include "board.h"
 #include "movelinkedlist.h"
 #include "movepriorityqueue.h"

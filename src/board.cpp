@@ -1,3 +1,4 @@
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
@@ -10,7 +11,6 @@
 
 #include <csignal>
 #include <iostream>
-#include <sstream>
 
 ChessBoard defaultStartingBoard;
 
