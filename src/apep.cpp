@@ -213,9 +213,12 @@ long perft(ChessBoard* board, int depth, int startingDepth) {
 int
 doUnitTests() {
 	CppUnit::TextUi::TestRunner runner;
-//	runner.addTest( BitTest::suite() );
 	runner.addTest( BoardTest::suite() );
-//	runner.addTest( SearchTest::suite() );
+
+        // tests currently broken -- 
+        // throw core dumps
+        //runner.addTest( BitTest::suite() );
+	//runner.addTest( SearchTest::suite() );
 	runner.run();
 	
 	return 0;
