@@ -5,4 +5,21 @@ sign that I messed something up.
 I did most of the search stuff and stopped active development when the engine needed to 
 understand the "goodness" of a board.
 
-I got a lot out of looking at crafty source code (hopefully the resemblence is not too obvious).
+Minor points:
+	* Code is pretty bad.
+
+	* I got a lot out of looking at crafty source code (hopefully
+          the resemblence is not too obvious).
+
+	* There are some epd chess board files that I used to test
+          this engine that I have not included in this repo as they
+          are not open source.
+
+	* src/apep -perft performs 6-level perft.  
+
+	* src/apep -dotests runs board tests (others are broken)
+
+	* apep supports the Winboard Protocol v1
+          http://home.hccnet.nl/h.g.muller/engine-intf.html, v2 was
+          not out when I was developing apep!
+
