@@ -3,6 +3,8 @@
 #include "xboard.h"
 
 #include <stdlib.h>
+#include <memory.h>
+
 #include <vector>
 #include <utility>
 #include <fstream>
