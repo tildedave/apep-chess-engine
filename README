@@ -1,0 +1,8 @@
+This is a chess engine that I programmed in grad school (C++).  I'm sure a lot of the code is 
+bad/could have been done better.  Looking at the code I couldn't find the tests, which is a good 
+sign that I messed something up.
+
+I did most of the search stuff and stopped active development when the engine needed to 
+understand the "goodness" of a board.
+
+I got a lot out of looking at crafty source code (hopefully the resemblence is not too obvious).
