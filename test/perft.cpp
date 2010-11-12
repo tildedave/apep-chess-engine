@@ -24,8 +24,7 @@ double moveUnprocessTime;
 
 int randomSeed = -1;
 
-void doPerftTest(int depth, bool verbose, bool divide, 
-                 std::string fenString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+void doPerftTest(int depth, bool verbose, bool divide, std::string fenString)
 {
   ChessBoard board;
   loadBoardFromFEN(&board, fenString);
@@ -83,10 +82,11 @@ int main(int argc, char** argv) {
   bool verbose;
   bool divide;
   int depth = 6;
+  std::string startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
   desc.add_options()
     ("help", "produce help message")
-    ("fen", po::value<std::string>(), "FEN to start perft from")
+    ("fen", po::value<std::string>()->default_value(startingFen), "FEN to start perft from")
     ("depth", po::value<int>(&depth)->default_value(6), "Perft depth")
     ("verbose", po::bool_switch(&verbose)->default_value(false), "Output time for move generation, processing, and unprocessing")
     ("divide", po::bool_switch(&divide)->default_value(false), "Output divide for each move?");
@@ -104,11 +104,6 @@ int main(int argc, char** argv) {
   initialize_common_boards();
   std::cout << "done" << std::endl;
 
-  if (vm.count("fen")) {
-    std::string fenString = vm["fen"].as<std::string>();
-    doPerftTest(depth, verbose, divide, fenString);
-  }
-  else {
-    doPerftTest(depth, verbose, divide);
-  }
+  std::string fenString = vm["fen"].as<std::string>();
+  doPerftTest(depth, verbose, divide, fenString);
 }
