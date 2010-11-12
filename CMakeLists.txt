@@ -10,3 +10,4 @@ set (EXECUTABLE_OUTPUT_PATH "${_ROOT_FOLDER}/bin")
 set (LIBRARY_OUTPUT_PATH "${_ROOT_FOLDER}/lib")
 
 add_subdirectory (src)
+add_subdirectory (test)

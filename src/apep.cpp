@@ -9,14 +9,11 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <time.h>
 #ifndef WIN32
 #include <sys/time.h>
 #endif
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/ui/text/TestRunner.h>
 #include "commonboards.h"
 #include "board.h"
 #include "movepriorityqueue.h"
@@ -25,12 +22,8 @@
 #include "move.h"
 #include "search.h"
 #include "xboard.h"
-/*
-#include "test/bittest.h"
-#include "test/boardtest.h"
-#include "test/searchtest.h"
-*/
 #include "openbook.h"
+
 
 using namespace std;
 
@@ -39,7 +32,6 @@ using namespace std;
 #define NEW_PERFT 1
 
 long perft(ChessBoard* board, int depth, int startingDepth);
-int doUnitTests();
 void tacticsTest(const std::string& tacticsFile);
 bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy);
 
@@ -96,10 +88,6 @@ int main(int argc, char** argv) {
 		std::string argv1(argv[1]);
 		if (argv1 == "-perft") {
 			doPerftTest();
-			return 0;
-		}
-		if (argv1 == "-dotests"){
-			doUnitTests();
 			return 0;
 		}
 	}
@@ -210,21 +198,6 @@ long perft(ChessBoard* board, int depth, int startingDepth) {
 	}
 
 	return numNodes;
-}
-int
-doUnitTests() {
-	CppUnit::TextUi::TestRunner runner;
-        /*
-	runner.addTest( BoardTest::suite() );
-
-        // tests currently broken -- 
-        // throw core dumps
-        //runner.addTest( BitTest::suite() );
-	//runner.addTest( SearchTest::suite() );
-        */
-	runner.run();
-	
-	return 0;
 }
 
 void tacticsTest(const std::string& tacticsFile) {

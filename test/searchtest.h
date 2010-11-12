@@ -4,10 +4,11 @@
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestCaller.h>
-#include "../common.h"
-#include "../board.h"
-#include "../eval.h"
-#include "../move.h"
+#include "common.h"
+#include "board.h"
+#include "eval.h"
+#include "move.h"
+#include "search.h"
 
 class SearchTest : public CppUnit::TestCase {
 

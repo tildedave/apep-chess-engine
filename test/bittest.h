@@ -3,7 +3,7 @@
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestCaller.h>
-#include "../common.h"
+#include "common.h"
 
 class BitTest : public CppUnit::TestCase {
 
