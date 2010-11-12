@@ -27,55 +27,10 @@
 
 using namespace std;
 
-#define INDIV_PERFT_TIME 0
-#define DIVIDE 0
-#define NEW_PERFT 1
-
-long perft(ChessBoard* board, int depth, int startingDepth);
 void tacticsTest(const std::string& tacticsFile);
 bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy);
 
 int randomSeed = -1;
-
-double moveGenTime;
-double moveProcessTime;
-double moveUnprocessTime;
-
-void doPerftTest(std::string perftString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-{
-	ChessBoard board;
-	loadBoardFromFEN(&board, perftString);
-#ifdef WIN32
-	SYSTEMTIME startSystemTime, endSystemTime;
-	FILETIME start, end;
-#else
-	struct timeval start, end;
-#endif
-    for(int i = 0; i <= 6; ++i) {
-  	  moveGenTime = 0.0;
-	  moveProcessTime = 0.0;
-	  moveUnprocessTime = 0.0;
-#ifdef WIN32
-	GetSystemTime(&startSystemTime);
-	SystemTimeToFileTime(&startSystemTime, &start);
-#else
-	gettimeofday(&start, NULL);
-#endif
-	  int perftNum = perft(&board, i, i);
-#ifdef WIN32
-	  GetSystemTime(&endSystemTime);
-	  SystemTimeToFileTime(&endSystemTime, &end);
-   	  __int64 nanoSecondsDiff = ((__int64) (end.dwHighDateTime - start.dwHighDateTime)) << 32;
-	  nanoSecondsDiff += end.dwLowDateTime - start.dwLowDateTime;
-	  double diff = nanoSecondsDiff / (10000000.0);
-#else
-	  gettimeofday(&end, NULL);
-	  double diff = (end.tv_sec - start.tv_sec);
-	  diff += (end.tv_usec - start.tv_usec) / (1000.0 * 1000.0);
-#endif
-	  cerr << std::fixed << std::setprecision(4) << diff << "\t" << perftNum << " (movegen: " << moveGenTime << ", process: " << moveProcessTime << ", unprocess: " << moveUnprocessTime << ")" << endl;
-	}
-}
 
 int main(int argc, char** argv) {
 	if (argc >= 2 && std::string(argv[1]) == "-random") {
@@ -84,120 +39,9 @@ int main(int argc, char** argv) {
 	initialize_common_boards();
 	loadOpeningBook("bookl.dat");
 
-	if (argc >= 2) {
-		std::string argv1(argv[1]);
-		if (argv1 == "-perft") {
-			doPerftTest();
-			return 0;
-		}
-	}
-	
 	xboardMainLoop();
 	
 	return 0;
-}
-
-long perft(ChessBoard* board, int depth, int startingDepth) {
-	if (depth == 0)
-		return 1;
-
-	long numNodes = 0;
-#if INDIV_PERFT_TIME
-	timeval start, end;
-	gettimeofday(&start, NULL);
-#endif
-
-#if NEW_PERFT
-	int moves[128];
-	int* startMoves = moves;
-	int* endMoves = generateCaptures(board, board->whiteToMove, startMoves);
-//	for(int i = startingDepth; i > depth; i--) {
-//		cerr << "\t";
-//	}
-//	cerr << "captures: " << mll.toMoveStringNew(board) << endl;
-	endMoves = generateNonCaptures(board, board->whiteToMove, endMoves);	
-//	for(int i = startingDepth; i > depth; i--) {
-//		cerr << "\t";
-//	}
-//	cerr << "moves: " << mll.toMoveStringNew(board) << endl;
-	
-#else
-	MovePriorityQueue possibleMoves;
-	if (board->whiteToMove)
-		getWhiteMoves(board, possibleMoves);
-	else
-		getBlackMoves(board, possibleMoves);
-#endif
-	
-//	if (startingDepth == depth) {
-//		MovePriorityQueue otherMoves(possibleMoves);
-//		while(!otherMoves.isEmpty()) {
-//			int move = otherMoves.removeMaximum();
-//			cerr << offset_to_string(getFrom(move)) << offset_to_string(getTo(move)) << endl;
-//		}
-//	}
-#if INDIV_PERFT_TIME
-	gettimeofday(&end, NULL);
-	moveGenTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-#endif
-
-	//for(int i = depth; i < 2; ++i)
-	//	cerr << "\t";
-	//cerr << possibleMoves.toMoveString() << endl;
-
-#if NEW_PERFT
-	for(int* currentMove = startMoves; currentMove < endMoves; ++currentMove) {
-		int cm = *currentMove;
-#else
-	while(!possibleMoves.isEmpty()) {
-		int cm = possibleMoves.removeMaximum();
-#endif
-		short kingToCheck = board->whiteToMove ? KING_WHITE : KING_BLACK;
-#if INDIV_PERFT_TIME
-		gettimeofday(&start, NULL);
-#endif
-		processMove(board, cm);
-#if INDIV_PERFT_TIME
-		gettimeofday(&end, NULL);
-		moveProcessTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-#endif
-
-		if (isKingInCheck(board, kingToCheck)) {
-		  //for(int i = depth; i < 2; ++i)
-		  //	cerr << "\t";
-			//cerr << "move " << move_to_string(cm) << " puts king in check" << endl;
-		}
-		else {
-		  //for(int i = depth; i < startingDepth; ++i)
-		  //  cerr << "\t";
-		  //cerr << "considering " << move_to_string(cm) << endl; 
-			//cerr << "leads to board\n" << board_to_string(board) << endl;
-			BITBOARD inc;
-			if (depth == 1)
-				inc = 1; 
-			else
-				inc = perft(board, depth - 1, startingDepth);
-			//for(int i = depth; i < startingDepth; ++i)
-			//  cerr << "\t";
-#if DIVIDE
-			if (depth == startingDepth) {
-				cerr << offset_to_string(getFrom(cm)) << offset_to_string(getTo(cm)) << " " << inc << endl;
-			}
-#endif
-			//cerr << move_to_string(cm) << " adds " << inc << " nodes" << endl;
-			numNodes += inc;
-		}
-#if INDIV_PERFT_TIME
-		gettimeofday(&start, NULL);
-#endif
-		unprocessMove(board, cm);
-#if INDIV_PERFT_TIME
-		gettimeofday(&end, NULL);
-		moveUnprocessTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-#endif
-	}
-
-	return numNodes;
 }
 
 void tacticsTest(const std::string& tacticsFile) {
