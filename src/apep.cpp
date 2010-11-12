@@ -25,9 +25,11 @@
 #include "move.h"
 #include "search.h"
 #include "xboard.h"
+/*
 #include "test/bittest.h"
 #include "test/boardtest.h"
 #include "test/searchtest.h"
+*/
 #include "openbook.h"
 
 using namespace std;
@@ -209,16 +211,17 @@ long perft(ChessBoard* board, int depth, int startingDepth) {
 
 	return numNodes;
 }
-
 int
 doUnitTests() {
 	CppUnit::TextUi::TestRunner runner;
+        /*
 	runner.addTest( BoardTest::suite() );
 
         // tests currently broken -- 
         // throw core dumps
         //runner.addTest( BitTest::suite() );
 	//runner.addTest( SearchTest::suite() );
+        */
 	runner.run();
 	
 	return 0;
