@@ -1,3 +1,6 @@
+#pragma once
+#include <memory.h>
+
 template<bool verbose>
 int evaluateBoard(ChessBoard * board, std::ostream* os) {
 	board->eval = new EvalInfo();

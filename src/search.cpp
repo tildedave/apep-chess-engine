@@ -6,6 +6,7 @@
 #include "xboard.h"
 #include "openbook.h"
 
+#include <stdio.h>
 #ifdef WIN32
 #include <windows.h>
 #else
