@@ -9,7 +9,8 @@
 #include "move.h"
 #include "moveprocess.h"
 #include "board.h"
-#include "perft.hpp"
+#include "perft.h"
+#include "movegen.h"
 
 namespace po = boost::program_options;
 
@@ -17,102 +18,30 @@ namespace po = boost::program_options;
 //  * check if move generator is working correctly: http://www.rocechess.ch/perft.html
 //  * check speed of move generator
 
-#define INDIV_PERFT_TIME 0
-#define DIVIDE 0
-#define NEW_PERFT 1
-
 double moveGenTime;
 double moveProcessTime;
 double moveUnprocessTime;
 
 int randomSeed = -1;
 
-#include "board.h"
-#include "movegen.h"
-
-template <bool individualPerftTime>
-long perft(ChessBoard* board, int depth, int startingDepth, bool divide = false) {
-  if (depth == 0)
-    return 1;
-
-  long numNodes = 0;
-  timeval start, end;
-
-  if (individualPerftTime) {
-    gettimeofday(&start, NULL);
-  }
-
-  int moves[128];
-  int* startMoves = moves;
-  int* endMoves = generateCaptures(board, board->whiteToMove, startMoves);
-  endMoves = generateNonCaptures(board, board->whiteToMove, endMoves);	
-	
-  if (individualPerftTime) {
-    gettimeofday(&end, NULL);
-    moveGenTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-  }
-
-  for(int* currentMove = startMoves; currentMove < endMoves; ++currentMove) {
-    int cm = *currentMove;
-    short kingToCheck = board->whiteToMove ? KING_WHITE : KING_BLACK;
-
-    if (individualPerftTime) {
-      gettimeofday(&start, NULL);
-    }
-    processMove(board, cm);
-    if (individualPerftTime) {
-      gettimeofday(&end, NULL);
-      moveProcessTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-    }
-
-    if (!isKingInCheck(board, kingToCheck)) {
-      BITBOARD inc;
-      if (depth == 1)
-        inc = 1; 
-      else {
-        if (individualPerftTime) {
-          inc = perft<true>(board, depth - 1, startingDepth, divide);
-        }
-        else {
-          inc = perft<false>(board, depth - 1, startingDepth, divide);
-        }
-      }
-                  
-      if (divide) {
-        if (depth == startingDepth) {
-          cerr << offset_to_string(GetFrom(cm)) << offset_to_string(GetTo(cm)) << " " << inc << endl;
-        }
-      }
-      numNodes += inc;
-    }
-    if (individualPerftTime) {
-      gettimeofday(&start, NULL);
-    }
-    unprocessMove(board, cm);
-    if (individualPerftTime) {
-      gettimeofday(&end, NULL);
-      moveUnprocessTime += (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / (1000 * 1000.0);
-    }
-  }
-
-  return numNodes;
-}
-
-void doPerftTest(int depth, bool individualPerftTime, bool divide, 
+void doPerftTest(int depth, bool verbose, bool divide, 
                  std::string fenString = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 {
   ChessBoard board;
   loadBoardFromFEN(&board, fenString);
+
 #ifdef WIN32
   SYSTEMTIME startSystemTime, endSystemTime;
   FILETIME start, end;
 #else
   struct timeval start, end;
 #endif
+
   for(int i = 0; i <= depth; ++i) {
     moveGenTime = 0.0;
     moveProcessTime = 0.0;
     moveUnprocessTime = 0.0;
+
 #ifdef WIN32
     GetSystemTime(&startSystemTime);
     SystemTimeToFileTime(&startSystemTime, &start);
@@ -121,12 +50,13 @@ void doPerftTest(int depth, bool individualPerftTime, bool divide,
 #endif
         
     int perftNum;
-    if (individualPerftTime) {
+    if (verbose) {
       perftNum = perft<true>(&board, i, i, divide);
     }
     else {
       perftNum = perft<false>(&board, i, i, divide);
     }
+
 #ifdef WIN32
     GetSystemTime(&endSystemTime);
     SystemTimeToFileTime(&endSystemTime, &end);
@@ -138,11 +68,12 @@ void doPerftTest(int depth, bool individualPerftTime, bool divide,
     double diff = (end.tv_sec - start.tv_sec);
     diff += (end.tv_usec - start.tv_usec) / (1000.0 * 1000.0);
 #endif
+
     std::cout << std::fixed << std::setprecision(4) << diff << "\t" << perftNum;
     if (verbose) {
       std::cout << " (movegen: " << moveGenTime << ", process: " << moveProcessTime << ", unprocess: " << moveUnprocessTime << ")";
     }
-    std::endl;
+    std::cout << std::endl;
   }
 }
 
@@ -173,5 +104,11 @@ int main(int argc, char** argv) {
   initialize_common_boards();
   std::cout << "done" << std::endl;
 
-  doPerftTest(depth, verbose, divide);
+  if (vm.count("fen")) {
+    std::string fenString = vm["fen"].as<std::string>();
+    doPerftTest(depth, verbose, divide, fenString);
+  }
+  else {
+    doPerftTest(depth, verbose, divide);
+  }
 }
