@@ -1,3 +1,3 @@
 #!/bin/sh
-xboard -fcp src/apep
+xboard -fcp bin/runapep
 
