@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 
         // tests currently broken -- 
         // throw core dumps
-        //runner.addTest( BitTest::suite() );
+    runner.addTest( BitTest::suite() );
 	//runner.addTest( SearchTest::suite() );
 
 	runner.run();	
