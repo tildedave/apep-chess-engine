@@ -1,9 +1,19 @@
+#include <istream>
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/simplelayout.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/exception.h>
+
 #include "move.h"
 #include "moveprocess.h"
 #include "xboard.h"
 #include "eval.h"
 #include "search.h"
-#include <istream>
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
@@ -71,7 +81,7 @@ int CoordStringToMove(ChessBoard * board, const std::string& str) {
 		}
 	}
 
-	// we really don't need seperate logic here
+	// we really don't need separate logic here
 	if (promotionPiece != 0) {
 		return MakePromotion(movePiece,from, to, capturePiece, promotionPiece);
 	}
@@ -172,10 +182,20 @@ void protocolUndo()
         cerr << "got undo -- " << xboardBoard.moveIndex << endl;
         int lastMove = xboardBoard.moveHistory[xboardBoard.moveIndex - 1];
         unprocessMove(&xboardBoard, lastMove);
-        cerr << "undid " << MoveToString(lastMove) << endl;
         cerr << "now: " << endl;
+        cerr << "undid " << MoveToString(lastMove) << endl;
         cerr << board_to_string(&xboardBoard) << endl;
     }
+}
+
+void protocolRemove()
+{
+	// If the user asks to retract a move, xboard will send you the "remove" command. It sends
+	// this command only when the user is on move. Your engine should undo the last two moves
+	// (one for each player) and continue playing the same color.
+
+	protocolUndo();
+	protocolUndo();
 }
 
 void protocolAnalyze()
@@ -216,13 +236,27 @@ void protocolSt(std::string & line)
     std::cout << "got st " << TimeoutValue << endl;
 }
 
+log4cxx::LoggerPtr setupLogging()
+{
+    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%t] (%F:%L) - %m%n")), "apep.log", false);
+    log4cxx::helpers::Pool p;
+    fileAppender->activateOptions(p);
+    log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
+    log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
+    log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("logger");
+    return logger;
+}
+
 void xboardMainLoop() {
+	log4cxx::LoggerPtr logger = setupLogging();
+
 	bool shouldContinue = true;
 
 	while (shouldContinue) {
 		std::string line;
 		if (analysisMessages.empty()) {
 			std::getline(std::cin, line);
+			LOG4CXX_INFO(logger, "received message " << line)
 		}
 		else {
 			line = analysisMessages.front();
@@ -325,6 +359,9 @@ void xboardMainLoop() {
 		}
 		else if (line.find("st", 0) == 0) {
 			protocolSt(line);
+		}
+		else if (line.find("remove") == 0) {
+			protocolRemove();
 		}
 		else {
 			cout << "didn't understand " << line << endl; 
