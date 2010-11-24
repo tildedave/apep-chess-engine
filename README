@@ -15,10 +15,6 @@ Minor points:
           this engine that I have not included in this repo as they
           are not open source.
 
-	* src/apep -perft performs 6-level perft.  
-
-	* src/apep -dotests runs board tests (others are broken)
-
 	* apep supports the Winboard Protocol v1
           http://home.hccnet.nl/h.g.muller/engine-intf.html, v2 was
           not out when I was developing apep!
