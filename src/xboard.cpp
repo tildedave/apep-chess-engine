@@ -80,6 +80,142 @@ int CoordStringToMove(ChessBoard * board, const std::string& str) {
 	}
 }
 
+void protocolNew()
+{
+    // CECP: Reset the board to the standard chess starting position. Set White 
+    // on move. Leave force mode and set the engine to play Black. Associate 
+    // the engine's clock with Black and the opponent's clock with White. 
+    // Reset clocks and time controls to the start of a new game. Stop clocks. 
+    // Do not ponder on this move, even if pondering is on. Remove any search 
+    // depth limit previously set by the sd command.
+    memset(&xboardBoard, 0, sizeof (ChessBoard));
+    loadBoardFromFEN(&xboardBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    cout << board_to_string(&xboardBoard) << endl;
+    forceMode = false;
+    TimeoutValue = TIMEOUT_VALUE;
+}
+
+void protocolProtover2()
+{
+    std::cout << "feature ";
+    std::cout << "myname=\"apep 0.1.0\" ";
+    std::cout << "setboard=1 ";
+    std::cout << "sigint=0 ";
+    std::cout << "sigterm=0 ";
+    std::cout << "done=1 ";
+    std::cout << endl;
+}
+
+void protocolRandom()
+{
+    // TODO: random additions to Chess Player's evaluation
+    // CECP: This command is specific to GNU Chess 4. You can either ignore it completely 
+    // (that is, treat it as a no-op) or implement it as GNU Chess does. The command 
+    // toggles "random" mode (that is, it sets random = !random). In random mode, the 
+    // engine adds a small random value to its evaluation function to vary its play. 
+    // The "new" command sets random mode off.
+}
+
+void protocolForce()
+{
+    // CECP: Set the engine to play neither color ("force mode"). Stop clocks. 
+    // The engine should check that moves received in force mode are legal 
+    // and made in the proper turn, but should not think, ponder, or make 
+    // moves of its own.
+    forceMode = true;
+}
+
+void protocolGo()
+{
+    // CECP: Leave force mode and set the engine to play the color that is on move. 
+    // Associate the engine's clock with the color that is on move, the opponent's 
+    // clock with the color that is not on move. Start the engine's clock. Start 
+    // thinking and eventually make a move.
+    // TODO: launch thread to find move
+    forceMode = false;
+    searchForMove(&xboardBoard, xboardBoard.whiteToMove);
+}
+
+void protocolMove(std::string & line)
+{
+    cout << "got move string " << line << endl;
+    int move = CoordStringToMove(&xboardBoard, line);
+    cout << "user move " << MoveToString(move) << endl;
+    processMove(&xboardBoard, move);
+    internalConsistencyCheck(&xboardBoard);
+    cout << board_to_string(&xboardBoard) << endl;
+    // TODO: verify that you're not moving into check
+    sendBoardInformation(&xboardBoard);
+    if(getGameResult(&xboardBoard) == 0)
+        // get another move
+        searchForMove(&xboardBoard, xboardBoard.whiteToMove);
+
+}
+void protocolSetBoard(std::string & line)
+{
+    // CECP: The setboard command is the new way to set up
+    // positions, beginning in protocol version 2. It is not
+    // used unless it has been selected with the feature
+    // command. Here FEN is a position in Forsythe-Edwards
+    // Notation, as defined in the PGN standard.
+    int startFEN = line.find(" ", 0) + 1;
+    std::string fenString = line.substr(startFEN, std::string::npos);
+    memset(&xboardBoard, 0, sizeof (ChessBoard));
+    loadBoardFromFEN(&xboardBoard, fenString);
+    cout << board_to_string(&xboardBoard) << endl;
+    forceMode = false;
+}
+
+void protocolUndo()
+{
+    if(xboardBoard.moveIndex != 0){
+        cerr << "got undo -- " << xboardBoard.moveIndex << endl;
+        int lastMove = xboardBoard.moveHistory[xboardBoard.moveIndex - 1];
+        unprocessMove(&xboardBoard, lastMove);
+        cerr << "undid " << MoveToString(lastMove) << endl;
+        cerr << "now: " << endl;
+        cerr << board_to_string(&xboardBoard) << endl;
+    }
+}
+
+void protocolAnalyze()
+{
+    AnalysisMode = true;
+    searchForMove(&xboardBoard, xboardBoard.whiteToMove);
+    cout << board_to_string(&xboardBoard) << endl;
+}
+
+void protocolTime(std::string & line)
+{
+    std::string::size_type st = line.find(" ", 0);
+    std::string timeString = line.substr(st + 1, std::string::npos);
+    timeLeft = string_to_int(timeString);
+}
+
+void protocolOtime(std::string & line)
+{
+    std::string::size_type st = line.find(" ", 0);
+    std::string timeString = line.substr(st + 1, std::string::npos);
+    opponentTimeLeft = string_to_int(timeString);
+}
+
+void protocolEval()
+{
+    cout << board_to_string(&xboardBoard) << endl;
+    //int material = getMaterialScore(&xboardBoard);
+    //cout << "material score: " << material << endl;
+    //int position = getPositionScore<true>(&xboardBoard, &std::cout);
+    int total = evaluateBoard<true>(&xboardBoard, &std::cout);
+    cout << "total: " << total << endl;
+}
+
+void protocolSt(std::string & line)
+{
+    std::string searchTime = line.substr(3);
+    TimeoutValue = string_to_int(searchTime);
+    std::cout << "got st " << TimeoutValue << endl;
+}
+
 void xboardMainLoop() {
 	bool shouldContinue = true;
 
@@ -102,53 +238,22 @@ void xboardMainLoop() {
 			std::cout << endl;
 		}
 		else if (line.find("protover 2", 0) == 0) {
-			std::cout << "feature ";
-			std::cout << "myname=\"apep 0.1.0\" ";
-			std::cout << "setboard=1 ";
-			std::cout << "sigint=0 ";
-			std::cout << "sigterm=0 ";
-			std::cout << "done=1 ";
-			std::cout << endl;
+			protocolProtover2();
 		}
 		else if (line == "new") {
-			// CECP: Reset the board to the standard chess starting position. Set White 
-			// on move. Leave force mode and set the engine to play Black. Associate 
-			// the engine's clock with Black and the opponent's clock with White. 
-			// Reset clocks and time controls to the start of a new game. Stop clocks. 
-			// Do not ponder on this move, even if pondering is on. Remove any search 
-			// depth limit previously set by the sd command.
-			memset(&xboardBoard, 0, sizeof(ChessBoard));
-			loadBoardFromFEN(&xboardBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-			cout << board_to_string(&xboardBoard) << endl;
-			forceMode = false;
-			TimeoutValue = TIMEOUT_VALUE;
+			protocolNew();
 		}
 		else if (line.find("quit", 0) == 0) {
 			shouldContinue = false;
 		}
 		else if (line == ("random")) {
-			// TODO: random additions to Chess Player's evaluation
-			// CECP: This command is specific to GNU Chess 4. You can either ignore it completely 
-			// (that is, treat it as a no-op) or implement it as GNU Chess does. The command 
-			// toggles "random" mode (that is, it sets random = !random). In random mode, the 
-			// engine adds a small random value to its evaluation function to vary its play. 
-			// The "new" command sets random mode off.
+			protocolRandom();
 		}
 		else if (line == ("force")) {
-			// CECP: Set the engine to play neither color ("force mode"). Stop clocks. 
-			// The engine should check that moves received in force mode are legal 
-			// and made in the proper turn, but should not think, ponder, or make 
-			// moves of its own.
-			forceMode = true;
+			protocolForce();
 		}
 		else if (line == ("go")) {
-			// CECP: Leave force mode and set the engine to play the color that is on move. 
-			// Associate the engine's clock with the color that is on move, the opponent's 
-			// clock with the color that is not on move. Start the engine's clock. Start 
-			// thinking and eventually make a move.
-			// TODO: launch thread to find move
-			forceMode = false;
-			searchForMove(&xboardBoard, xboardBoard.whiteToMove);
+			protocolGo();
 		}
 		else if (line == "playother") {
 			// CECP: This command is new in protocol version 2. It is not sent unless you enable it 
@@ -159,42 +264,22 @@ void xboardMainLoop() {
 			// later receives a move, it should start thinking and eventually reply.
 		}
 		else if (line == "analyze") {
-			AnalysisMode = true;
-			searchForMove(&xboardBoard, xboardBoard.whiteToMove);
-			cout << board_to_string(&xboardBoard) << endl;
+			protocolAnalyze();
 		}
 		else if (line == "exit") {
 			AnalysisMode = false;
 		}
 		else if (isMoveString(line)) {
-			//System.err.println("got move string: " + line);
-			cout << "got move string " << line << endl;
-			int move = CoordStringToMove(&xboardBoard, line);
-			cout << "user move " << MoveToString(move) << endl;
-			//System.err.println("user move: " + cm);
-			processMove(&xboardBoard, move);
-			internalConsistencyCheck(&xboardBoard);
-			cout << board_to_string(&xboardBoard) << endl; 
-
-			// TODO: verify that you're not moving into check
-			sendBoardInformation(&xboardBoard);
-
-			if (getGameResult(&xboardBoard) == 0)  // get another move
-				searchForMove(&xboardBoard, xboardBoard.whiteToMove);
-
+			protocolMove(line);
 		}
 		else if (line.find("usermove", 0) == 0) {
 			// TODO
 		}
 		else if (line.find("time", 0) == 0) {
-			std::string::size_type st = line.find(" ",0);
-			std::string timeString = line.substr(st + 1,std::string::npos);
-			timeLeft = string_to_int(timeString);
+			protocolTime(line);
 		}
 		else if (line.find("otim", 0) == 0) {
-			std::string::size_type st = line.find(" ",0);
-			std::string timeString = line.substr(st + 1,std::string::npos);
-			opponentTimeLeft = string_to_int(timeString);
+			protocolOtime(line);
 		}
 		else if (line == "?") {
 			// CECP: Move now. If your engine is thinking, it should
@@ -214,13 +299,7 @@ void xboardMainLoop() {
 			// TODO
 		}
 		else if (line == "eval") {
-			cout << board_to_string(&xboardBoard) << endl;
-			//int material = getMaterialScore(&xboardBoard);
-			//cout << "material score: " << material << endl;
-			//int position = getPositionScore<true>(&xboardBoard, &std::cout);
-			int total = evaluateBoard<true>(&xboardBoard, &std::cout);
-
-			cout << "total: " << total << endl;
+			protocolEval();
 		}
 		else if (line == "draw") {
 			// TODO
@@ -229,21 +308,7 @@ void xboardMainLoop() {
 			// game over man, game over
 		}
 		else if (line.find("setboard", 0) == 0) {
-			// CECP: The setboard command is the new way to set up
-			// positions, beginning in protocol version 2. It is not
-			// used unless it has been selected with the feature
-			// command. Here FEN is a position in Forsythe-Edwards
-			// Notation, as defined in the PGN standard.
-
-			int startFEN = line.find(" ", 0) + 1;
-			std::string fenString = line.substr(startFEN, std::string::npos);
-
-			memset(&xboardBoard, 0, sizeof(ChessBoard));
-			loadBoardFromFEN(&xboardBoard, fenString);
-
-			cout << board_to_string(&xboardBoard) << endl;
-
-			forceMode = false;
+			protocolSetBoard(line);
 		}
 		else if (line.find("edit", 0) == 0) {
 			// TODO: fix this
@@ -252,23 +317,14 @@ void xboardMainLoop() {
 
 		}
 		else if (line.find("undo", 0) == 0) {
-//			if (xboardBoard.moveIndex != 0) {
-//				cerr << "got undo -- " << xboardBoard.moveIndex << endl;
-//				int lastMove = xboardBoard.moveHistory[xboardBoard.moveIndex - 1];
-//				unprocessMove(&xboardBoard, lastMove);
-//				cerr << "undid " << MoveToString(lastMove) << endl;
-//				cerr << "now: " << endl;
-//				cerr << board_to_string(&xboardBoard) << endl;
-//			}
+			protocolUndo();
 		}
 		else if (line.find("white", 0) == 0) {
 		}
 		else if (line.find("black", 0) == 0) {
 		}
 		else if (line.find("st", 0) == 0) {
-			std::string searchTime = line.substr(3);
-			TimeoutValue = string_to_int(searchTime);
-			std::cout << "got st " << TimeoutValue << endl;
+			protocolSt(line);
 		}
 		else {
 			cout << "didn't understand " << line << endl; 
