@@ -16,12 +16,12 @@ file(GLOB_RECURSE SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
 
 include_directories ("${_ROOT_FOLDER}/include")
 
-add_library (apep STATIC ${SRCS})
-target_link_libraries(apep cppunit)
-set_target_properties(apep PROPERTIES VERSION "${_VERSION_MAJOR}.${_VERSION_MINOR}" OUTPUT_NAME ${PROJECT_NAME} CLEAN_DIRECT_OUTPUT 1)
+add_library (libapep STATIC ${SRCS})
+target_link_libraries(libapep cppunit)
+set_target_properties(libapep PROPERTIES VERSION "${_VERSION_MAJOR}.${_VERSION_MINOR}" OUTPUT_NAME ${PROJECT_NAME} CLEAN_DIRECT_OUTPUT 1)
 
-install_targets(/lib apep)
-add_executable(runapep apep.cpp)
-set_target_properties(runapep PROPERTIES COMPILE_FLAGS "-O3 -Wall -pedantic -Wno-long-long")
+install_targets(/lib libapep)
+add_executable(apep apep.cpp)
+set_target_properties(apep PROPERTIES COMPILE_FLAGS "-O3 -Wall -pedantic -Wno-long-long")
 
-target_link_libraries(runapep apep cppunit)
+target_link_libraries(apep libapep cppunit)
