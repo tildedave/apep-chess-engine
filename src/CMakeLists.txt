@@ -17,7 +17,7 @@ file(GLOB_RECURSE SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
 include_directories ("${_ROOT_FOLDER}/include")
 
 add_library (libapep STATIC ${SRCS})
-target_link_libraries(libapep cppunit)
+target_link_libraries(libapep cppunit log4cxx)
 set_target_properties(libapep PROPERTIES VERSION "${_VERSION_MAJOR}.${_VERSION_MINOR}" OUTPUT_NAME ${PROJECT_NAME} CLEAN_DIRECT_OUTPUT 1)
 
 install_targets(/lib libapep)

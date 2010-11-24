@@ -9,5 +9,7 @@ set (_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (EXECUTABLE_OUTPUT_PATH "${_ROOT_FOLDER}/bin")
 set (LIBRARY_OUTPUT_PATH "${_ROOT_FOLDER}/lib")
 
+link_directories (/usr/local/lib)
+
 add_subdirectory (src)
 add_subdirectory (test)
