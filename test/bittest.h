@@ -31,8 +31,17 @@ public:
 								"testFirstOneFourthBlock",
 								&BitTest::testFirstOneFourthBlock ) );
 	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
-	    						"testLastOne",
-	    						&BitTest::testLastOne ) );
+	    						"testLastOneFirstBlock",
+	    						&BitTest::testLastOneFirstBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						"testLastOneSecondBlock",
+	    						&BitTest::testLastOneSecondBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						"testLastOneThirdBlock",
+	    						&BitTest::testLastOneThirdBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						"testLastOneFourthBlock",
+	    						&BitTest::testLastOneFourthBlock ) );
 	    return suiteOfTests;
 	  }
 
@@ -64,29 +73,29 @@ public:
 		  CPPUNIT_ASSERT_EQUAL((short) 11, FirstOne(0x0000000000000800ULL));
 	  }
 
-	  void testLastOne() {
+	  void testLastOneFirstBlock() {
 		  BITBOARD i = 0x1000000000000000ULL;
 		  short firstOne = FirstOne(i);
 		  CPPUNIT_ASSERT_EQUAL((short) 60, firstOne);
 	  }
 
+	  void testLastOneSecondBlock() {
+		  BITBOARD i = 0x0000800000000000ULL;
+		  short firstOne = FirstOne(i);
+		  CPPUNIT_ASSERT_EQUAL((short) 47, firstOne);
+	  }
 
-//	void testFirstOne() {
-//		BITBOARD i =   0x1000000000000001ULL;
-//		for(int j = 0; j < 64; ++j) {
-//			if (j != 0)
-//				i = i << 1;
-//			short firstOneOld = FirstOne(i);
-//			short firstOneNew = FirstOneNew(i);
-//			std::string message = "different FirstOne for ";
-//			message += BITBOARD_to_string(i);
-//			message += "\n" + bitboard_to_string(i);
-//			CPPUNIT_ASSERT_EQUAL_MESSAGE(message, firstOneOld, firstOneNew);
-//		}
-//
-//		cerr << "finished testing first ones" << endl;
-//	}
-	
+	  void testLastOneThirdBlock() {
+		  BITBOARD i = 0x0000000004000000ULL;
+		  short firstOne = FirstOne(i);
+		  CPPUNIT_ASSERT_EQUAL((short) 26, firstOne);
+	  }
+
+	  void testLastOneFourthBlock() {
+		  BITBOARD i = 0x1000000000000300ULL;
+		  short firstOne = FirstOne(i);
+		  CPPUNIT_ASSERT_EQUAL((short) 8, firstOne);
+	  }
 };
 
 #endif /*BITTEST_H_*/
