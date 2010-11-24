@@ -14,7 +14,10 @@ int randomSeed = -1;
 
 bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy) {
 	ChessBoard board;
+	std::cout << "loading FEN" << std::endl;
+
 	loadBoardFromFEN(&board, fenString);
+	std::cout << "getting move for FEN" << std::endl;
 	int move = getMove(&board, noisy);
 	std::string moveToString = MoveToString(move);
 	cout << moveToString;
@@ -90,17 +93,41 @@ int main(int argc, char** argv) {
   std::string fenFile;
   desc.add_options()
     ("help", "produce help message")
-    ("file", po::value<std::string>(), "File to read FEN positions from (required)");
+    ("file", po::value<std::string>(), "File to read FEN positions from (required)")
+    ("fen", po::value<std::string>(), "FEN to solve")
+    ("expected", po::value<std::string>(), "Expected solution for FEN");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
 
-  if (vm.count("help") || !vm.count("file")) {
+  if (vm.count("help")) {
     std::cout << desc << std::endl;
     exit(0);
   }
 
-  std::string file = vm["file"].as<std::string>();
-  tacticsTest(file);
+  if (vm.count("file") && vm.count("fen")) {
+	    std::cout << desc << std::endl;
+	    exit(0);
+  }
+
+  if (!vm.count("file") && !vm.count("fen")) {
+	    std::cout << desc << std::endl;
+	    exit(0);
+  }
+
+  if (vm.count("fen") && !vm.count("expected")) {
+	    std::cout << desc << std::endl;
+	    exit(0);
+  }
+
+  if (vm.count("file")) {
+	  std::string file = vm["file"].as<std::string>();
+	  tacticsTest(file);
+  }
+  if (vm.count("fen")) {
+	  std::string fen = vm["fen"].as<std::string>();
+	  std::string expected = vm["expected"].as<std::string>();
+	  doTacticsTest(fen, expected, true);
+  }
 }
