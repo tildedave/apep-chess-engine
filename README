@@ -15,7 +15,6 @@ Minor points:
           this engine that I have not included in this repo as they
           are not open source.
 
-	* apep supports the Winboard Protocol v1
-          http://home.hccnet.nl/h.g.muller/engine-intf.html, v2 was
-          not out when I was developing apep!
-
+	* apep supports parts of the Winboard Protocol v1
+          http://home.hccnet.nl/h.g.muller/engine-intf.html.  Work is in 
+          progress to make it fully compliant.
