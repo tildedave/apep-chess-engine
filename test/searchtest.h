@@ -17,9 +17,7 @@ public:
 	static CppUnit::Test *suite()
 	{
 		CppUnit::TestSuite *suiteOfTests = new CppUnit::TestSuite( "SearchTest" );
-		/*
-		 * */
-		/*suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
+		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
 				"testCapture", 
 				&SearchTest::testCapture ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
@@ -31,11 +29,7 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
 				"testBwtc39",
 				&SearchTest::testBwtc39) );
-		*/
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
-				"testWcsac002",
-				&SearchTest::testWcsac002) );
-		/*suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
 				"testRookmate", 
 				&SearchTest::testRookmate ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
@@ -47,7 +41,16 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
 				"testNotAided", 
 				&SearchTest::testNotAided ) );
-		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
+		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
+				"testMorphyMate",
+				&SearchTest::testMorphyMate ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
+				"testMorphyMate2",
+				&SearchTest::testMorphyMate2 ) );
+//		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
+//				"testWcsac002",
+//				&SearchTest::testWcsac002) );
+		/*suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>(
 				"testWac002", 
 				&SearchTest::testWac002 ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
@@ -62,12 +65,6 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
 				"testWcsac527", 
 				&SearchTest::testWcsac527 ) );
-		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
-				"testMorphyMate", 
-				&SearchTest::testMorphyMate ) );
-		suiteOfTests->addTest( new CppUnit::TestCaller<SearchTest>( 
-				"testMorphyMate2", 
-				&SearchTest::testMorphyMate2 ) );*/
 		/*
 		*/
 		return suiteOfTests;
@@ -78,7 +75,7 @@ public:
 		ChessBoard board;
 		loadBoardFromFEN(&board, "8/3k4/8/8/8/8/2Kp4/8 w - - 0 1");
 		cerr << board_to_string(&board) << endl;
-		cerr << getMaterialScore(&board) << endl;
+		cerr << "about to get move" << endl;
 		int move = getMove(&board);
 		CPPUNIT_ASSERT_EQUAL(std::string("Kxd2"),MoveToString(move));
 	}
