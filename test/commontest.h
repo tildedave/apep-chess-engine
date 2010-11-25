@@ -1,47 +1,47 @@
-#ifndef BITTEST_H_
-#define BITTEST_H_
+#ifndef CommonTest_H_
+#define CommonTest_H_
 
 #include <cppunit/TestCase.h>
 #include <cppunit/TestCaller.h>
 #include "common.h"
 
-class BitTest : public CppUnit::TestCase {
+class CommonTest : public CppUnit::TestCase {
 
 public:
 	
 	  static CppUnit::Test *suite()
 	  {
-	    CppUnit::TestSuite *suiteOfTests = new CppUnit::TestSuite( "BitTest" );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>( 
+	    CppUnit::TestSuite *suiteOfTests = new CppUnit::TestSuite( "CommonTest" );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOne",
-								&BitTest::testFirstOne ));
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOne ));
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOneBlankBoard",
-								&BitTest::testFirstOneFirstBit ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOneFirstBit ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOneBlankBoard",
-								&BitTest::testFirstOneBlankBoard ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOneBlankBoard ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOneSecondBlock",
-								&BitTest::testFirstOneSecondBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOneSecondBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOneThirdBlock",
-								&BitTest::testFirstOneThirdBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOneThirdBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 								"testFirstOneFourthBlock",
-								&BitTest::testFirstOneFourthBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+								&CommonTest::testFirstOneFourthBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 	    						"testLastOneFirstBlock",
-	    						&BitTest::testLastOneFirstBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						&CommonTest::testLastOneFirstBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 	    						"testLastOneSecondBlock",
-	    						&BitTest::testLastOneSecondBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						&CommonTest::testLastOneSecondBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 	    						"testLastOneThirdBlock",
-	    						&BitTest::testLastOneThirdBlock ) );
-	    suiteOfTests->addTest( new CppUnit::TestCaller<BitTest>(
+	    						&CommonTest::testLastOneThirdBlock ) );
+	    suiteOfTests->addTest( new CppUnit::TestCaller<CommonTest>(
 	    						"testLastOneFourthBlock",
-	    						&BitTest::testLastOneFourthBlock ) );
+	    						&CommonTest::testLastOneFourthBlock ) );
 	    return suiteOfTests;
 	  }
 
@@ -98,4 +98,4 @@ public:
 	  }
 };
 
-#endif /*BITTEST_H_*/
+#endif /*CommonTest_H_*/
