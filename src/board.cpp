@@ -107,10 +107,6 @@ int copy_board(ChessBoard * dest, ChessBoard * src) {
 	dest->occupied45L = src->occupied45L;
 	dest->occupied45R = src->occupied45R;
 	dest->occupied90R = src->occupied90R;
-
-	/*dest->materialScore = src->materialScore;
-	dest->whiteMaterialScore = src->whiteMaterialScore;
-	dest->blackMaterialScore = src->blackMaterialScore;*/
 	
 	dest->gamePhase = src->gamePhase;
 
@@ -168,7 +164,6 @@ std::string board_to_string(ChessBoard * board) {
 			else { 
 				fenString.append("1");
 			}
-			// sb.append("|");
 		}
 		boardString += "\n";
 		if (i != 7)
