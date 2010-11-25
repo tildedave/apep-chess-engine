@@ -2,7 +2,7 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include "bittest.h"
+#include "commontest.h"
 #include "boardtest.h"
 #include "searchtest.h"
 
@@ -13,11 +13,8 @@ int main(int argc, char** argv) {
 
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( BoardTest::suite() );
-
-        // tests currently broken -- 
-        // throw core dumps
-    runner.addTest( BitTest::suite() );
-	//runner.addTest( SearchTest::suite() );
+    runner.addTest( CommonTest::suite() );
+	runner.addTest( SearchTest::suite() );
 
 	runner.run();	
 	return 0;
