@@ -15,6 +15,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+log4cxx::LoggerPtr logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 bool forceMode = true;
@@ -236,19 +237,18 @@ void protocolSt(std::string & line)
     std::cout << "got st " << TimeoutValue << endl;
 }
 
-log4cxx::LoggerPtr setupLogging()
+void setupLogging()
 {
     log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%t] (%F:%L) - %m%n")), "apep.log", false);
     log4cxx::helpers::Pool p;
     fileAppender->activateOptions(p);
     log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
     log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
-    log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("logger");
-    return logger;
+    logger = log4cxx::Logger::getLogger("logger");
 }
 
 void xboardMainLoop() {
-	log4cxx::LoggerPtr logger = setupLogging();
+	setupLogging();
 
 	bool shouldContinue = true;
 
@@ -256,10 +256,12 @@ void xboardMainLoop() {
 		std::string line;
 		if (analysisMessages.empty()) {
 			std::getline(std::cin, line);
-			LOG4CXX_INFO(logger, "received message " << line)
+			LOG4CXX_INFO(logger, "received message " << line);
 		}
 		else {
 			line = analysisMessages.front();
+			LOG4CXX_INFO(logger, "received message during analysis " << line);
+
 			analysisMessages.pop_front();
 		}
 

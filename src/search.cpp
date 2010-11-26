@@ -18,6 +18,7 @@
 #include <csignal>
 
 #include <sstream>
+#include <log4cxx/logger.h>
 
 #define DO_OLD_SORT 			0
 #define SEARCH_DEBUG			0
@@ -28,6 +29,7 @@ TranspositionTable transpositionTable;
 int timeToNextCheck;
 bool AnalysisMode = false;
 float TimeoutValue = TIMEOUT_VALUE;
+extern log4cxx::LoggerPtr logger;
 
 int getMove(ChessBoard * board) {
 	int bookMove = getMoveForPosition(board);
@@ -100,8 +102,10 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 			if ((score == alpha && alpha != -INFINITE_VALUE) ||
 				(score == beta && beta != INFINITE_VALUE)) {
 				haveLastEvaluation = false;
+				// aspiration window failed: do a re-search
+				// TODO: http://chessprogramming.wikispaces.com/Aspiration+Windows
+				// Possibly implement gradual widening
 				i = i - 2;
-				cerr << "aspiration window failed: " << alpha << " < " << score << " < " << beta << endl;
 				continue;
 			}
 			else {
@@ -109,12 +113,9 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 				haveLastEvaluation = true;
 			}
 
-//			line.clear();
 			MoveLinkedList extractedPV;
 			extractPV(board, extractedPV);
-//			cerr << "extracted pv: " << extractedPV.toMoveString() << " vs " << line.toMoveString() << endl;
-			
-//			theMove = line.getFirst();
+
 			if (extractedPV.size() != 0) {
 				theMove = extractedPV.getFirst();
 			}
@@ -124,21 +125,17 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 				continue;
 			}
 #ifdef WIN32
-				GetSystemTime(&endSystemTime);
-				SystemTimeToFileTime(&endSystemTime, &end);
+			GetSystemTime(&endSystemTime);
+			SystemTimeToFileTime(&endSystemTime, &end);
 #else
-				gettimeofday(&end, NULL);
+			gettimeofday(&end, NULL);
 #endif
-				double diff = getSecondsDiff(&start, &end);
-				if (!AnalysisMode)
-					outputStats(board, stats, i, score, extractedPV, diff, noisy);
-
-//			if (score > CHECKMATE - 100) {
-//				break;
-//			}
+			double diff = getSecondsDiff(&start, &end);
+			if (!AnalysisMode)
+				outputStats(board, stats, i, score, extractedPV, diff, noisy);
 		}
 		catch (TimeoutException e) {
-			// shouldn't timeout before we've gotten at least one move!
+			// shouldn't time out before we've gotten at least one move!
 			if (noisy) {
 				cerr << "\ttimed out" << endl;
 			}
@@ -212,6 +209,17 @@ bool shouldDoNullMove(ChessBoard *board, search_info *searchInfo)
      	board->gamePhase != PHASE_ENDGAME;
 }
 
+double getSecondsSinceSearchStarted(search_info *searchInfo)
+{
+#ifdef WIN32
+	FILETIME currentTime;
+#else
+	timeval currentTime;
+#endif
+	getCurrentTime(&currentTime);
+	return getSecondsDiff(&searchInfo->startTime, &currentTime);
+}
+
 int alphaBetaSearch(ChessBoard * board, 
 					short startingDepth, short depthLeft,
 					short ply, 
@@ -259,9 +267,6 @@ int alphaBetaSearch(ChessBoard * board,
 		return eval;
 	}
 
-	// try a null move, if appropriate.
-	//	std::string beforeNullMove = board_to_string(board);
-
 	board->searchPhase[ply] = SEARCH_NULLMOVE;
 	if (shouldDoNullMove(board, searchInfo)) {
 		processNullMove(board);
@@ -299,11 +304,12 @@ int alphaBetaSearch(ChessBoard * board,
 			if (!isKingInCheck(board, kingToCheck)) {
 
 				int searchDepth = getSearchDepthWithExtensions(depthLeft, board, nextMove);
+				int startingNodes = stats->nodes;
 
 				hasLegalMove = true;
 				searchInfo->lastMoveWasNullMove = false;
 				int value = -alphaBetaSearch(board, startingDepth, searchDepth, ply + 1, false, -beta, -alpha, searchInfo, stats);
-				// reset this
+
 				// TODO: get rid of this and just go with ply
 				board->currentSearchDepth = depthLeft;
 
@@ -335,14 +341,7 @@ int alphaBetaSearch(ChessBoard * board,
 						MoveLinkedList line;
 						line.add(nextMove);
 						extractPV(board, line);
-
-#ifdef WIN32
-						FILETIME currentTime;
-#else
-						timeval currentTime;
-#endif
-						getCurrentTime(&currentTime);
-						double time = getSecondsDiff(&searchInfo->startTime, &currentTime);
+						double time = getSecondsSinceSearchStarted(searchInfo);
 
 						outputStats(board, *stats, startingDepth, value, line, time, true);
 					}
@@ -351,7 +350,18 @@ int alphaBetaSearch(ChessBoard * board,
 					bestMove = nextMove;
 					hashFunction = HASH_EXACT;
 				}
-#if SEARCH_DEBUG 
+
+
+				if (isInitialCall) {
+					double time = getSecondsSinceSearchStarted(searchInfo);
+					int differentNodes = startingNodes - stats->nodes;
+					cerr << "\t";
+					cerr << " "
+						 << MoveToString(nextMove)
+						 << differentNodes << " " << endl;
+				}
+
+				#if SEARCH_DEBUG
 				if (isInitialCall) {
 					for(int i = depthLeft; i > 1; i--)
 						cerr << "   ";
@@ -547,8 +557,9 @@ void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics
 		bool hasInput = checkForInputDuringSearch();
 		if (hasInput) {
 			std::string userInput;
-			cerr << "going to block on cin" << endl;
 			std::getline(std::cin, userInput);
+			LOG4CXX_INFO(logger, "received message during search " << userInput);
+
 			if (userInput == "exit")
 				throw TimeoutException();
 			else if (userInput == ".") {
@@ -557,9 +568,10 @@ void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics
 					 << " " << stats->nodes  << endl;
 			}
 			else if (userInput == "") {
-				// uh, okay
+				// should not happen
 			}
 			else {
+				LOG4CXX_INFO(logger, "did not recognize " << userInput);
 				cerr << "got " << userInput << " during analysis and did not recognize it -- quitting" << endl;
 				analysisMessages.push_back(userInput);
 				throw TimeoutException();
@@ -636,24 +648,6 @@ int* getAndSortMovesForBoard(ChessBoard * board, bool whiteToMove, bool quiescen
 	}
 	
 
-#if DO_OLD_SORT
-	// this is not as efficient as it could be.  I'll fix this and do the sort inline here instead of
-	// with a linkedlist/move
-
-	MoveLinkedList firstList;
-	MovePriorityQueue mpq;
-	for(int* ptr = startMoves; ptr < endMoves; ++ptr) {
-		firstList.add(*ptr);
-		int currentPriority = getPriorityForMove(board, *ptr);
-		mpq.add(*ptr, currentPriority);
-	}
-
-	int m = 0;
-	while(!mpq.isEmpty()) {
-		startMoves[m] = mpq.removeMaximum();
-		++m;
-	}
-#else	
 	int firstPriority = getPriorityForMove(board, *startMoves);
 	int firstMove = *startMoves;
 	board->moveList[ply][0] = firstMove;
@@ -683,8 +677,7 @@ int* getAndSortMovesForBoard(ChessBoard * board, bool whiteToMove, bool quiescen
 
 		++k;
 	}
-#endif
-	
+
 	return endMoves;
 }
 
@@ -701,7 +694,6 @@ int getPriorityForMove(ChessBoard * chessBoard, int move) {
 	}
 	else {
 		priority = getPriorityForMove_MVVLVA(chessBoard, move);
-//		priority = getPriorityForMove_SEE(chessBoard, move, whiteToMove);
 	}
 	
 	return priority;
@@ -712,9 +704,6 @@ int getPriorityForMove(ChessBoard * chessBoard, int move) {
 // with Win32 programming any more, sadly
 bool checkForInputDuringSearch() {
 #ifdef WIN32
-	/*DWORD waitValue = WaitForSingleObject(GetStdHandle(STD_INPUT_HANDLE), 0);
-	if (waitValue == WAIT_TIMEOUT)
-		return 0;*/
 
 #if defined(FILE_CNT)
 	if (stdin->_cnt > 0)
@@ -729,18 +718,14 @@ bool checkForInputDuringSearch() {
 		stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
 		pipe = !GetConsoleMode(stdinHandle, &word);
 
-		//cerr << "pipe: " << pipe << " -- " << word << endl;
 		if (!pipe) {
-			//cerr << "enabling window input for handle: " << stdinHandle << endl;
 			BOOL result = SetConsoleMode(stdinHandle, word & ~(ENABLE_MOUSE_INPUT | ENABLE_WINDOW_INPUT));
-			//cerr << "got result: " << result << endl;
 			FlushConsoleInputBuffer(stdinHandle);
 		}
 	}
 	if (pipe) {
-		//cerr << "pipe: " << pipe << endl;
 		int peekValue = PeekNamedPipe(stdinHandle, NULL, 0, NULL, &word, NULL);
-		//cerr << "peekValue:" << peekValue << " word: " << word << endl;
+
 		if (!peekValue || !word)
 			return false;
 		else
@@ -752,7 +737,6 @@ bool checkForInputDuringSearch() {
 			return false;
 		}
 		else {
-			//cerr << "got " << word << " console input events!" << endl;
 			return true;
 		}
 	}
