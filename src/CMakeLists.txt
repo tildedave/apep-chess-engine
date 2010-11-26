@@ -11,8 +11,10 @@ file(GLOB_RECURSE SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
                common.cpp
                move.cpp
                movepriorityqueue.cpp
-               search.cpp   
+               search.cpp
 )
+
+add_subdirectory (cecp)
 
 include_directories ("${_ROOT_FOLDER}/include")
 

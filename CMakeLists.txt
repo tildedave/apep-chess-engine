@@ -13,3 +13,5 @@ link_directories (/usr/local/lib)
 
 add_subdirectory (src)
 add_subdirectory (test)
+
+add_test (UnitTests ${EXECUTABLE_OUTPUT_PATH}/testapep.exe)
