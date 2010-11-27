@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class CECPState {
 public:
 	CECPState();

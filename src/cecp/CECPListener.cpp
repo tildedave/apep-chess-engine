@@ -5,11 +5,12 @@
  *      Author: dhking
  */
 
-#include "CECPListener.h"
+#include "cecp/CECPListener.h"
 
-CECPListener::CECPListener() {
-	// TODO Auto-generated constructor stub
-
+CECPListener::CECPListener(std::istream& input, std::ostream& output) :
+  input_(input),
+  output_(output)
+{
 }
 
 CECPListener::~CECPListener() {

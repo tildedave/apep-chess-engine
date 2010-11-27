@@ -1,5 +1,3 @@
-#pragma once
-
 #include "cecp/CECPState.h"
 
 CECPState::CECPState() {
