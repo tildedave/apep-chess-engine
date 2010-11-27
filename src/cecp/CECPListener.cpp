@@ -15,6 +15,9 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/helpers/exception.h>
 
+// TODO: separate receive/process threads
+// TODO: separate search analysis thread, communicate w/named pipe
+
 CECPListener::CECPListener(std::istream& input, std::ostream& output) :
   input_(input),
   output_(output),
