@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( BoardTest::suite() );
     runner.addTest( CommonTest::suite() );
+	runner.addTest( CECPListenerTest::suite() );
 	//runner.addTest( SearchTest::suite() );
-//	runner.addTest( CECPListenerTest::suite() );
 
 	runner.run();	
 	return 0;

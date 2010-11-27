@@ -29,7 +29,10 @@ public:
 		std::stringstream output;
 
 		CECPListener receiver(input, output);
+		receiver.receive();
 
+		CPPUNIT_ASSERT_EQUAL(1, (int) receiver.messages().size());
+		CPPUNIT_ASSERT_EQUAL(std::string("xboard"), receiver.messages().front());
 
 	}
 };
