@@ -149,10 +149,9 @@ void protocolGo()
 
 void protocolMove(std::string & line)
 {
-    cout << "got move string " << line << endl;
     int move = CoordStringToMove(&xboardBoard, line);
-    cout << "user move " << MoveToString(move) << endl;
-    processMove(&xboardBoard, move);
+	LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
+	processMove(&xboardBoard, move);
     internalConsistencyCheck(&xboardBoard);
     cout << board_to_string(&xboardBoard) << endl;
     // TODO: verify that you're not moving into check
@@ -374,30 +373,21 @@ void xboardMainLoop() {
 void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	TimeoutValue = INFINITE_VALUE;
 	int reply = getMove(board, true);
-	// only get here after we time out
+	// only get here after we are forced to time out
 	cout << "move " << MoveToXboardString(reply) << endl;
 }
 
 
 void searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
-	if (!forceMode || AnalysisMode) {
-		int reply;
-		if (AnalysisMode)
-			reply = getMove(board, true);
-		else
-			reply = getMove(board);
+	if (!forceMode) {
+		int reply = getMove(board);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
-		if (!AnalysisMode) {
-			processMove(board, reply);
-			internalConsistencyCheck(board);
-			cout << board_to_string(board) << endl;
-			cout << "ready to wait for another move now " << endl;
-		}
-		else {
-			internalConsistencyCheck(board);
-		}
+		processMove(board, reply);
+		internalConsistencyCheck(board);
+		cout << board_to_string(board) << endl;
+		cout << "ready to wait for another move now " << endl;
 	}
 	else {
 		cerr << "not in force move, not searching for move" << endl;
@@ -433,19 +423,13 @@ void sendBoardInformation(ChessBoard * board) {
 }
 
 void setTimeoutValue(ChessBoard * board) {
-	if (!AnalysisMode) {
-		// current time left is in global 'timeLeft' variable
-		int movesUntilNextTimeControl = 41 - (board->fullmoveClock % 41);
-		// so we have movesUntilNextTimeControl to distribute these 
-		// seconds.
+	// current time left is in global 'timeLeft' variable
+	int movesUntilNextTimeControl = 41 - (board->fullmoveClock % 41);
+	// so we have movesUntilNextTimeControl to distribute these
+	// seconds.
 
-		float amountOfTime = ((float) timeLeft) / (movesUntilNextTimeControl * 100.0);
-		cerr << "searching for " << amountOfTime << " seconds..." << endl;
+	float amountOfTime = ((float) timeLeft) / (movesUntilNextTimeControl * 100.0);
+	cerr << "searching for " << amountOfTime << " seconds..." << endl;
 
-		TimeoutValue = amountOfTime;
-	}
-	else {
-		TimeoutValue = INFINITE_VALUE;
-	}
-	// TODO: increments with fischer clock
+	TimeoutValue = amountOfTime;
 }
