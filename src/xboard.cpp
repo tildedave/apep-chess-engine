@@ -253,6 +253,7 @@ void xboardMainLoop() {
 
 	while (shouldContinue) {
 		std::string line;
+
 		if (!AnalysisMode) {
 			std::getline(std::cin, line);
 			LOG4CXX_INFO(logger, "received message " << line);
