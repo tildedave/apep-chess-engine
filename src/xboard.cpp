@@ -202,7 +202,7 @@ void protocolRemove()
 void protocolAnalyze()
 {
     AnalysisMode = true;
-    searchForMove(&xboardBoard, xboardBoard.whiteToMove);
+    analyzeBoard(&xboardBoard, xboardBoard.whiteToMove);
     cout << board_to_string(&xboardBoard) << endl;
 }
 
@@ -371,10 +371,22 @@ void xboardMainLoop() {
 	}
 }
 
+void analyzeBoard(ChessBoard * board, bool whiteToMove) {
+	TimeoutValue = INFINITE_VALUE;
+	int reply = getMove(board, true);
+	// only get here after we time out
+	cout << "move " << MoveToXboardString(reply) << endl;
+}
+
+
 void searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
 	if (!forceMode || AnalysisMode) {
-		int reply = getMove(board);
+		int reply;
+		if (AnalysisMode)
+			reply = getMove(board, true);
+		else
+			reply = getMove(board);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
 		if (!AnalysisMode) {

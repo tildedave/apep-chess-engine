@@ -11,6 +11,7 @@ void xboardMainLoop();
 void doXboardMove(ChessBoard * chessBoard, bool whiteToMove);
 void sendBoardInformation(ChessBoard * chessBoard);
 void searchForMove(ChessBoard * board, bool whiteToMove);
+void analyzeBoard(ChessBoard * board, bool whiteToMove);
 std::string MoveToXboardString(ChessBoard * board, int move);
 int CoordStringToMove(ChessBoard * board, const std::string& str);
 bool isMoveString(const std::string& str);
