@@ -374,7 +374,6 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	TimeoutValue = INFINITE_VALUE;
 	int reply = getMove(board, true);
 	// only get here after we are forced to time out
-	cout << "move " << MoveToXboardString(reply) << endl;
 }
 
 
