@@ -253,15 +253,20 @@ void xboardMainLoop() {
 
 	while (shouldContinue) {
 		std::string line;
-		if (analysisMessages.empty()) {
+		if (!AnalysisMode) {
 			std::getline(std::cin, line);
 			LOG4CXX_INFO(logger, "received message " << line);
 		}
 		else {
-			line = analysisMessages.front();
-			LOG4CXX_INFO(logger, "received message during analysis " << line);
+			if (analysisMessages.empty()) {
+				protocolAnalyze();
+			}
+			else {
+				line = analysisMessages.front();
+				LOG4CXX_INFO(logger, "received message during analysis " << line);
 
-			analysisMessages.pop_front();
+				analysisMessages.pop_front();
+			}
 		}
 
 		if (line.find("xboard",0) == 0) {
