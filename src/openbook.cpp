@@ -9,8 +9,10 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
+#include <log4cxx/logger.h>
 
 std::multimap<HASHKEY, Coord> openingBook;
+extern log4cxx::LoggerPtr logger;
 
 int getMoveForPosition(ChessBoard * board) {
 
@@ -56,6 +58,7 @@ int getMoveForPosition(ChessBoard * board) {
 		return -1;
 	}
 
+	LOG4CXX_DEBUG(logger, "book move " << MoveToString(theCoord.move));	
 	return theCoord.move;
 }
 
