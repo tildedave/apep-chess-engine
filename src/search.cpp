@@ -69,7 +69,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 	int lastEvaluation = 0;
 	
 	while(true) {
-		i = i + 2;
+		i = i + 1;
 #ifdef WIN32
 		FILETIME start, end;
 		SYSTEMTIME startSystemTime, endSystemTime;
@@ -104,7 +104,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 				// aspiration window failed: do a re-search
 				// TODO: http://chessprogramming.wikispaces.com/Aspiration+Windows
 				// Possibly implement gradual widening
-				i = i - 2;
+				i = i - 1;
 				continue;
 			}
 			else {
@@ -120,7 +120,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 			}
 			else {
 				transpositionTable.clear();
-				i = i - 2;
+				i = i - 1;
 				continue;
 			}
 #ifdef WIN32
@@ -353,7 +353,6 @@ int alphaBetaSearch(ChessBoard * board,
 
 
 				if (isInitialCall) {
-
 					double time = getSecondsSinceSearchStarted(searchInfo);
 					int differentNodes = startingNodes - stats->nodes;
 					cerr << "\t";
