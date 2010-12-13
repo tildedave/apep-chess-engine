@@ -335,7 +335,9 @@ int getKingScore(short offset) {
 
 int getPassedPawnScore(ChessBoard * board, bool white) {
 	BITBOARD pawns = (white) ? board->whitePawns : board->blackPawns;
+	BITBOARD originalPawns = pawns;
 	BITBOARD otherPawns = (white) ? board->blackPawns : board->whitePawns;
+	BITBOARD* doubledPawnMask = (white) ? whiteDoubledPawnMask : blackDoubledPawnMask;
 	BITBOARD* passedPawnMask = (white) ? whitePassedPawnMask : blackPassedPawnMask;
 	int* passedPawnRankScale = (white) ? EvalParameters::whitePassedPawnRankScale : EvalParameters::blackPassedPawnRankScale;
 
@@ -347,12 +349,20 @@ int getPassedPawnScore(ChessBoard * board, bool white) {
 
 		if ((passedPawnMask[pawnOffset] & otherPawns) == 0) {
 			// pawn is passed.  give bonus
-			/*cerr << "rank: " << Rank(pawnOffset) << endl;
-			cerr << passedPawnRankScale[Rank(pawnOffset)] << endl;*/
-			if (board->gamePhase == PHASE_ENDGAME)
-				passedPawnScore += EvalParameters::passedPawnBonus * passedPawnRankScale[8 - Rank(pawnOffset)];
-			else
-				passedPawnScore += (1/4.0) * EvalParameters::passedPawnBonus * passedPawnRankScale[8 - Rank(pawnOffset)];
+
+		        // check if pawn is doubled
+                        BITBOARD isDoubled = doubledPawnMask[pawnOffset] & originalPawns;
+
+			if (isDoubled == 0) {
+			  if (board->gamePhase == PHASE_ENDGAME) {
+			    passedPawnScore += EvalParameters::passedPawnBonus * passedPawnRankScale[8 - Rank(pawnOffset)];
+			  }
+			  else {
+			    passedPawnScore += (1/4.0) * EvalParameters::passedPawnBonus * passedPawnRankScale[8 - Rank(pawnOffset)];
+			  }
+			}
+
+			// no passed pawn bonus if pawn is doubled
 		}
 	}
 

@@ -15,17 +15,21 @@ class EvalTest : public CppUnit::TestCase {
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
 				"testPassedPawnScoreWhiteSinglePawn", 
 				&EvalTest::testPassedPawnScoreWhiteSinglePawn ) );
-
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
 				"testPassedPawnScoreNoPawns", 
 				&EvalTest::testPassedPawnScoreWhiteNoPawns ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
 				"testPassedPawnScoreBlackSinglePawn", 
 				&EvalTest::testPassedPawnScoreBlackSinglePawn ) );
-
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
 				"testPassedPawnScoreNoPawns", 
 				&EvalTest::testPassedPawnScoreBlackNoPawns ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
+				"testPassedPawnScoreWhiteDoubledPassedPawns", 
+				&EvalTest::testPassedPawnScoreWhiteDoubledPassedPawns ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>( 
+				"testPassedPawnScoreBlackDoubledPassedPawns", 
+				&EvalTest::testPassedPawnScoreBlackDoubledPassedPawns ) );
 
 		return suiteOfTests;
 	}
@@ -43,11 +47,11 @@ class EvalTest : public CppUnit::TestCase {
 
 	void testPassedPawnScoreWhiteSinglePawn() {
 	    ChessBoard board;
-	    std::string startingFEN("8/8/8/8/4P3/8/8/8 w KQkq - 0 1");
+	    std::string startingFEN("8/8/8/8/8/4P3/8/8 w KQkq - 0 1");
 	    loadBoardFromFEN(&board, startingFEN);
 
 	    int passedPawnScore = passedPawnTest(&board, true);
-	    CPPUNIT_ASSERT_EQUAL(passedPawnScore >= EvalParameters::passedPawnBonus, true);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore == EvalParameters::passedPawnBonus, true);
 	}
 
 	void testPassedPawnScoreWhiteNoPawns() {
@@ -61,11 +65,11 @@ class EvalTest : public CppUnit::TestCase {
 
 	void testPassedPawnScoreBlackSinglePawn() {
 	    ChessBoard board;
-	    std::string startingFEN("8/8/8/8/4p3/8/8/8 w KQkq - 0 1");
+	    std::string startingFEN("8/8/8/4p3/8/8/8/8 w KQkq - 0 1");
 	    loadBoardFromFEN(&board, startingFEN);
 
 	    int passedPawnScore = passedPawnTest(&board, false);
-	    CPPUNIT_ASSERT_EQUAL(passedPawnScore >= EvalParameters::passedPawnBonus, true);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore == EvalParameters::passedPawnBonus, true);
 	}
 
 	void testPassedPawnScoreBlackNoPawns() {
@@ -75,5 +79,23 @@ class EvalTest : public CppUnit::TestCase {
 
 	    int passedPawnScore = passedPawnTest(&board, false);
 	    CPPUNIT_ASSERT_EQUAL(passedPawnScore == 0, true);
+	}
+
+	void testPassedPawnScoreWhiteDoubledPassedPawns() {
+	    ChessBoard board;
+	    std::string startingFEN("8/8/8/8/8/4P3/4P3/8 w KQkq - 0 1");
+	    loadBoardFromFEN(&board, startingFEN);
+
+	    int passedPawnScore = passedPawnTest(&board, true);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore == EvalParameters::passedPawnBonus, true);
+	}
+
+	void testPassedPawnScoreBlackDoubledPassedPawns() {
+	    ChessBoard board;
+	    std::string startingFEN("8/4p3/4p3/8/8/8/8/8 w KQkq - 0 1");
+	    loadBoardFromFEN(&board, startingFEN);
+
+	    int passedPawnScore = passedPawnTest(&board, false);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore == EvalParameters::passedPawnBonus, true);
 	}
 };
