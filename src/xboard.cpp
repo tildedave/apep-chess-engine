@@ -19,6 +19,7 @@ log4cxx::LoggerPtr logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 bool forceMode = true;
+bool computerMode = false;
 bool AnalysisMode = false;
 int timeLeft;
 int opponentTimeLeft;
@@ -403,6 +404,7 @@ void searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
 	if (!forceMode) {
 	        search_options options;
+                options.noisyMode = true;
 		int reply = getMove(board, &options);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
