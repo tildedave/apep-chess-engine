@@ -240,7 +240,8 @@ void protocolSt(std::string & line)
 
 void setupLogging()
 {
-    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%t] (%F:%L) - %m%n")), "apep.log", false);
+    log4cxx::LayoutPtr layoutPtr = log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%t] (%F:%L) - %m%n"));
+    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, "apep.log", true);
     log4cxx::helpers::Pool p;
     fileAppender->activateOptions(p);
     log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
