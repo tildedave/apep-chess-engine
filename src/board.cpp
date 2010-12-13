@@ -91,7 +91,7 @@ int initialize_board(ChessBoard * board) {
 		}
 	}
 	return 1;
-};
+}
 
 int copy_board(ChessBoard * dest, ChessBoard * src) {
 	dest->whiteCanCastleKingside = src->whiteCanCastleKingside;
@@ -147,7 +147,7 @@ int copy_board(ChessBoard * dest, ChessBoard * src) {
 	}
 
 	return 1;
-};
+}
 
 std::string board_to_string(ChessBoard* board) {
   std::string boardString;
