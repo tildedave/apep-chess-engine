@@ -150,8 +150,9 @@ void protocolGo()
 void protocolMove(std::string & line)
 {
     int move = CoordStringToMove(&xboardBoard, line);
-	LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
-	processMove(&xboardBoard, move);
+    LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
+    processMove(&xboardBoard, move);
+    LOG4CXX_INFO(logger, "board now " << boardToFEN(&xboardBoard));
     internalConsistencyCheck(&xboardBoard);
     cerr << board_to_string(&xboardBoard) << endl;
     // TODO: verify that you're not moving into check
@@ -390,9 +391,9 @@ void searchForMove(ChessBoard * board, bool white) {
 
 		cout << "move " << MoveToXboardString(reply) << endl;
 		LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
-
 		processMove(board, reply);
 		internalConsistencyCheck(board);
+		LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
 		cerr << board_to_string(board) << endl;
 		cerr << "ready to wait for another move now " << endl;
 	}
