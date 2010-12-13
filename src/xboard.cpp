@@ -101,7 +101,7 @@ void protocolNew()
     // depth limit previously set by the sd command.
     memset(&xboardBoard, 0, sizeof (ChessBoard));
     loadBoardFromFEN(&xboardBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    cout << board_to_string(&xboardBoard) << endl;
+    cerr << board_to_string(&xboardBoard) << endl;
     forceMode = false;
     TimeoutValue = TIMEOUT_VALUE;
 }
@@ -153,7 +153,7 @@ void protocolMove(std::string & line)
 	LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
 	processMove(&xboardBoard, move);
     internalConsistencyCheck(&xboardBoard);
-    cout << board_to_string(&xboardBoard) << endl;
+    cerr << board_to_string(&xboardBoard) << endl;
     // TODO: verify that you're not moving into check
     sendBoardInformation(&xboardBoard);
     if(getGameResult(&xboardBoard) == 0)
@@ -389,10 +389,12 @@ void searchForMove(ChessBoard * board, bool white) {
 		int reply = getMove(board);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
+		LOG4CXX_INFO(logger, "made move " << MoveToString(reply) << ")");
+
 		processMove(board, reply);
 		internalConsistencyCheck(board);
-		cout << board_to_string(board) << endl;
-		cout << "ready to wait for another move now " << endl;
+		cerr << board_to_string(board) << endl;
+		cerr << "ready to wait for another move now " << endl;
 	}
 	else {
 		cerr << "not in force move, not searching for move" << endl;
