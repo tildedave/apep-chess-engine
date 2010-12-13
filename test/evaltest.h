@@ -31,8 +31,11 @@ class EvalTest : public CppUnit::TestCase {
 				"testPassedPawnScoreBlackDoubledPassedPawns", 
 				&EvalTest::testPassedPawnScoreBlackDoubledPassedPawns ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
-                                "testDoubledPawnPenaltyWhiteSinglePawn",
-				&EvalTest::testDoubledPawnPenaltyWhiteSinglePawn ) );
+                                "testDoubledPawnPenaltyWhiteTwoPawns",
+				&EvalTest::testDoubledPawnPenaltyWhiteTwoPawns ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testDoubledPawnPenaltyBlackTwoPawns",
+				&EvalTest::testDoubledPawnPenaltyBlackTwoPawns ) );
 
 		return suiteOfTests;
 	}
@@ -114,13 +117,21 @@ class EvalTest : public CppUnit::TestCase {
 	    CPPUNIT_ASSERT_EQUAL(EvalParameters::passedPawnBonus, passedPawnScore);
 	}
 
-	void testDoubledPawnPenaltyWhiteSinglePawn() {
+	void testDoubledPawnPenaltyWhiteTwoPawns() {
 	    ChessBoard board;
 	    std::string startingFEN("8/4P3/4P3/8/8/8/8/8 w KQkq - 0 1");
 	    loadBoardFromFEN(&board, startingFEN);
 
 	    int doubledPawnPenalty = doubledPawnTest(&board, true);
 	    CPPUNIT_ASSERT_EQUAL(EvalParameters::doubledPawnPenalty, doubledPawnPenalty);
-	  
-	}
+      	}
+
+	void testDoubledPawnPenaltyBlackTwoPawns() {
+	    ChessBoard board;
+	    std::string startingFEN("8/4p3/4p3/8/8/8/8/8 w KQkq - 0 1");
+	    loadBoardFromFEN(&board, startingFEN);
+
+	    int doubledPawnPenalty = doubledPawnTest(&board, false);
+	    CPPUNIT_ASSERT_EQUAL(EvalParameters::doubledPawnPenalty, doubledPawnPenalty);
+      	}
 };

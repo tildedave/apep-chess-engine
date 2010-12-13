@@ -335,7 +335,24 @@ int getKingScore(short offset) {
 }
 
 int getDoubledPawnPenalty(ChessBoard* board, bool white) {
-  return 0;
+  BITBOARD pawns = (white) ? board->whitePawns :  board->blackPawns;
+  BITBOARD originalPawns = pawns;
+  BITBOARD* doubledPawnMask = (white) ? whiteDoubledPawnMask : blackDoubledPawnMask;
+
+  int doubledPawnPenalty = 0;
+
+  while(pawns != 0) {
+    short pawnOffset = FirstOne(pawns);
+    pawns ^= offset_to_mask(pawnOffset);
+    
+    BITBOARD maskResult = doubledPawnMask[pawnOffset] & originalPawns;
+
+    if (maskResult != 0) {
+      doubledPawnPenalty += EvalParameters::doubledPawnPenalty * NumOnes(maskResult);
+    }
+  }
+
+  return doubledPawnPenalty;
 }
 
 int getPassedPawnScore(ChessBoard * board, bool white) {
