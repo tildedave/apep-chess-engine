@@ -149,10 +149,21 @@ int copy_board(ChessBoard * dest, ChessBoard * src) {
 	return 1;
 };
 
-std::string board_to_string(ChessBoard * board) {
-	std::string boardString = "";
-	std::string fenString = "";
+std::string board_to_string(ChessBoard* board) {
+  std::string boardString;
+  std::string fenString;  
 
+  board_to_string_internal(board, boardString, fenString);
+
+  std::ostringstream ss;
+  ss << "hash key: " << board->zobristHashKey;
+  ss << " phase: " << board->gamePhase;
+  //cerr << board->whiteMaterialScore << endl;
+  //cerr << board->blackMaterialScore << endl;
+  return boardString + "\n" + fenString + "\n" + ss.str();
+}
+
+void board_to_string_internal(ChessBoard * board, std::string& boardString, std::string& fenString) {
 	for(int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			short contents = board->boardContents[i * 8 + j];
@@ -202,14 +213,6 @@ std::string board_to_string(ChessBoard * board) {
 	fenString += int_to_string(board->halfmoveClock);
 	fenString += ' ';
 	fenString += int_to_string(board->fullmoveClock);
-
-	std::ostringstream ss;
-	ss << "hash key: " << board->zobristHashKey;
-	ss << " phase: " << board->gamePhase;
-	//cerr << board->whiteMaterialScore << endl;
-	//cerr << board->blackMaterialScore << endl;
-
-	return boardString + "\n" + fenString + "\n" + ss.str();
 }
 
 bool loadBoardFromFEN(ChessBoard * board, std::string fenString) {
@@ -332,6 +335,14 @@ bool loadBoardFromFEN(ChessBoard * board, std::string fenString) {
 
 	initialize_bitboards(board);
 	return true;
+}
+
+std::string boardToFEN(ChessBoard * board) {
+  std::string fenString = "";
+  std::string boardString = "";
+
+  board_to_string_internal(board, boardString, fenString);
+  return fenString;
 }
 
 void set_board_contents(ChessBoard * board, short offset, short contents) {

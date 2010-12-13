@@ -101,6 +101,9 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>( 
 						"testReverseEnPassant", 
 						&BoardTest::testReverseEnPassant ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testConvertStartingBoardToFEN",
+						&BoardTest::testConvertStartingBoardToFEN ) );			  
 		return suiteOfTests;
 	}
 	
@@ -554,6 +557,15 @@ public:
 		}
 		// find c2 - c4.  verify that black can take c3.
 
+	}
+
+        void testConvertStartingBoardToFEN() {
+ 	    ChessBoard board;
+	    std::string startingFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	    loadBoardFromFEN(&board, startingFEN);
+	    std::string convertedBoard = boardToFEN(&board);
+	    std::string expectedFEN = "rnbqkbnr/pppppppp/11111111/11111111/11111111/11111111/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	    CPPUNIT_ASSERT_EQUAL(convertedBoard, expectedFEN);
 	}
 };
 

@@ -132,7 +132,8 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 #endif
 			double diff = getSecondsDiff(&start, &end);
 			if (!AnalysisMode)
-				outputStats(board, stats, i, score, extractedPV, diff, noisy);
+			  outputStats(board, stats, i, score, extractedPV, diff, noisy);
+			LOG4CXX_DEBUG(logger, "depth " << i << ": move " << MoveToString(theMove) << ", score: " << score);
 		}
 		catch (TimeoutException e) {
 			// shouldn't time out before we've gotten at least one move!
@@ -635,9 +636,6 @@ void extractPVHelper(ChessBoard * board, MoveLinkedList& line, std::set<BITBOARD
 		}
 		unprocessMove(board, currentMove);
 	}
-//	else {
-//		cerr << "move " << MoveToString(currentMove) << " from hash table is not legal on board" << endl;
-//	}
 }
 
 int* getAndSortMovesForBoard(ChessBoard * board, bool whiteToMove, bool quiescentMoves, int ply) {
@@ -658,11 +656,9 @@ int* getAndSortMovesForBoard(ChessBoard * board, bool whiteToMove, bool quiescen
 	board->moveSortList[ply][0] = firstPriority;
 
 	int k = 1;
-	//cerr << startMoves << endl;
 	for(int* ptr = startMoves + 1; ptr < endMoves; ++ptr) {
 		int currentPriority = getPriorityForMove(board, *ptr);
 		int theMove = *ptr;
-//		mpq.add(*ptr, currentPriority);
 		board->moveSortList[ply][k] = currentPriority;
 		
 		// insertion sort this sucker -- assume that 0, ... k - 1 are already sorted, most to least.  

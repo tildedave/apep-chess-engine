@@ -110,7 +110,9 @@ extern ChessBoard defaultStartingBoard;
 
 int initialize_board(ChessBoard * board);
 std::string board_to_string(ChessBoard * board);
+void board_to_string_internal(ChessBoard * board, std::string& boardString, std::string& fenString);
 bool loadBoardFromFEN(ChessBoard * board, std::string fenString);
+std::string boardToFEN(ChessBoard * board);
 
 void set_board_contents(ChessBoard * board, short offset, short contents);
 void setWhiteCanCastleKingside(ChessBoard * board, bool b);
