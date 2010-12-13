@@ -45,6 +45,7 @@ public:
 	static int whitePassedPawnRankScale[8];
 	static int blackPassedPawnRankScale[8];
 	static int passedPawnBonus;
+	static int doubledPawnPenalty;
 	
 	static int whiteCenterControlScale[64];
 	static int blackCenterControlScale[64];
@@ -116,6 +117,8 @@ int getKingPlacementScore(ChessBoard * board, bool white);
 int getKingAttackScore(ChessBoard * board, bool white);
 int getDevelopmentScore(ChessBoard * board, bool white);
 int getCenterControlScore(ChessBoard * board, bool white);
+
+int getDoubledPawnPenalty(ChessBoard* board, bool white);
 
 #include "eval.hpp"
 
