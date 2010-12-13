@@ -32,6 +32,8 @@ class EvalTest : public CppUnit::TestCase {
 
 	int passedPawnTest(ChessBoard* board, bool white) {
 	  board->eval = new EvalInfo();
+	  board->gamePhase = PHASE_MIDDLEGAME; // take us out of book
+
 	  preprocessEvalInformation(board);
 	  int passedPawnScore = getPassedPawnScore(board, white);
 	  delete board->eval;
@@ -45,7 +47,7 @@ class EvalTest : public CppUnit::TestCase {
 	    loadBoardFromFEN(&board, startingFEN);
 
 	    int passedPawnScore = passedPawnTest(&board, true);
-	    CPPUNIT_ASSERT_EQUAL(passedPawnScore > 0, true);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore >= EvalParameters::passedPawnBonus, true);
 	}
 
 	void testPassedPawnScoreWhiteNoPawns() {
@@ -63,7 +65,7 @@ class EvalTest : public CppUnit::TestCase {
 	    loadBoardFromFEN(&board, startingFEN);
 
 	    int passedPawnScore = passedPawnTest(&board, false);
-	    CPPUNIT_ASSERT_EQUAL(passedPawnScore > 0, true);
+	    CPPUNIT_ASSERT_EQUAL(passedPawnScore >= EvalParameters::passedPawnBonus, true);
 	}
 
 	void testPassedPawnScoreBlackNoPawns() {
