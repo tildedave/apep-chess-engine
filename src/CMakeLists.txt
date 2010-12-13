@@ -22,6 +22,9 @@ set_target_properties(libapep PROPERTIES VERSION "${_VERSION_MAJOR}.${_VERSION_M
 
 install_targets(/lib libapep)
 add_executable(apep apep.cpp)
+SET(CMAKE_BUILD_TYPE distribution)
+SET(CMAKE_CXX_FLAGS_DISTRIBUTION "-O3 -Wall -pedantic -Wno-long-long")
+
 set_target_properties(apep PROPERTIES COMPILE_FLAGS "-O3 -Wall -pedantic -Wno-long-long")
 
 target_link_libraries(apep libapep cppunit)
