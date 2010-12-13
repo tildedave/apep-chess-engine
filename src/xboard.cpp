@@ -400,6 +400,7 @@ void searchForMove(ChessBoard * board, bool white) {
 		cout << "move " << MoveToXboardString(reply) << endl;
 		LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
 		processMove(board, reply);
+		sendBoardInformation(board);
 		internalConsistencyCheck(board);
 		LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
 		cerr << board_to_string(board) << endl;
