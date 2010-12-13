@@ -55,6 +55,11 @@ int getPositionScore(ChessBoard * board, std::ostream* os) {
 	if (verbose)
 		(*os) << "\tdevelopment (white): " << whiteDevelopmentScore << endl;
 
+	int whiteDoubledPawnPenalty = getDoubledPawnPenalty(board, true);
+	whiteScore -= whiteDoubledPawnPenalty;
+	if (verbose)
+		(*os) << "\tdevelopment (white): -" << whiteDoubledPawnPenalty << endl;
+
 	int blackScore = 0;
 
 	int blackPassedPawnScore = getPassedPawnScore(board, false);
@@ -69,6 +74,11 @@ int getPositionScore(ChessBoard * board, std::ostream* os) {
 	if (verbose)
 		(*os) << "\tdevelopment (black): " << blackDevelopmentScore << endl;
 	blackScore += blackDevelopmentScore;
+
+	int blackDoubledPawnPenalty = getDoubledPawnPenalty(board, false);
+	blackScore -= blackDoubledPawnPenalty;
+	if (verbose)
+		(*os) << "\tdevelopment (black): -" << blackDoubledPawnPenalty << endl;
 
 	if (board->whiteToMove) { 
 		return baseScore + whiteScore - blackScore;
