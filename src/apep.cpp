@@ -27,9 +27,6 @@
 
 using namespace std;
 
-void tacticsTest(const std::string& tacticsFile);
-bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy);
-
 int randomSeed = -1;
 
 int main(int argc, char** argv) {
@@ -40,6 +37,6 @@ int main(int argc, char** argv) {
 	loadOpeningBook("bookl.dat");
 
 	xboardMainLoop();
-	
+
 	return 0;
 }
