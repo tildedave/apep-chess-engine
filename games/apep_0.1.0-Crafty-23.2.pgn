@@ -12,3 +12,75 @@
 Qxd3 14. f3 Bxf3 15. Qb5 Qxb5 16. c4 Qxc4 17. Kf2 Qe2+ 18. Kg1 Qg2#
 {Xboard adjudication: Checkmate} 0-1
 
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.13"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Crafty-23.2"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. Nf3 e6 3. c4 Nc6 4. Nc3 d5 5. Bg5 Be7 6. Bxf6 Bxf6 7. e3 Rb8
+8. Rg1 O-O 9. Bd3 Nb4 10. Qb1 h6 11. a3 Nxd3+ 12. Qxd3 c6 13. O-O-O b5 14.
+cxb5 cxb5 15. Nxb5 Qb6 16. a4 a6 17. b4 axb5 18. a5 Qd6 19. Qc3 Be7 20. Qc5
+Ba6 21. Kb1 Qd8 22. Qc3 Rc8 23. Qb2 Rc4 24. Nd2 Rxb4 25. Nb3 Qd6 26. f4 Ra8
+27. Rd3 Bd8 28. Qa3 Bxa5 29. g4 Bb7 30. g5 hxg5 31. fxg5 Qxh2 32. Rgd1 Qg2
+33. Qb2 Qxg5 34. R1d2 e5 35. dxe5 d4 36. exd4 Be4 37. Rd1 Bxd3+ 38. Rxd3
+Rc8 39. Ka2 Ra4+ 40. Kb1 Qg1+ 41. Nc1 Rxc1+ 42. Qxc1 Rb4+ 43. Rb3 Rxb3+ 44.
+Ka2 Qxc1 45. Kxb3 Qb1+ 46. Ka3 Bb4#
+{Xboard adjudication: Checkmate} 0-1
+
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.13"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Crafty-23.2"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. Nf3 e6 3. g3 Bb4+ 4. c3 Be7 5. Bh3 O-O 6. O-O Nc6 7. Bf4 h6 8.
+Ne5 Nxe5 9. dxe5 Nd5 10. e4 Nxf4 11. gxf4 d6 12. Na3 dxe5 13. fxe5 Bxa3 14.
+Qxd8 Rxd8 15. bxa3 Rd3 16. Bg4 b6 17. Rfd1 Rxc3 18. Rd8+ Kh7 19. Rf8 Kg6
+20. f4 Bb7 21. f5+ Kg5 22. Rxf7 Kxg4 23. fxe6 Re8 24. Raf1 g5 25. R1f6 Rc5
+26. h3+ Kg3 27. Rf3+ Kh4 28. R3f6 Bxe4 29. Rxh6+ Kg3 30. h4 Bg2 31. Rf1
+Bxf1 32. Kxf1 Rxe5 33. hxg5 Rf8+ 34. Rf6 Rd8 35. Rf3+ Kxf3 36. Kg1 Rxg5+
+37. Kh2 Rh8#
+{Xboard adjudication: Checkmate} 0-1
+
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.13"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Crafty-23.2"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 Nc6 5. Nf3 O-O 6. e4 d6 7. Bg5 h6 8.
+Be3 Ng4 9. O-O-O Qf6 10. h3 Nxe3 11. fxe3 Ba5 12. Be2 Qg6 13. d5 exd5 14.
+cxd5 Ne5 15. Rhg1 Qg3 16. Nb5 Bd7 17. Nxc7 Rac8 18. Nxe5 Qxe5 19. Kb1 Rxc7
+20. Qd3 f5 21. Bf3 fxe4 22. Bxe4 Rf2 23. Qd4 Rxb2+ 24. Kxb2 Bc3+ 25. Kb1
+Bxd4 26. Rxd4 Bf5 27. Bxf5 Qxf5+ 28. e4 Qf2 29. Rgd1 Qc2+ 30. Ka1 Qc3+ 31.
+Kb1 Rc5 32. a4 Qb3+ 33. Ka1 Rc2 34. Rb4 Ra2#
+{Xboard adjudication: Checkmate} 0-1
+
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.13"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Crafty-23.2"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. c4 e6 3. Nf3 Bb4+ 4. Bd2 Nc6 5. e3 O-O 6. Bd3 d5 7. Bxb4 Nxb4
+8. O-O c5 9. dxc5 dxc4 10. Bxc4 Qxd1 11. Rxd1 Nc2 12. Nc3 Nxa1 13. Rxa1 Bd7
+14. Rd1 Rfd8 15. Ne5 Be8 16. Bd3 Rac8 17. f4 Nd5 18. Nxd5 Rxd5 19. b4 Rcd8
+20. e4 Rd4 21. Re1 f6 22. Bc4 fxe5 23. Bxe6+ Bf7 24. Bxf7+ Kxf7 25. fxe5
+Rxb4 26. g4 Rd2 27. a3 Rbb2 28. h3 Ke6 29. g5 Rg2+ 30. Kh1 Rh2+ 31. Kg1
+Rxh3 32. Rd1 Rxa3 33. Kf1 Kxe5 34. Re1 Rf3+ 35. Kg1 Rg3+ 36. Kf1 Kf4 37.
+Ra1 Rh3 38. Kg1 Rbh2 39. Rf1+ Kg3 40. Rf3+ Kxf3 41. Kf1 Rh1#
+{Xboard adjudication: Checkmate} 0-1
+
