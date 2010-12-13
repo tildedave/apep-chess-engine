@@ -74,6 +74,8 @@ public:
 struct EvalInfo {
 	int rawWhiteMaterialScore;
 	int rawBlackMaterialScore;
+	int pieceWhiteMaterialScore;
+	int pieceBlackMaterialScore;
 
 	int whitePawns[8];
 	int whitePawnsNum;

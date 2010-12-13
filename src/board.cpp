@@ -1030,8 +1030,8 @@ void setGamePhase(ChessBoard * board) {
 		return;
 	if (board->gamePhase == PHASE_ENDGAME)
 		return;
-	else if (board->eval->rawWhiteMaterialScore <= 1300 && board->eval->rawBlackMaterialScore <= 1300) {
-		
+	else if (board->eval->pieceWhiteMaterialScore <= 800 && board->eval->pieceBlackMaterialScore <= 800) {
+
 		board->gamePhase = PHASE_ENDGAME;
 		//cerr << "endgame time because of lack of material" << endl;
 		//cerr << board->whiteMaterialScore << endl;

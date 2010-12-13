@@ -206,20 +206,29 @@ void preprocessEvalInformation(ChessBoard * board) {
 		}
 	}
 
-	board->eval->rawWhiteMaterialScore = 
-		board->eval->whitePawnsNum * EvalParameters::PawnScore + 
+	board->eval->pieceWhiteMaterialScore = 
 		board->eval->whiteKnightsNum * EvalParameters::KnightScore + 
 		board->eval->whiteBishopsNum * EvalParameters::BishopScore + 
 		board->eval->whiteRooksNum * EvalParameters::RookScore + 
-		board->eval->whiteQueensNum * EvalParameters::QueenScore 
+	        board->eval->whiteQueensNum * EvalParameters::QueenScore
+	  ;
+
+	board->eval->rawWhiteMaterialScore = 
+	  board->eval->pieceWhiteMaterialScore + 
+	  board->eval->whitePawnsNum * EvalParameters::PawnScore
 		;
-	board->eval->rawBlackMaterialScore =
-		board->eval->blackPawnsNum * EvalParameters::PawnScore + 
+
+	board->eval->pieceBlackMaterialScore = 
 		board->eval->blackKnightsNum * EvalParameters::KnightScore + 
 		board->eval->blackBishopsNum * EvalParameters::BishopScore + 
 		board->eval->blackRooksNum * EvalParameters::RookScore + 
 		board->eval->blackQueensNum * EvalParameters::QueenScore 
 		;
+
+	board->eval->rawBlackMaterialScore =
+	  board->eval->pieceBlackMaterialScore + 
+	  board->eval->blackPawnsNum * EvalParameters::PawnScore
+	  ;
 
 	setGamePhase(board);
 }
