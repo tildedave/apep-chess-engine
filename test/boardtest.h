@@ -103,7 +103,10 @@ public:
 						&BoardTest::testReverseEnPassant ) );
 		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
 						"testConvertStartingBoardToFEN",
-						&BoardTest::testConvertStartingBoardToFEN ) );			  
+						&BoardTest::testConvertStartingBoardToFEN ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsCheckmate",
+						&BoardTest::testGameResultDetectsCheckmate ) );
 		return suiteOfTests;
 	}
 	
@@ -566,6 +569,14 @@ public:
 	    std::string convertedBoard = boardToFEN(&board);
 	    std::string expectedFEN = "rnbqkbnr/pppppppp/11111111/11111111/11111111/11111111/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 	    CPPUNIT_ASSERT_EQUAL(convertedBoard, expectedFEN);
+	}
+	
+	void testGameResultDetectsCheckmate() {
+	    ChessBoard board;
+	    std::string checkmateFEN("7r/p1p5/1p2P3/6r1/8/P4k2/P6K/8 w - - 2 38");
+	    loadBoardFromFEN(&board, checkmateFEN);
+	    int gameResult = getGameResult(&board);
+	    CPPUNIT_ASSERT_EQUAL(gameResult, -1);
 	}
 };
 
