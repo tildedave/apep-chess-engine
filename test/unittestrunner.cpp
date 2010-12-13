@@ -5,6 +5,7 @@
 #include "commontest.h"
 #include "boardtest.h"
 #include "searchtest.h"
+#include "evaltest.h"
 
 int randomSeed = -1;
 
@@ -14,6 +15,7 @@ int main(int argc, char** argv) {
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest( BoardTest::suite() );
 	runner.addTest( CommonTest::suite() );
+	runner.addTest( EvalTest::suite() );
 	//runner.addTest( SearchTest::suite() );
 
 	runner.run();	
