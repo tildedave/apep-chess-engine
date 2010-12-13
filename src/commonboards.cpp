@@ -45,6 +45,9 @@ BITBOARD MASK[64];
 short firstOnePrecomputed[65536];
 short lastOnePrecomputed[65536];
 
+BITBOARD whiteDoubledPawnMask[64];
+BITBOARD blackDoubledPawnMask[64];
+
 BITBOARD whitePassedPawnMask[64];
 BITBOARD blackPassedPawnMask[64];
 
@@ -142,6 +145,7 @@ void initialize_common_boards() {
 	initializeDiag45LAttacks();
 
 	initializePassedPawnMask();
+	initializeDoubledPawnMask();
 
 	loadBoardFromFEN(&defaultStartingBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 	centerSquares = 0;
@@ -682,4 +686,37 @@ void initializePassedPawnMask() {
 			blackPassedPawnMask[currentOffset] = theBoard;
 		}
 	}
+}
+
+void initializeDoubledPawnMask() {
+  // pawn on A2 is doubled if there is a pawn on A3-A7
+  for(int file = 0; file < 8; ++file) {
+    for(int rank = 1; rank < 7; ++rank) {
+      BITBOARD theBoard = 0;
+      // check file ahead of us
+      int aheadRank = rank + 1;
+      while(aheadRank <= 7) {
+	++aheadRank;
+	theBoard |= offset_to_mask(get_offset(file, 8 - aheadRank));
+      }
+
+      short currentOffset = get_offset(file, 7 - rank);
+      whiteDoubledPawnMask[currentOffset] = theBoard;
+    }
+  }
+
+  for(int file = 0; file < 8; ++file) {
+    for(int rank = 7; rank > 1; --rank) {
+      BITBOARD theBoard = 0;
+      // check file ahead of us
+      int aheadRank = rank;
+      while(aheadRank > 1) {
+	--aheadRank;
+	theBoard |= offset_to_mask(get_offset(file, 8 - aheadRank));
+      }
+
+      short currentOffset = get_offset(file, 8 - rank);
+      blackDoubledPawnMask[currentOffset] = theBoard;
+    }
+  }
 }

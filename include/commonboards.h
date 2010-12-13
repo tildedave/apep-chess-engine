@@ -75,6 +75,7 @@ void initializeFileAttacks();
 void initializeRankAttacks();
 void initializeDiag45RAttacks();
 void initializeDiag45LAttacks();
-void initializePassedPawnMask();
 
+void initializePassedPawnMask();
+void initializeDoubledPawnMask();
 #endif /*COMMONBOARDS_H_*/
