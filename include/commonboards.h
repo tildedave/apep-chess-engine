@@ -50,6 +50,8 @@ extern BITBOARD zobristEnPassantSquare;
 extern BITBOARD mask[64];
 extern BITBOARD whitePassedPawnMask[64];
 extern BITBOARD blackPassedPawnMask[64];
+extern BITBOARD whiteDoubledPawnMask[64];
+extern BITBOARD blackDoubledPawnMask[64];
 extern BITBOARD centerSquares;
 
 // ROTATED BITBOARDS
