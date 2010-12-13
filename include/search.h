@@ -58,6 +58,8 @@ typedef struct search_options {
   bool analysisMode;
   bool randomMode;
   bool noisyMode;
+
+  search_options() : analysisMode(false), randomMode(false), noisyMode(false) { }
 } search_options;
 
 extern int timeToNextCheck;
@@ -98,11 +100,11 @@ void getCurrentTime(FILETIME * currentTime);
 #else
 void getCurrentTime(timeval * currentTime);
 #endif
-void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics * stats);
+void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics* stats, search_options* options);
 
 // stats only output if noisy search is on
-void outputStatsHeader();
-void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff);
+void outputStatsHeader(search_options* options);
+void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff, search_options* options);
 
 void extractPV(ChessBoard * board, MoveLinkedList& line);
 void extractPVHelper(ChessBoard * board, MoveLinkedList& line, std::set<BITBOARD>& zobristKeys);

@@ -131,8 +131,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 			gettimeofday(&end, NULL);
 #endif
 			double diff = getSecondsDiff(&start, &end);
-			if (!AnalysisMode)
-			  outputStats(board, stats, i, score, extractedPV, diff);
+			outputStats(board, stats, i, score, extractedPV, diff, options);
 			LOG4CXX_DEBUG(logger, "depth " << i << ": move " << MoveToString(theMove) << ", score: " << score);
 		}
 		catch (TimeoutException e) {
@@ -235,8 +234,8 @@ int alphaBetaSearch(ChessBoard * board,
 
 	--timeToNextCheck;
 	if (timeToNextCheck == 0) {
-		checkTimeout(board, searchInfo, stats);
-		timeToNextCheck = CHECK_INTERVAL;
+	  checkTimeout(board, searchInfo, stats, options);
+	  timeToNextCheck = CHECK_INTERVAL;
 	}
 	
 	if (transpositionTable.hasValue(board->zobristHashKey, depthLeft, alpha, beta)) {
@@ -339,13 +338,13 @@ int alphaBetaSearch(ChessBoard * board,
 						cerr << "   ";
 					cerr << "new best move " << MoveToString(nextMove) << " with a score of " << value << " (old best: " << alpha << ")" <<endl;
 #endif
-					if (AnalysisMode && isInitialCall) {
+					if (options->analysisMode && isInitialCall) {
 						MoveLinkedList line;
 						line.add(nextMove);
 						extractPV(board, line);
 						double time = getSecondsSinceSearchStarted(searchInfo);
 
-						outputStats(board, *stats, startingDepth, value, line, time);
+						outputStats(board, *stats, startingDepth, value, line, time, options);
 					}
 
 					alpha = value;
@@ -550,7 +549,7 @@ double getSecondsDiff(timeval * start, timeval * end) {
 }
 #endif
 
-void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics * stats) {
+void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics* stats, search_options* options) {
 #ifdef WIN32
 	SYSTEMTIME currentSystemTime;
 	FILETIME currentTime;
@@ -560,7 +559,7 @@ void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics
 	timeval currentTime;
 	gettimeofday(&currentTime, NULL);
 #endif
-	if (AnalysisMode) {
+	if (options->analysisMode) {
 		bool hasInput = checkForInputDuringSearch();
 		if (hasInput) {
 			std::string userInput;
@@ -591,24 +590,28 @@ void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics
 		throw TimeoutException();
 }
 
-void outputStatsHeader() {
-  cerr << "depth" << "\t" 
-       << "score" << "\t" 
-       << "time" << "\t"
-       << "NPS" << "\t" 
-       << "nodes" << "\t" 
-       << "cutoffs" << "\t"
-       << "hits" << "\t" 
-       << "replace" << "\t"
-       << "line" << endl;
+void outputStatsHeader(search_options* options) {
+  if (options->noisyMode) {
+    cerr << "depth" << "\t" 
+	 << "score" << "\t" 
+	 << "time" << "\t"
+	 << "NPS" << "\t" 
+	 << "nodes" << "\t" 
+	 << "cutoffs" << "\t"
+	 << "hits" << "\t" 
+	 << "replace" << "\t"
+	 << "line" << endl;
+  }
 }
 
-void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff) {
-  cerr << depth << " " 
-       << score << " "
-       << (int) (diff * 100) << " "
-       << stats.nodes << " "
-       << line.toMoveString(board) << endl;
+void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff, search_options* options) {
+  if (options->noisyMode) {
+    cerr << depth << " " 
+	 << score << " "
+	 << (int) (diff * 100) << " "
+	 << stats.nodes << " "
+	 << line.toMoveString(board) << endl;
+  }
 }
 
 void extractPV(ChessBoard * board, MoveLinkedList& line) {
