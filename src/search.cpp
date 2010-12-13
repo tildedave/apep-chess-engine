@@ -31,21 +31,21 @@ bool AnalysisMode = false;
 float TimeoutValue = TIMEOUT_VALUE;
 extern log4cxx::LoggerPtr logger;
 
-int getMove(ChessBoard * board) {
+int getMove(ChessBoard * board, search_options* options) {
 	int bookMove = getMoveForPosition(board);
 	if (bookMove == -1) {
 		board->gamePhase = PHASE_MIDDLEGAME;
-		return getMove(board, true);
+		return getMoveFromSearch(board, options);
 	}
 	else
 		return bookMove;
 }
 
-int getMove(ChessBoard * board, bool noisy) {
-	return getMove_iterativeDeepening(board, noisy);
+int getMoveFromSearch(ChessBoard * board, search_options* options) {
+  return getMove_iterativeDeepening(board, options);
 }
 
-int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
+int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 	MoveLinkedList line;
 	
 #ifdef WIN32
@@ -97,7 +97,7 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 				alpha = lastEvaluation - ASPIRATION_WINDOW;
 				beta = lastEvaluation + ASPIRATION_WINDOW;
 			}
-			int score = alphaBetaSearch(board, i, i, 0, true, alpha, beta, &searchInfo, &stats);
+			int score = alphaBetaSearch(board, i, i, 0, true, alpha, beta, &searchInfo, &stats, options);
 
 			if ((score == alpha && alpha != -INFINITE_VALUE) ||
 				(score == beta && beta != INFINITE_VALUE)) {
@@ -132,12 +132,12 @@ int getMove_iterativeDeepening(ChessBoard * board, bool noisy) {
 #endif
 			double diff = getSecondsDiff(&start, &end);
 			if (!AnalysisMode)
-			  outputStats(board, stats, i, score, extractedPV, diff, noisy);
+			  outputStats(board, stats, i, score, extractedPV, diff);
 			LOG4CXX_DEBUG(logger, "depth " << i << ": move " << MoveToString(theMove) << ", score: " << score);
 		}
 		catch (TimeoutException e) {
 			// shouldn't time out before we've gotten at least one move!
-			if (noisy) {
+			if (options->noisyMode) {
 				cerr << "\ttimed out" << endl;
 			}
 			break;
@@ -222,11 +222,12 @@ double getSecondsSinceSearchStarted(search_info *searchInfo)
 }
 
 int alphaBetaSearch(ChessBoard * board, 
-					short startingDepth, short depthLeft,
-					short ply, 
-					bool isInitialCall, int alpha, int beta,   
-					search_info* searchInfo,
-					search_statistics* stats) {
+		    short startingDepth, short depthLeft,
+		    short ply, 
+		    bool isInitialCall, int alpha, int beta,   
+		    search_info* searchInfo,
+		    search_statistics* stats,
+		    search_options* options) {
 	int hashFunction = HASH_ALPHA;
 	board->currentSearchDepth = depthLeft;
 	board->searchPhase[ply] = SEARCH_START;
@@ -248,7 +249,7 @@ int alphaBetaSearch(ChessBoard * board,
 	}
 
 	if (depthLeft <= 0) {
-		int eval = quiescentSearch(board, alpha, beta, ply, searchInfo, stats);
+                int eval = quiescentSearch(board, alpha, beta, ply, searchInfo, stats, options);
 
 		int storeFunction;
 		if (eval >= beta)
@@ -276,7 +277,7 @@ int alphaBetaSearch(ChessBoard * board,
 			int R  = 2;
 			searchInfo->lastMoveWasNullMove = true;
 			int value = -alphaBetaSearch(board, startingDepth, depthLeft - R - 1, ply + 1, false,
-					-beta, -alpha, searchInfo, stats);
+						     -beta, -alpha, searchInfo, stats, options);
 			searchInfo->lastMoveWasNullMove = false;
 			if (value >= beta) {
 				// cutoff
@@ -309,7 +310,7 @@ int alphaBetaSearch(ChessBoard * board,
 
 				hasLegalMove = true;
 				searchInfo->lastMoveWasNullMove = false;
-				int value = -alphaBetaSearch(board, startingDepth, searchDepth, ply + 1, false, -beta, -alpha, searchInfo, stats);
+				int value = -alphaBetaSearch(board, startingDepth, searchDepth, ply + 1, false, -beta, -alpha, searchInfo, stats, options);
 
 				// TODO: get rid of this and just go with ply
 				board->currentSearchDepth = depthLeft;
@@ -344,7 +345,7 @@ int alphaBetaSearch(ChessBoard * board,
 						extractPV(board, line);
 						double time = getSecondsSinceSearchStarted(searchInfo);
 
-						outputStats(board, *stats, startingDepth, value, line, time, true);
+						outputStats(board, *stats, startingDepth, value, line, time);
 					}
 
 					alpha = value;
@@ -420,9 +421,10 @@ void addKillerMove(ChessBoard * board, int currentMove, int depth) {
 
 
 int quiescentSearch(ChessBoard * board,  
-					int alpha, int beta, int ply, 
-					search_info * searchInfo,
-					search_statistics * stats) {
+		    int alpha, int beta, int ply, 
+		    search_info * searchInfo,
+		    search_statistics * stats,
+		    search_options * options) {
 	stats->nodes++;
 
 	int hashFunction = 0;
@@ -489,7 +491,7 @@ int quiescentSearch(ChessBoard * board,
 					if (!isKingInCheck(board, currentKing)) {
 						hasLegalMove = true;
 
-						int qscore = -quiescentSearch(board, -beta, -alpha, ply + 1, searchInfo, stats);
+						int qscore = -quiescentSearch(board, -beta, -alpha, ply + 1, searchInfo, stats, options);
 
 						if (qscore >= beta) {
 							unprocessMove(board, nextCapture);
@@ -589,28 +591,24 @@ void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics
 		throw TimeoutException();
 }
 
-void outputStatsHeader(bool noisy) {
-	if (noisy) {
-			cerr << "depth" << "\t" << 
-			"score" << "\t" << 
-			"time" << "\t" << 
-			"NPS" << "\t" << 
-			"nodes" << "\t" << 
-			"cutoffs" << "\t"<< 
-			"hits" << "\t" <<
-			"replace" << "\t" <<
-			"line" << endl;
-		}
+void outputStatsHeader() {
+  cerr << "depth" << "\t" 
+       << "score" << "\t" 
+       << "time" << "\t"
+       << "NPS" << "\t" 
+       << "nodes" << "\t" 
+       << "cutoffs" << "\t"
+       << "hits" << "\t" 
+       << "replace" << "\t"
+       << "line" << endl;
 }
 
-void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff, bool noisy) {
-	if (noisy) {
-		cerr << depth << " " 
-			 << score << " "
-			 << (int) (diff * 100) << " "
-			 << stats.nodes << " "
-			 << line.toMoveString(board) << endl;
-	}
+void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff) {
+  cerr << depth << " " 
+       << score << " "
+       << (int) (diff * 100) << " "
+       << stats.nodes << " "
+       << line.toMoveString(board) << endl;
 }
 
 void extractPV(ChessBoard * board, MoveLinkedList& line) {

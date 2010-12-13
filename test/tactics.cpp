@@ -18,8 +18,12 @@ bool doTacticsTest(const std::string& fenString, const std::string& answerString
 
 	loadBoardFromFEN(&board, fenString);
 	std::cout << "getting move for FEN" << std::endl;
-	int move = getMove(&board, noisy);
+	search_options options;
+	options.noisyMode = true;
+
+	int move = getMove(&board, &options);
 	std::string moveToString = MoveToString(move);
+
 	cout << moveToString;
 	std::stringstream strStream(answerString);
 	

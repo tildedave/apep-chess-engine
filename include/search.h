@@ -54,6 +54,12 @@ typedef struct search_info {
 class TimeoutException {
 };
 
+typedef struct search_options {
+  bool analysisMode;
+  bool randomMode;
+  bool noisyMode;
+} search_options;
+
 extern int timeToNextCheck;
 extern int currentSearchDepth;
 extern bool AnalysisMode;
@@ -61,20 +67,23 @@ extern float TimeoutValue;
 
 extern TranspositionTable table;
 
-int getMove(ChessBoard * board);
-int getMove(ChessBoard * board, bool noisy);
-int getMove_iterativeDeepening(ChessBoard * board, bool noisy);
+int getMove(ChessBoard * board, search_options* options);
+int getMoveFromSearch(ChessBoard * board, search_options* options);
+int getMove_iterativeDeepening(ChessBoard * board, search_options* options);
 int alphaBetaSearch(ChessBoard * board,  
-					short startingDepth, short depthLeft, short ply,
-					bool isInitialCall, 
-					int alpha, int beta, 
-					search_info* searchInfo, 
-					search_statistics* stats);
+		    short startingDepth, short depthLeft, short ply,
+		    bool isInitialCall, 
+		    int alpha, int beta, 
+		    search_info* searchInfo, 
+		    search_statistics* stats,
+		    search_options* options
+		    );
 void addKillerMove(ChessBoard * board, int currentMove, int depth);
 int quiescentSearch(ChessBoard * board,  
-					int alpha, int beta, int qdepth, 
-					search_info* searchInfo, 
-					search_statistics * stats);
+		    int alpha, int beta, int qdepth, 
+		    search_info* searchInfo, 
+		    search_statistics * stats,
+		    search_options* options);
 void getMovesForBoard(ChessBoard * board, MovePriorityQueue& mpq);
 void getQuiescentMovesForBoard(ChessBoard * board, MovePriorityQueue& capturesAndChecks);
 void updateVariationWithLine(MoveLinkedList * variation, MoveLinkedList * line, int currentMove);
@@ -90,8 +99,10 @@ void getCurrentTime(FILETIME * currentTime);
 void getCurrentTime(timeval * currentTime);
 #endif
 void checkTimeout(ChessBoard* board, search_info * searchInfo, search_statistics * stats);
-void outputStatsHeader(bool noisy);
-void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff, bool noisy);
+
+// stats only output if noisy search is on
+void outputStatsHeader();
+void outputStats(ChessBoard * board, const search_statistics& stats, int depth, int score, MoveLinkedList& line, double diff);
 
 void extractPV(ChessBoard * board, MoveLinkedList& line);
 void extractPVHelper(ChessBoard * board, MoveLinkedList& line, std::set<BITBOARD>& zobristKeys);

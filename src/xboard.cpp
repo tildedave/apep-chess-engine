@@ -387,7 +387,11 @@ void xboardMainLoop() {
 
 void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	TimeoutValue = INFINITE_VALUE;
-	int reply = getMove(board, true);
+	search_options options;
+	options.analysisMode = true;
+	options.noisyMode = true;
+
+	int reply = getMove(board, &options);
 	// only get here after we are forced to time out
 }
 
@@ -395,7 +399,8 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 void searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
 	if (!forceMode) {
-		int reply = getMove(board);
+	        search_options options;
+		int reply = getMove(board, &options);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
 		LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
