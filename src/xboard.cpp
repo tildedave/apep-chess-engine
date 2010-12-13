@@ -19,6 +19,7 @@ log4cxx::LoggerPtr logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 bool forceMode = true;
+bool AnalysisMode = false;
 int timeLeft;
 int opponentTimeLeft;
 
