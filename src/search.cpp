@@ -27,7 +27,6 @@
 // transposition table
 TranspositionTable transpositionTable;
 int timeToNextCheck;
-bool AnalysisMode = false;
 float TimeoutValue = TIMEOUT_VALUE;
 extern log4cxx::LoggerPtr logger;
 
