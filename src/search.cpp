@@ -354,14 +354,15 @@ int alphaBetaSearch(ChessBoard * board,
 
 				if (isInitialCall) {
 					double time = getSecondsSinceSearchStarted(searchInfo);
-					int differentNodes = startingNodes - stats->nodes;
+					int differentNodes = stats->nodes - startingNodes;
 					cerr << "\t";
 					cerr << " "
-						 << MoveToString(nextMove)
-						 << differentNodes << " "
-						 << " K1: " << MoveToString(board->killerMoves[startingDepth])
-						 << " K2: " << MoveToString(board->secondaryKillerMoves[startingDepth])
-						 << endl;
+                                             << MoveToString(nextMove) << " "
+                                             << value << " "
+                                             << differentNodes << " "
+                                             << " K1: " << MoveToString(board->killerMoves[startingDepth])
+                                             << " K2: " << MoveToString(board->secondaryKillerMoves[startingDepth])
+                                             << endl;
 				}
 
 				#if SEARCH_DEBUG
