@@ -254,10 +254,17 @@ void xboardMainLoop() {
 
 	while (shouldContinue) {
 		std::string line;
+		bool gotMessage = false;
 
 		if (!AnalysisMode) {
-			std::getline(std::cin, line);
-			LOG4CXX_INFO(logger, "received message " << line);
+		  if (std::cin.eof()) {
+		    break;
+		  }
+		  else {
+		    std::getline(std::cin, line);
+		    LOG4CXX_INFO(logger, "received message " << line);
+		    gotMessage = true;
+		  }
 		}
 		else {
 			if (analysisMessages.empty()) {
@@ -268,6 +275,7 @@ void xboardMainLoop() {
 				LOG4CXX_INFO(logger, "received message during analysis " << line);
 
 				analysisMessages.pop_front();
+				gotMessage = true;
 			}
 		}
 
@@ -418,15 +426,26 @@ bool isMoveString(const std::string& str) {
 
 void sendBoardInformation(ChessBoard * board) {
 	int gameResult = getGameResult(board);
+	bool outputBoardInfo = false;
+	std::string resultString;
+
 	if (gameResult == 1) {
-		cout << "result 1-0 {White mates}" << endl;
+	  outputBoardInfo = true;
+	  resultString = "result 1-0 {White mates}";
 	}
 	else if (gameResult == -1) {
-		cout << "result 0-1 {Black mates}" << endl;
+	  outputBoardInfo = true;
+	  resultString = "result 0-1 {Black mates}";
 	}
 	else if (gameResult == 2) {
-		// stalemate
-		cout << "result 1/2-1/2 {Draw}" << endl;
+	  // stalemate
+	  outputBoardInfo = true;
+	  resultString = "result 1/2-1/2 {Draw}";
+	}
+
+	if (outputBoardInfo) {
+	  LOG4CXX_INFO(logger, "result " << resultString);
+	  cout << resultString << std::endl;
 	}
 }
 
