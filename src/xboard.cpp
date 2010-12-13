@@ -389,7 +389,7 @@ void searchForMove(ChessBoard * board, bool white) {
 		int reply = getMove(board);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
-		LOG4CXX_INFO(logger, "made move " << MoveToString(reply) << ")");
+		LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
 
 		processMove(board, reply);
 		internalConsistencyCheck(board);

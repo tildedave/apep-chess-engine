@@ -1,0 +1,14 @@
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.13"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Crafty-23.2"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. c4 Nc6 2. Nc3 Nf6 3. Nf3 e5 4. g3 d5 5. cxd5 Nxd5 6. d3 Bb4 7. Bd2 O-O
+8. e4 Nxc3 9. bxc3 Ba5 10. Qa4 Bg4 11. Nxe5 Nxe5 12. Qxa5 Nxd3+ 13. Bxd3
+Qxd3 14. f3 Bxf3 15. Qb5 Qxb5 16. c4 Qxc4 17. Kf2 Qe2+ 18. Kg1 Qg2#
+{Xboard adjudication: Checkmate} 0-1
+
