@@ -1,10 +1,5 @@
 #include <istream>
 #include <log4cxx/logger.h>
-#include <log4cxx/basicconfigurator.h>
-#include <log4cxx/fileappender.h>
-#include <log4cxx/simplelayout.h>
-#include <log4cxx/patternlayout.h>
-#include <log4cxx/helpers/exception.h>
 
 #include "move.h"
 #include "moveprocess.h"
@@ -15,7 +10,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-log4cxx::LoggerPtr logger;
+extern log4cxx::LoggerPtr logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 bool forceMode = true;
@@ -237,18 +232,6 @@ void protocolSt(std::string & line)
     std::string searchTime = line.substr(3);
     TimeoutValue = string_to_int(searchTime);
     std::cout << "got st " << TimeoutValue << endl;
-}
-
-void setupLogging()
-{
-    log4cxx::LayoutPtr layoutPtr = log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%r] (%F:%L) - %m%n"));
-    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, "apep.log", true);
-    log4cxx::helpers::Pool p;
-    fileAppender->activateOptions(p);
-    log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
-    log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
-    logger = log4cxx::Logger::getLogger("logger");
-    LOG4CXX_INFO(logger, "initialized logging");
 }
 
 void xboardMainLoop() {
