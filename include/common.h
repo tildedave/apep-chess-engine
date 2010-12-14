@@ -157,7 +157,7 @@ typedef BITBOARD HASHKEY;
 
 #define MAX_MOVES 		255
 #define MAX_DEPTH 		50
-#define MAX_BRANCH 		80
+#define MAX_BRANCH 		120
 
 extern const BITBOARD firstOne_mask1;
 extern const BITBOARD firstOne_mask2;

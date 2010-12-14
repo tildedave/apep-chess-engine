@@ -653,7 +653,6 @@ int* getAndSortMovesForBoard(ChessBoard * board, bool whiteToMove, bool quiescen
 	else {
 		endMoves = getQuiescentMoves(board, whiteToMove, startMoves);
 	}
-	
 
 	int firstPriority = getPriorityForMove(board, *startMoves);
 	int firstMove = *startMoves;
