@@ -1,0 +1,10 @@
+APEP:
+
+  6  +0.15  14.7M	0:40.50	Nd4 Qf2 Qb3 Nxf3
+  6  +0.15  10.1M	0:32.65	Nd4 Qf2 Qb3 Nxf3 Bxf3 Bd2 Kb1 Bxe3
+  6  -0.29  4.5M	0:14.20	Nxe5 dxe5 a3 Bb6 Re1 Qxe3 Kb1 Bxb5 Bxb5
+  4  +1.05  104481	0:00.27	Nxc7 Rc8 Nxe5 Qxe3 Kb1 Rxc7
+  4  +1.05  83903	0:00.32	Nxc7 Rc8 Nxe5 Qxe3 Kb1 Rxc7
+  2  +1.23  24088	0:00.12	Nxc7 Bxc7 Qxc7
+  2  +1.23  6030	0:00.02	Nxc7 Bxc7 Qxc7
+  2  -0.23  4835	0:00.01	Nxe5 Qxe3 Kb1 dxe5
