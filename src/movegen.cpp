@@ -697,9 +697,12 @@ int* generateNonCaptures(ChessBoard* chessBoard, bool white, int *destMoves) {
 				while (pawnCaptures != 0) {
 					short destOffset = FirstOne(pawnCaptures);
 					pawnCaptures ^= offset_to_mask(destOffset);
-					int rookPromotion = MakePromotion(PAWN, offset, destOffset, chessBoard->boardContents[destOffset], ROOK);
-					int knightPromotion = MakePromotion(PAWN, offset, destOffset, chessBoard->boardContents[destOffset], KNIGHT);
-					int bishopPromotion = MakePromotion(PAWN, offset, destOffset, chessBoard->boardContents[destOffset], BISHOP);
+					int rookPromotion = MakePromotion(PAWN, offset, destOffset, 
+									  chessBoard->boardContents[destOffset], ROOK);
+					int knightPromotion = MakePromotion(PAWN, offset, destOffset, 
+									    chessBoard->boardContents[destOffset], KNIGHT);
+					int bishopPromotion = MakePromotion(PAWN, offset, destOffset, 
+									    chessBoard->boardContents[destOffset], BISHOP);
 
 					
 					*destMoves++ = rookPromotion;
