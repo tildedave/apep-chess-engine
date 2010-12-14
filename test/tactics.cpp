@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <list>
 #include <boost/program_options.hpp>
 
 #include "board.h"
@@ -63,17 +64,18 @@ void tacticsTest(const std::string& tacticsFile) {
 		int totalTests = 0;
 		int succeededTests = 0;
 		std::string testString;
-		std::vector<std::string> incorrect;
+		std::list<std::string> incorrect;
 		while(wacFileStream.eof() == false) {
 			getline(wacFileStream, testString);
 			string::size_type bmPos = testString.find("bm", 0);
 			if (bmPos != string::npos) {
 				// FEN comes before bm.
+                                // TODO: this is pretty awful, just make this a regexp
 				std::string fenString = testString.substr(0, bmPos);
 				int semiPos = testString.find(";", bmPos);
 				std::string answerString = testString.substr(bmPos + 3, semiPos - (bmPos + 3));
+				std::string idString = testString.substr(semiPos + 6, std::string::npos);
 
-				std::string idString = testString.substr(semiPos + 6, string::npos);
 				string::size_type lastQuote = idString.find("\";",0);
 				std::string strippedString = idString.substr(0, lastQuote);
 
@@ -88,16 +90,25 @@ void tacticsTest(const std::string& tacticsFile) {
 				}
 				else {
                                   cout << " (FAILURE; Expected: " << answerString << ")" << endl;
-                                  incorrect.push_back(idString);
+                                  // for some reason idString is coming with a vtab in it, making output
+                                  // difficult
+                                  incorrect.push_back(idString.substr(0, idString.size() - 1));
 				}
 			}
 
                         outputStats(succeededTests, totalTests);
 
+                        if (incorrect.empty())
+                          continue;
+
                         std::cout << "incorrect answers: " << std::endl;
-                        for(std::vector<std::string>::iterator it = incorrect.begin(); it != incorrect.end(); ++it) {
-                          std::cout << "\t" << *it << std::endl;
+                        std::cout << "\t[";
+                        for(std::list<std::string>::iterator it = incorrect.begin(); 
+                            it != incorrect.end(); 
+                            ++it) {
+                          std::cout << " " << *it;
                         }
+                        std::cout << " ]" << std::endl;
 		}
 	}
 }
