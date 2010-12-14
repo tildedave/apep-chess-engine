@@ -11,13 +11,12 @@
 namespace po = boost::program_options;
 
 int randomSeed = -1;
+extern float TimeoutValue;
 
 bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy) {
 	ChessBoard board;
-	std::cout << "loading FEN" << std::endl;
-
 	loadBoardFromFEN(&board, fenString);
-	std::cout << "getting move for FEN" << std::endl;
+
 	search_options options;
 	options.noisyMode = true;
 
@@ -48,6 +47,13 @@ bool doTacticsTest(const std::string& fenString, const std::string& answerString
 	return false;
 }
 
+void outputStats(int succeededTests, int totalTests) {
+  std::cout << "succeeded " 
+            << succeededTests << " / " << totalTests 
+            << " (" << std::fixed << std::setprecision(2) << (succeededTests / (totalTests * 1.0)) << "%)" << std::endl;
+}
+
+
 void tacticsTest(const std::string& tacticsFile) {
 	std::ifstream wacFileStream(tacticsFile.c_str());
 	if (!wacFileStream) {
@@ -57,7 +63,7 @@ void tacticsTest(const std::string& tacticsFile) {
 		int totalTests = 0;
 		int succeededTests = 0;
 		std::string testString;
-//		std::vector<std::string> answers;
+		std::vector<std::string> incorrect;
 		while(wacFileStream.eof() == false) {
 			getline(wacFileStream, testString);
 			string::size_type bmPos = testString.find("bm", 0);
@@ -72,26 +78,33 @@ void tacticsTest(const std::string& tacticsFile) {
 				std::string strippedString = idString.substr(0, lastQuote);
 
 				cout << strippedString << "\t\t\t" << fenString << endl;
-				cout << "expected: " << answerString << " ... ";
+				cout << "expected: " << answerString << " ... " << endl;
 				flush(cout);
 				bool success = doTacticsTest(fenString, answerString, false);
 				++totalTests;
 				if (success) {
-					cout << " (SUCCESS)" << endl;
-					++succeededTests;
+                                  cout << " (SUCCESS)" << endl;
+                                  ++succeededTests;
 				}
 				else {
-					cout << " (FAILURE)" << endl;
+                                  cout << " (FAILURE; Expected: " << answerString << ")" << endl;
+                                  incorrect.push_back(idString);
 				}
 			}
+
+                        outputStats(succeededTests, totalTests);
+
+                        std::cout << "incorrect answers: " << std::endl;
+                        for(std::vector<std::string>::iterator it = incorrect.begin(); it != incorrect.end(); ++it) {
+                          std::cout << "\t" << *it << std::endl;
+                        }
 		}
-		
-		cerr << "succeeded " << succeededTests << " / " << totalTests << " (" << std::fixed << std::setprecision(4) << (succeededTests / (totalTests * 1.0)) << "%)" << endl;
 	}
 }
 
 int main(int argc, char** argv) {
   initialize_common_boards();
+  setupLogging();
 
   po::options_description desc("Allowed options");
   std::string fenFile;
@@ -99,6 +112,7 @@ int main(int argc, char** argv) {
     ("help", "produce help message")
     ("file", po::value<std::string>(), "File to read FEN positions from (required)")
     ("fen", po::value<std::string>(), "FEN to solve")
+    ("timeout", po::value<int>()->default_value(10), "Seconds per move (default value of 10 seconds/move)")
     ("expected", po::value<std::string>(), "Expected solution for FEN");
 
   po::variables_map vm;
@@ -124,6 +138,8 @@ int main(int argc, char** argv) {
 	    std::cout << desc << std::endl;
 	    exit(0);
   }
+
+  TimeoutValue = vm["timeout"].as<int>();
 
   if (vm.count("file")) {
 	  std::string file = vm["file"].as<std::string>();
