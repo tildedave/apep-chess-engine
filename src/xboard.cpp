@@ -398,6 +398,9 @@ void searchForMove(ChessBoard * board, bool white) {
 		internalConsistencyCheck(board);
 		LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
 		cerr << board_to_string(board) << endl;
+		for (int i = 0; i < board->moveIndex; ++i) {
+		  int move = board->moveHistory[i];
+		}
 		cerr << "ready to wait for another move now " << endl;
 	}
 	else {

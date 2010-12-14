@@ -514,6 +514,7 @@ bool checkForRepetition(ChessBoard * board) {
     }
 
     int move = board->moveHistory[i];
+
     if (GetCapturePiece(move) != 0) {
       return false;
     }

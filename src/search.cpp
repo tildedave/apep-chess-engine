@@ -447,6 +447,11 @@ int quiescentSearch(ChessBoard * board,
 	}
 
 	board->currentSearchDepth = -1;
+
+	if (checkForRepetition(board)) {
+	  return 0;
+	}
+
 	int value = evaluateBoard<false>(board);
 	if (IsCheckmate(value)) {
 		if (value > 0) 

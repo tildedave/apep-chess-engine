@@ -7,6 +7,7 @@ int evaluateBoard(ChessBoard * board, std::ostream* os) {
 	memset(board->eval, 0, sizeof(EvalInfo));
 
 	preprocessEvalInformation(board);
+
 	int score = do_evaluateBoard<verbose>(board, os);
 
 	delete board->eval;
