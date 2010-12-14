@@ -81,17 +81,21 @@ void processMove(ChessBoard * chessBoard, int move) {
 	++chessBoard->moveIndex;
 	chessBoard->whiteCheckHistory[chessBoard->moveIndex] = chessBoard->whiteInCheck;
 	chessBoard->blackCheckHistory[chessBoard->moveIndex] = chessBoard->blackInCheck;
-	
+
 #if SANITY_CHECK
 	if (!internalConsistencyCheck(chessBoard))
 		cerr << "got error after processing " << MoveToString(move) << endl;	
 #endif
 	
 	if (chessBoard->blackPieces & chessBoard->whitePieces) {
-		cerr << "get error after processing " << MoveToString(move) << " -- was white to move? " << wtm << endl;
+		cerr << "white and black piece occupy the same space after processing " << MoveToString(move) << " -- was white to move? " << wtm << endl;
 		cerr << board_to_string(chessBoard) << endl;
+                cerr << "white pieces" << std::endl;
 		cerr << bitboard_to_string(chessBoard->whitePieces) << endl;
+                cerr << "black pieces " << std::endl;
 		cerr << bitboard_to_string(chessBoard->blackPieces) << endl;
+                cerr << "intersection " << std::endl;
+		cerr << bitboard_to_string(chessBoard->blackPieces & chessBoard->whitePieces) << endl;
 		raise(SIGABRT);
 	}
 	
