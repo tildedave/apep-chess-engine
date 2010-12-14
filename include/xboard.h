@@ -9,6 +9,10 @@ extern std::list<std::string> analysisMessages;
 
 void xboardMainLoop();
 void doXboardMove(ChessBoard * chessBoard, bool whiteToMove);
+void doMove(ChessBoard* board, int reply);
+
+bool validateMove(ChessBoard* board, int reply, std::string& reason);
+
 void sendBoardInformation(ChessBoard * chessBoard);
 void searchForMove(ChessBoard * board, bool whiteToMove);
 void analyzeBoard(ChessBoard * board, bool whiteToMove);

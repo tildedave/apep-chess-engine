@@ -144,10 +144,23 @@ void protocolGo()
     searchForMove(&xboardBoard, xboardBoard.whiteToMove);
 }
 
+
+bool validateMove(ChessBoard* board, int reply, std::string& reason) {
+  return true;
+}
+
 void protocolMove(std::string & line)
 {
     int move = CoordStringToMove(&xboardBoard, line);
     LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
+
+    std::string reason;
+    if (!validateMove(&xboardBoard, move, reason)) {
+      LOG4CXX_INFO(logger, "got illegal move " << MoveToString(move));
+      std::cout << "Illegal move (" << reason << "): " << MoveToString(move) << std::endl;
+      return;
+    }
+
     processMove(&xboardBoard, move);
     LOG4CXX_INFO(logger, "board now " << boardToFEN(&xboardBoard));
     internalConsistencyCheck(&xboardBoard);
@@ -383,6 +396,15 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	// only get here after we are forced to time out
 }
 
+void doMove(ChessBoard* board, int reply) {
+  LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
+  processMove(board, reply);
+  sendBoardInformation(board);
+  internalConsistencyCheck(board);
+  LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
+  cerr << board_to_string(board) << endl;
+  cerr << "ready to wait for another move now " << endl;
+}
 
 void searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
@@ -392,16 +414,8 @@ void searchForMove(ChessBoard * board, bool white) {
 		int reply = getMove(board, &options);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
-		LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
-		processMove(board, reply);
-		sendBoardInformation(board);
-		internalConsistencyCheck(board);
-		LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
-		cerr << board_to_string(board) << endl;
-		for (int i = 0; i < board->moveIndex; ++i) {
-		  int move = board->moveHistory[i];
-		}
-		cerr << "ready to wait for another move now " << endl;
+
+		doMove(board, reply);
 	}
 	else {
 		cerr << "not in force move, not searching for move" << endl;
