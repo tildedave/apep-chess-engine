@@ -196,6 +196,9 @@ bool is_digit(char c);
 int char_to_int(char c);
 BITBOARD random_int64();
 
+// LOGGING INITIALIZATION
+void setupLogging();
+
 class InternalEngineError {
 	
 };

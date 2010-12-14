@@ -1,8 +1,17 @@
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/simplelayout.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/exception.h>
+
 #include "common.h"
 #include <sstream>
 
 extern short firstOnePrecomputed[65536];
 extern short lastOnePrecomputed[65536];
+
+log4cxx::LoggerPtr logger;
 
 const BITBOARD firstOne_mask1 = 0xFFFF000000000000ULL;
 const BITBOARD firstOne_mask2 = 0x0000FFFF00000000ULL;
@@ -391,3 +400,15 @@ short string_to_offset(const std::string& str) {
     }
     #define USING_INTRINSICS
 #endif
+
+void setupLogging()
+{
+    log4cxx::LayoutPtr layoutPtr = log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%r] (%F:%L) - %m%n"));
+    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, "apep.log", true);
+    log4cxx::helpers::Pool p;
+    fileAppender->activateOptions(p);
+    log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
+    log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
+    logger = log4cxx::Logger::getLogger("logger");
+    LOG4CXX_INFO(logger, "initialized logging");
+}
