@@ -377,6 +377,7 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	search_options options;
 	options.analysisMode = true;
 	options.noisyMode = true;
+        options.outputNodesPerMove = true;
 
 	int reply = getMove(board, &options);
 	// only get here after we are forced to time out
