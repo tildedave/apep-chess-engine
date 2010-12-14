@@ -6,6 +6,7 @@
 #include "boardtest.h"
 #include "searchtest.h"
 #include "evaltest.h"
+#include "movetest.h"
 
 int randomSeed = -1;
 
@@ -16,6 +17,7 @@ int main(int argc, char** argv) {
 	runner.addTest( BoardTest::suite() );
 	runner.addTest( CommonTest::suite() );
 	runner.addTest( EvalTest::suite() );
+	runner.addTest( MoveTest::suite() );
 	//runner.addTest( SearchTest::suite() );
 
 	runner.run();	
