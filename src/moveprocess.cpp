@@ -79,6 +79,7 @@ void processMove(ChessBoard * chessBoard, int move) {
 	
 	chessBoard->moveHistory[chessBoard->moveIndex] = move;
 	++chessBoard->moveIndex;
+	chessBoard->boardHashes[chessBoard->moveIndex] = chessBoard->zobristHashKey;
 	chessBoard->whiteCheckHistory[chessBoard->moveIndex] = chessBoard->whiteInCheck;
 	chessBoard->blackCheckHistory[chessBoard->moveIndex] = chessBoard->blackInCheck;
 

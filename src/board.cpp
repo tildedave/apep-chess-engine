@@ -334,6 +334,8 @@ bool loadBoardFromFEN(ChessBoard * board, std::string fenString) {
 	// fullmove clock
 
 	initialize_bitboards(board);
+	board->boardHashes[board->moveIndex] = board->zobristHashKey;
+
 	return true;
 }
 
@@ -950,8 +952,8 @@ void setBlackCanCastleQueenside(ChessBoard * board, bool b) {
 }
 
 bool sideToMoveIsInCheck(ChessBoard* board) {
-	return (board->whiteToMove && isKingInCheck(board, KING_WHITE) || 
-			!board->whiteToMove && isKingInCheck(board, KING_BLACK));
+  return (board->whiteToMove && isKingInCheck(board, KING_WHITE)) || 
+    (!board->whiteToMove && isKingInCheck(board, KING_BLACK));
 }
 
 int getGameResult(ChessBoard * board) {

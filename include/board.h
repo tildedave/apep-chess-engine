@@ -83,7 +83,9 @@ typedef struct ChessBoard {
 
         // MOVE HISTORY
 	int moveHistory[MAX_MOVES];
+        HASHKEY boardHashes[MAX_MOVES];
 	int moveIndex;
+
 	
 	bool whiteCheckHistory[MAX_MOVES];
 	bool blackCheckHistory[MAX_MOVES];
