@@ -131,7 +131,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 #endif
 			double diff = getSecondsDiff(&start, &end);
 			outputStats(board, stats, i, score, extractedPV, diff, options);
-			LOG4CXX_DEBUG(logger, "depth " << i << ": move " << MoveToString(theMove) << ", score: " << score);
+			LOG4CXX_DEBUG(logger, "" << i << " " << score << extractedPV.toMoveString(board));
 		}
 		catch (TimeoutException e) {
 			// shouldn't time out before we've gotten at least one move!
