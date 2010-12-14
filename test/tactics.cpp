@@ -14,7 +14,7 @@ namespace po = boost::program_options;
 int randomSeed = -1;
 extern float TimeoutValue;
 
-bool doTacticsTest(const std::string& fenString, const std::string& answerString, bool noisy) {
+bool doTacticsTest(const std::string& fenString, const std::string& answerString, std::string& moveToString) {
 	ChessBoard board;
 	loadBoardFromFEN(&board, fenString);
 
@@ -22,9 +22,7 @@ bool doTacticsTest(const std::string& fenString, const std::string& answerString
 	options.noisyMode = true;
 
 	int move = getMove(&board, &options);
-	std::string moveToString = MoveToString(move);
-
-	cout << moveToString;
+	moveToString = MoveToString(move);
 	std::stringstream strStream(answerString);
 	
 	while (!strStream.eof()) {
@@ -82,8 +80,11 @@ void tacticsTest(const std::string& tacticsFile) {
 				cout << strippedString << "\t\t\t" << fenString << endl;
 				cout << "expected: " << answerString << " ... " << endl;
 				flush(cout);
-				bool success = doTacticsTest(fenString, answerString, false);
+                                std::string moveString;
+				bool success = doTacticsTest(fenString, answerString, moveString);
 				++totalTests;
+                                std::cout << "received: " << moveString << std::endl;
+
 				if (success) {
                                   cout << " (SUCCESS)" << endl;
                                   ++succeededTests;
@@ -159,6 +160,14 @@ int main(int argc, char** argv) {
   if (vm.count("fen")) {
 	  std::string fen = vm["fen"].as<std::string>();
 	  std::string expected = vm["expected"].as<std::string>();
-	  doTacticsTest(fen, expected, true);
+          std::string moveString;
+	  bool result = doTacticsTest(fen, expected, moveString);
+          if (result) {
+            std::cout << "SUCCESS: ";
+          }
+          else {
+            std::cout << "FAILURE: ";
+          }
+          std::cout << "expected: " << expected << ", received: " << moveString << endl;
   }
 }
