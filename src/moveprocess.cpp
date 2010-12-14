@@ -157,6 +157,7 @@ void unprocessMove(ChessBoard * chessBoard, int move) {
 	}
 	
 	chessBoard->moveHistory[chessBoard->moveIndex] = 0;
+	chessBoard->boardHashes[chessBoard->moveIndex] = 0;
 	chessBoard->whiteCheckHistory[chessBoard->moveIndex] = false;
 	chessBoard->blackCheckHistory[chessBoard->moveIndex] = false;
 	--chessBoard->moveIndex;

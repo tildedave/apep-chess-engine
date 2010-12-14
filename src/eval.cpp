@@ -36,7 +36,7 @@ int EvalParameters::cannotCastleBonus= -50;
 int EvalParameters::whitePassedPawnRankScale[8] = { 0, 1, 1, 1, 2, 3, 8, 0 };
 int EvalParameters::blackPassedPawnRankScale[8] = { 0, 8, 3, 2, 1, 1, 1, 0 };
 int EvalParameters::passedPawnBonus = 50;
-int EvalParameters::doubledPawnPenalty = 60;
+int EvalParameters::doubledPawnPenalty = 30;
 
 int EvalParameters::knight_onOriginalSquareBonus = -10;
 int EvalParameters::bishop_onOriginalSquareBonus = -8;

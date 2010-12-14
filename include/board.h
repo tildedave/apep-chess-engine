@@ -130,6 +130,7 @@ void setGamePhase(ChessBoard * board);
 
 bool isKingInCheck(ChessBoard* board, short king);
 bool isKingInCheckImpl(ChessBoard * board, short king);
+bool isNotPawnMoveOrCapture(int move);
 
 BITBOARD get_file_attacks(ChessBoard* board, short offset);
 BITBOARD get_rank_attacks(ChessBoard* board, short offset);

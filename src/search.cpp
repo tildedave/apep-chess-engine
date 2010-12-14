@@ -293,6 +293,7 @@ int alphaBetaSearch(ChessBoard * board,
 
 	short kingToCheck = board->whiteToMove ? KING_WHITE : KING_BLACK;
 	bool hasLegalMove = false;
+	bool repetition = false;
 	int bestMove = 0;
 
 	board->searchPhase[ply] = SEARCH_HASHMOVE;
@@ -300,6 +301,10 @@ int alphaBetaSearch(ChessBoard * board,
 		int nextMove = getNextMove(board, board->whiteToMove, false, ply);
 		try {
 			processMove(board, nextMove);
+
+			if (isNotPawnMoveOrCapture(nextMove) && checkForRepetition(board)) {
+			  repetition = true;
+			}
 			stats->nodes++;
 			if (!isKingInCheck(board, kingToCheck)) {
 
@@ -402,6 +407,9 @@ int alphaBetaSearch(ChessBoard * board,
 			alpha = 0;
 		}
 		hashFunction = HASH_EXACT;
+	} else if (repetition) {
+	  alpha = 0;
+	  hashFunction = HASH_EXACT;
 	}
 	
 	if (HASH_DEBUG) cerr << "storing (alpha) " << alpha << " (" << alpha << " <= " << beta << ") for " << endl << board_to_string(board) << " with hash key " << board->zobristHashKey << endl;
@@ -447,10 +455,6 @@ int quiescentSearch(ChessBoard * board,
 	}
 
 	board->currentSearchDepth = -1;
-
-	if (checkForRepetition(board)) {
-	  return 0;
-	}
 
 	int value = evaluateBoard<false>(board);
 	if (IsCheckmate(value)) {

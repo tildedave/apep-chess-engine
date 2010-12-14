@@ -566,6 +566,11 @@ bool isKingInCheckImpl(ChessBoard * board, short king) {
 */
 }
 
+bool isNotPawnMoveOrCapture(int move) {
+  return !IsPawn(GetMovePiece(move)) && GetCapturePiece(move) == 0;
+}
+
+
 BITBOARD get_queen_attack_board(ChessBoard* board, short offset) {
 	return get_bishop_attack_board(board, offset) | get_rook_attack_board(board, offset);	
 }
