@@ -59,7 +59,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 	
 	int initialScore = evaluateBoard<false>(board);
 	int theMove = 0;
-	int i = 0;
+	int i = 1;
 	search_info searchInfo;
 	search_statistics stats;
 	int alpha = -INFINITE_VALUE;
@@ -325,7 +325,12 @@ int alphaBetaSearch(ChessBoard * board,
 					unprocessMove(board, nextMove);
 					addKillerMove(board, nextMove, depthLeft);
 
-					if (HASH_DEBUG) cerr << "storing (cutoff) " << beta << "(" << alpha << " <= " << beta << ")" << " for " << endl << board_to_string(board) << " with hash key " << board->zobristHashKey << endl;
+					if (HASH_DEBUG) 
+                                          cerr << "storing (cutoff) " 
+                                               << beta << "(" << alpha << " <= " << beta << ")" 
+                                               << " for " << endl << board_to_string(board) 
+                                               << " with hash key " << board->zobristHashKey << endl;
+
 					transpositionTable.recordHash(board->zobristHashKey, nextMove, depthLeft, (short) beta, HASH_BETA, stats);
 
 					return beta;
