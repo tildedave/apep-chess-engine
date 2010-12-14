@@ -11,7 +11,7 @@ void xboardMainLoop();
 void doXboardMove(ChessBoard * chessBoard, bool whiteToMove);
 void doMove(ChessBoard* board, int reply);
 
-bool validateMove(ChessBoard* board, int reply, std::string& reason);
+bool validateMove(ChessBoard* board, int reply);
 
 void sendBoardInformation(ChessBoard * chessBoard);
 void searchForMove(ChessBoard * board, bool whiteToMove);

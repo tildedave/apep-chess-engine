@@ -146,7 +146,7 @@ void protocolGo()
 }
 
 
-bool validateMove(ChessBoard* board, int reply, std::string& reason) {
+bool validateMove(ChessBoard* board, int reply) {
   int moveList[MAX_BRANCH];
 
   int* endCaptures = generateCaptures(board, board->whiteToMove, moveList);
@@ -158,7 +158,6 @@ bool validateMove(ChessBoard* board, int reply, std::string& reason) {
     }
   }
 
-  reason = "PEBKAC";
   return false;
 }
 
@@ -167,10 +166,9 @@ void protocolMove(std::string & line)
     int move = CoordStringToMove(&xboardBoard, line);
     LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
 
-    std::string reason;
-    if (!validateMove(&xboardBoard, move, reason)) {
+    if (!validateMove(&xboardBoard, move)) {
       LOG4CXX_INFO(logger, "got illegal move " << MoveToString(move));
-      std::cout << "Illegal move (" << reason << "): " << line << std::endl;
+      std::cout << "Illegal move: " << line << std::endl;
       return;
     }
 
