@@ -23,3 +23,42 @@ Kg8 {-79.97/17 1.4} 33. Nh6+ Kh8 {-79.98/28 1.4} 34. Qg8+ Rxg8
 {-79.99/28 1.4} 35. Nf7#
 {Xboard adjudication: Checkmate} 1-0
 
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.14"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Fairy-Max 4.8O"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. Nf3 c6 3. c4 d5 4. Nc3 dxc4 5. a4 Qa5 6. e3 Be6 7. Ne5 Qa6 8.
+Be2 Nbd7 9. Nxd7 Nxd7 10. O-O O-O-O 11. Bd2 Qb6 12. Qc2 g6 13. Ne4 f5 14.
+Ng5 Bd5 15. Bxc4 Bh6 16. a5 Qc7 17. Bxd5 Bxg5 18. Be6 a6 19. f4 Bf6 20. g4
+fxg4 21. Bxg4 Qd6 22. Ra4 e6 23. Bb4 Qd5 24. Bc3 Qd6 25. e4 Qe7 26. e5 Bh4
+27. Bb4 Qe8 28. Qb3 Nf8 29. Bxf8 Rxf8 30. Bxe6+ Kb8 31. Bh3 Rd5 32. Rb4 Rb5
+33. Rxb5 axb5 34. e6 Qd8 35. Qc3 Bf6 36. Rd1 Qd5 37. Bg4 h5 38. Bh3 Rd8 39.
+b4 Bxd4+ 40. Rxd4 Qxd4+ 41. Qxd4 Rxd4 42. f5 gxf5 43. Bxf5 Rd5 44. Bh3 Re5
+45. Bf5 Rxf5 46. e7 Re5 47. Kf2 c5 48. bxc5 b4 49. h3 b3 50. Kf3 b2 51. Kf4
+Rxe7 52. Kg5 b1=Q 53. Kf6 Qe4 54. Kg5 Qe5+ 55. Kh6 Qf5 56. a6 Rh7#
+{Xboard adjudication: Checkmate} 0-1
+
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.14"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Fairy-Max 4.8O"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. c4 Nc6 2. Nc3 f5 3. e4 d6 4. Bd3 Ne5 5. Qh5+ g6 6. Qe2 Nxd3+ 7. Qxd3 Nf6
+8. f3 c5 9. Nge2 Bg7 10. O-O O-O 11. h3 Bd7 12. g4 fxe4 13. fxe4 Qc8 14.
+Nd5 Re8 15. Nef4 Bc6 16. g5 Nxd5 17. cxd5 Bd4+ 18. Kg2 Bd7 19. Qe2 Be5 20.
+h4 Bb5 21. d3 c4 22. d4 Bxd4 23. Ne6 c3 24. Qxb5 cxb2 25. Bxb2 Qc2+ 26. Kf3
+Bxb2 27. Rae1 Be5 28. Re2 Qc3+ 29. Kg2 Qg3+ 30. Kh1 Qxh4+ 31. Kg1 Qg3+ 32.
+Kh1 Qh3+ 33. Kg1 Qg4+ 34. Kh1 h6 35. gxh6 Qh4+ 36. Kg1 Qg3+ 37. Kh1 Qh3+
+38. Kg1 Reb8 39. Rff2 Qxh6 40. Qd7 Qh4 41. Rg2 Rc8 42. Rxg6+ Kh7 43. Rg5
+Rc1+ 44. Kg2 Qh2+ 45. Kf3 Qh3+ 46. Rg3 Qxg3#
+{Xboard adjudication: Checkmate} 0-1
+
