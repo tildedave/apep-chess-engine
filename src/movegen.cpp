@@ -744,7 +744,7 @@ int* generateNonCaptures(ChessBoard* chessBoard, bool white, int *destMoves) {
 			BITBOARD eAttacks = get_attacksto_bitboard(chessBoard, E8);
 			BITBOARD fAttacks = get_attacksto_bitboard(chessBoard, F8);
 			BITBOARD gAttacks = get_attacksto_bitboard(chessBoard, G8);
-			BITBOARD otherPieces = chessBoard->blackPieces;
+			BITBOARD otherPieces = chessBoard->whitePieces;
 
 			bool canCastle = ((eAttacks & otherPieces) == 0) &&
 			((fAttacks & otherPieces) == 0) &&
@@ -762,7 +762,7 @@ int* generateNonCaptures(ChessBoard* chessBoard, bool white, int *destMoves) {
 			BITBOARD eAttacks = get_attacksto_bitboard(chessBoard, E8);
 			BITBOARD dAttacks = get_attacksto_bitboard(chessBoard, D8);
 			BITBOARD cAttacks = get_attacksto_bitboard(chessBoard, C8);
-			BITBOARD otherPieces = chessBoard->blackPieces;
+			BITBOARD otherPieces = chessBoard->whitePieces;
 
 			bool canCastle = ((eAttacks & otherPieces) == 0) &&
 			((dAttacks & otherPieces) == 0) &&
