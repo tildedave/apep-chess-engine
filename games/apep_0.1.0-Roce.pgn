@@ -37,3 +37,26 @@ dxe4 8. Bxe4 f6 9. Nc4 f5 10. Bf3 Bf6 11. Be3 f4 12. Bxf4 Bxd4 13. Be3 Bxe3
 26. Re8+ Rf8 27. Ree7
 {Draw by repetition} 1/2-1/2
 
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.14"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Roce"]
+[Result "0-1"]
+[TimeControl "40/300"]
+
+1. d4 Nf6 2. Bg5 d5 3. Bxf6 exf6 4. e3 Be6 5. Nf3 Be7 6. Bb5+ c6 7. Bd3 c5
+8. Bb5+ Nc6 9. Nc3 O-O 10. Bxc6 bxc6 11. O-O cxd4 12. Qxd4 c5 13. Qd3 c4
+14. Qd4 Qa5 15. e4 dxe4 16. Nxe4 f5 17. Neg5 Bf6 18. Qf4 Bxb2 19. Nxe6 fxe6
+20. Qxc4 Bxa1 21. Qxe6+ Kh8 22. Rxa1 Qc3 23. Rc1 Qb2 24. Rf1 Qxc2 25. Ne5
+Qc7 26. Nd7 Rfe8 27. Qxf5 Rad8 28. Nc5 Qa5 29. g4 Qxa2 30. Ne4 Rf8 31. Qb5
+Kg8 32. Qe5 Qc4 33. f3 Rde8 34. Qa1 a5 35. Re1 a4 36. Re3 Rd8 37. h3 Qc2
+38. Nf2 Rb8 39. Qd4 Rb1+ 40. Kg2 Qc1 41. f4 Qg1+ 42. Kf3 Rf1 43. Qc4+ Kh8
+44. Re2 Qh2 45. Qb4 Rc8 46. Qxa4 Qxh3+ 47. Ke4 Qg2+ 48. Ke3 Ra8 49. Qe4
+Ra3+ 50. Kd2 Qxe4 51. Rxe4 Ra2+ 52. Ke3 h5 53. Re8+ Kh7 54. Ne4 hxg4 55.
+Ng5+ Kg6 56. Re6+ Kh5 57. Rb6 g3 58. Ne6 Re1+ 59. Kd3 g2 60. Nxg7+ Kg4 61.
+f5 Ra3+ 62. Kc4 Rc1+ 63. Kb4 Rb1+ 64. Kxa3 Rxb6 65. Ne8 g1=Q 66. Nf6+ Kxf5
+67. Ka2 Kxf6 68. Ka3 Qa1#
+{Xboard adjudication: Checkmate} 0-1
+
