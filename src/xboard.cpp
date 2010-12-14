@@ -3,6 +3,7 @@
 
 #include "move.h"
 #include "moveprocess.h"
+#include "movegen.h"
 #include "xboard.h"
 #include "eval.h"
 #include "search.h"
@@ -146,7 +147,19 @@ void protocolGo()
 
 
 bool validateMove(ChessBoard* board, int reply, std::string& reason) {
-  return true;
+  int moveList[MAX_BRANCH];
+
+  int* endCaptures = generateCaptures(board, board->whiteToMove, moveList);
+  int* endMoveList = generateNonCaptures(board, board->whiteToMove, endCaptures);
+
+  for(int* i = moveList; i != endMoveList; ++i) {
+    if (*i == reply) {
+      return true;
+    }
+  }
+
+  reason = "PEBKAC";
+  return false;
 }
 
 void protocolMove(std::string & line)
@@ -157,7 +170,7 @@ void protocolMove(std::string & line)
     std::string reason;
     if (!validateMove(&xboardBoard, move, reason)) {
       LOG4CXX_INFO(logger, "got illegal move " << MoveToString(move));
-      std::cout << "Illegal move (" << reason << "): " << MoveToString(move) << std::endl;
+      std::cout << "Illegal move (" << reason << "): " << line << std::endl;
       return;
     }
 
