@@ -21,3 +21,19 @@ d8=N+ Ke7 57. Nb7 Qb4+ 58. Rc4 Qxb7 59. Kc3 Be6 60. Rd4 Qb5 61. Rd2 Qxg5
 Rd3 h1=Q 69. Re3+ Be4 70. Rxe4+ Qxe4+ 71. Kd2 Qge1#
 {Xboard adjudication: Checkmate} 0-1
 
+[Event "Computer Chess Game"]
+[Site "ra"]
+[Date "2010.12.14"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Roce"]
+[Result "1/2-1/2"]
+[TimeControl "40/300"]
+
+1. e4 e5 2. Nf3 Nf6 3. d4 Nxe4 4. Bd3 d5 5. Nxe5 Be7 6. Nd2 O-O 7. Nxe4
+dxe4 8. Bxe4 f6 9. Nc4 f5 10. Bf3 Bf6 11. Be3 f4 12. Bxf4 Bxd4 13. Be3 Bxe3
+14. Nxe3 Qxd1+ 15. Rxd1 c6 16. O-O Be6 17. c4 Nd7 18. Bg4 Bxg4 19. Nxg4 Nc5
+20. b4 Ne6 21. Rd7 a5 22. Re1 Nd8 23. Ree7 Rf7 24. Re8+ Rf8 25. Ree7 Rf7
+26. Re8+ Rf8 27. Ree7
+{Draw by repetition} 1/2-1/2
+
