@@ -58,8 +58,9 @@ typedef struct search_options {
   bool analysisMode;
   bool randomMode;
   bool noisyMode;
+  bool outputNodesPerMove;
 
-  search_options() : analysisMode(false), randomMode(false), noisyMode(false) { }
+  search_options() : analysisMode(false), randomMode(false), noisyMode(false), outputNodesPerMove(false) { }
 } search_options;
 
 extern int timeToNextCheck;

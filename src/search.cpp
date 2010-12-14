@@ -352,7 +352,7 @@ int alphaBetaSearch(ChessBoard * board,
 				}
 
 
-				if (isInitialCall) {
+				if (isInitialCall && options->outputNodesPerMove) {
 					double time = getSecondsSinceSearchStarted(searchInfo);
 					int differentNodes = stats->nodes - startingNodes;
 					cerr << "\t";
