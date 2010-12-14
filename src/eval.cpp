@@ -1,4 +1,6 @@
 #include "eval.h"
+#include "move.h"
+#include <set>
 
 EvalParameters evalParameters;
 int
@@ -496,4 +498,33 @@ int getPawnPositionScore(ChessBoard * board, bool white) {
 	pawnPenalty += (NumOnes(rank8Pawns) - 1);
 
 	return pawnPenalty * -50;
+}
+
+
+bool checkForRepetition(ChessBoard * board) {
+  std::set<HASHKEY> repetitionSet;
+  int i = board->moveIndex;
+  repetitionSet.insert(board->boardHashes[i]);
+  --i;
+
+  while (i >= 0) {
+    // if move is a capture or pawn move, w/e
+    if (repetitionSet.find(board->boardHashes[i]) != repetitionSet.end()) {
+      return true;
+    }
+
+    int move = board->moveHistory[i];
+    if (GetCapturePiece(move) != 0) {
+      return false;
+    }
+    short movePiece = GetMovePiece(move);
+    if (IsPawn(movePiece)) {
+      return false;
+    }
+
+    repetitionSet.insert(board->boardHashes[i]);
+    --i;
+  }
+
+  return false;
 }

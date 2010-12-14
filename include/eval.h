@@ -117,8 +117,9 @@ int getKingPlacementScore(ChessBoard * board, bool white);
 int getKingAttackScore(ChessBoard * board, bool white);
 int getDevelopmentScore(ChessBoard * board, bool white);
 int getCenterControlScore(ChessBoard * board, bool white);
-
 int getDoubledPawnPenalty(ChessBoard* board, bool white);
+
+bool checkForRepetition(ChessBoard* board);
 
 #include "eval.hpp"
 

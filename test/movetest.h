@@ -26,14 +26,12 @@ public:
 	void testProcessesHashKeyOnMove() {
 	  ChessBoard board;
 	  loadBoardFromFEN(&board, "r11nRrk1/1p1R11pp/11p11111/p1111111/1PP111N1/11111111/P1111PPP/111111K1 w - - 0 27");
-	  std::cerr << "test" << std::endl;
-	  std::cerr << "initial hash" << board.zobristHashKey << std::endl;
+
 	  processMove(&board, CoordStringToMove(&board, "d7e7"));
 	  processMove(&board, CoordStringToMove(&board, "f8f7"));
 	  processMove(&board, CoordStringToMove(&board, "e7d7"));
 	  processMove(&board, CoordStringToMove(&board, "f7f8"));
 
-	  std::cerr << "current hash" << board.boardHashes[board.moveIndex] << std::endl;
 	  CPPUNIT_ASSERT_EQUAL(board.boardHashes[board.moveIndex], board.boardHashes[board.moveIndex - 4]);
 	}
 };

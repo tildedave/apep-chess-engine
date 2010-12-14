@@ -3,6 +3,8 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/TestCaller.h>
 #include "common.h"
+#include "xboard.h"
+#include "eval.h"
 #include "eval.hpp"
 
 class EvalTest : public CppUnit::TestCase {
@@ -36,6 +38,12 @@ class EvalTest : public CppUnit::TestCase {
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
                                 "testDoubledPawnPenaltyBlackTwoPawns",
 				&EvalTest::testDoubledPawnPenaltyBlackTwoPawns ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testRecognizesRepetition",
+				&EvalTest::testRecognizesRepetition ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testRecognizesNoRepetition",
+				&EvalTest::testRecognizesNoRepetition ) );
 
 		return suiteOfTests;
 	}
@@ -134,4 +142,29 @@ class EvalTest : public CppUnit::TestCase {
 	    int doubledPawnPenalty = doubledPawnTest(&board, false);
 	    CPPUNIT_ASSERT_EQUAL(EvalParameters::doubledPawnPenalty, doubledPawnPenalty);
       	}
+
+	void testRecognizesRepetition() {
+	  ChessBoard board;
+	  std::string startingFEN("r11nRrk1/1p1R11pp/11p11111/p1111111/1PP111N1/11111111/P1111PPP/111111K1 w - - 0 27");
+	  loadBoardFromFEN(&board, startingFEN);
+
+	  processMove(&board, CoordStringToMove(&board, "d7e7"));
+	  processMove(&board, CoordStringToMove(&board, "f8f7"));
+	  processMove(&board, CoordStringToMove(&board, "e7d7"));
+	  processMove(&board, CoordStringToMove(&board, "f7f8"));
+
+	  CPPUNIT_ASSERT_EQUAL(true, checkForRepetition(&board));
+	}
+
+	void testRecognizesNoRepetition() {
+	  ChessBoard board;
+	  std::string startingFEN("r11nRrk1/1p1R11pp/11p11111/p1111111/1PP111N1/11111111/P1111PPP/111111K1 w - - 0 27");
+	  loadBoardFromFEN(&board, startingFEN);
+
+	  processMove(&board, CoordStringToMove(&board, "d7e7"));
+	  processMove(&board, CoordStringToMove(&board, "f8f7"));
+	  processMove(&board, CoordStringToMove(&board, "e7d7"));
+
+	  CPPUNIT_ASSERT_EQUAL(false, checkForRepetition(&board));
+	}
 };
