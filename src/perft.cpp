@@ -22,12 +22,20 @@ double moveGenTime;
 double moveProcessTime;
 double moveUnprocessTime;
 
-int randomSeed = -1;
+PerftModule::PerftModule(const std::string& fenString, 
+			 int depth, 
+			 bool verbose, 
+			 bool divide) : fenString_(fenString),
+					depth_(depth),
+					verbose_(verbose),
+					divide_(divide)
+{
+}
 
-void doPerftTest(int depth, bool verbose, bool divide, std::string fenString)
+void PerftModule::run()
 {
   ChessBoard board;
-  loadBoardFromFEN(&board, fenString);
+  loadBoardFromFEN(&board, this->fenString_);
 
 #ifdef WIN32
   SYSTEMTIME startSystemTime, endSystemTime;
@@ -36,7 +44,7 @@ void doPerftTest(int depth, bool verbose, bool divide, std::string fenString)
   struct timeval start, end;
 #endif
 
-  for(int i = 0; i <= depth; ++i) {
+  for(int i = 0; i <= this->depth_; ++i) {
     moveGenTime = 0.0;
     moveProcessTime = 0.0;
     moveUnprocessTime = 0.0;
@@ -49,17 +57,18 @@ void doPerftTest(int depth, bool verbose, bool divide, std::string fenString)
 #endif
         
     int perftNum;
-    if (verbose) {
-      perftNum = perft<true>(&board, i, i, divide);
+    if (verbose_) {
+      perftNum = perft<true>(&board, i, i, this->divide_);
     }
     else {
-      perftNum = perft<false>(&board, i, i, divide);
+      perftNum = perft<false>(&board, i, i, this->divide_);
     }
 
 #ifdef WIN32
     GetSystemTime(&endSystemTime);
     SystemTimeToFileTime(&endSystemTime, &end);
-    __int64 nanoSecondsDiff = ((__int64) (end.dwHighDateTime - start.dwHighDateTime)) << 32;
+    __int64 nanoSecondsDiff = ((__int64) (end.dwHighDateTime - 
+					  start.dwHighDateTime)) << 32;
     nanoSecondsDiff += end.dwLowDateTime - start.dwLowDateTime;
     double diff = nanoSecondsDiff / (10000000.0);
 #else
@@ -69,13 +78,18 @@ void doPerftTest(int depth, bool verbose, bool divide, std::string fenString)
 #endif
 
     std::cout << std::fixed << std::setprecision(4) << diff << "\t" << perftNum;
-    if (verbose) {
-      std::cout << " (movegen: " << moveGenTime << ", process: " << moveProcessTime << ", unprocess: " << moveUnprocessTime << ")";
+    if (verbose_) {
+      std::cout << " (movegen: " 
+		<< this->moveGenTime 
+		<< ", process: " 
+		<< this->moveProcessTime 
+		<< ", unprocess: " 
+		<< this->moveUnprocessTime << ")";
     }
     std::cout << std::endl;
   }
 }
-
+/*
 int main(int argc, char** argv) {
   po::options_description desc("Allowed options");
 
@@ -107,3 +121,4 @@ int main(int argc, char** argv) {
   std::string fenString = vm["fen"].as<std::string>();
   doPerftTest(depth, verbose, divide, fenString);
 }
+*/

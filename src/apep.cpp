@@ -25,7 +25,9 @@
 #include "search.h"
 #include "xboard.h"
 #include "openbook.h"
+
 #include "tactics.h"
+#include "perft.h"
 
 using namespace std;
 
@@ -62,12 +64,14 @@ int main(int argc, char** argv) {
 
   bool verbose;
   bool divide;
+  int depth;
 
   po::options_description perft("Perft Options");
   perft.add_options()
     ("perft", "run perft test")
     ("verbose", po::bool_switch(&verbose)->default_value(false), 
                 "Output time for move generation, processing, and unprocessing")
+    ("depth", po::value<int>(&depth)->default_value(5), "Perft depth")
     ("divide", po::bool_switch(&divide)->default_value(false), "Output divide for each move?");
 
 
@@ -102,7 +106,7 @@ int main(int argc, char** argv) {
       std::string fen = vm["fen"].as<std::string>();
       std::string expected = vm["expected"].as<std::string>();
 
-      TacticsModule tm = TacticsModule(fen, expected, timeout);
+      TacticsModule tm(fen, expected, timeout);
       tm.run();
       return 0;
     }
@@ -110,13 +114,27 @@ int main(int argc, char** argv) {
     std::cerr << vm.count("file") << std::endl;
     if (vm.count("file")) {
       std::string file = vm["file"].as<std::string>();
-      TacticsFileModule tm = TacticsFileModule(file, timeout);
+      TacticsFileModule tm(file, timeout);
       tm.run();
 
       return 0;
     }
   }
 
+  if (vm.count("perft")) {
+    std::string startingFen;
+    if (!vm.count("fen")) {
+      startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    }
+    else {
+      startingFen = vm["fen"].as<std::string>();
+    }
+
+    PerftModule pm(startingFen, depth, verbose, divide);
+    pm.run();
+
+    return 0;
+  }
 
   loadOpeningBook(vm["book"].as<std::string>());
   
