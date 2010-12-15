@@ -417,11 +417,8 @@ int getKingPlacementScore(ChessBoard * board, bool white) {
 		int pawnCover = NumOnes(kingMoves[kingOffset] & pawns);
 		if (pawnCover < 3) {
 		  // TODO: WOW, this is wrong.  this rewards less pawn cover.
-			kingScore += pawnCover * EvalParameters::noPawnCoverBonus;
+		  kingScore += (3 - pawnCover) * EvalParameters::noPawnCoverBonus;
 		}
-
-		//if (kingScore >= 0)
-		//	cerr << "king score: " << kingScore << endl << board_to_string(board) << endl;
 
 		// TODO: penalize not being able to castle ... if you haven't castled.  seems annoying 
 		
