@@ -404,7 +404,7 @@ short string_to_offset(const std::string& str) {
 void setupLogging(std::string logname)
 {
     log4cxx::LayoutPtr layoutPtr = 
-      log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%r] %m%n"));
+      log4cxx::LayoutPtr(new log4cxx::PatternLayout("[%5p %8r] %m%n"));
     log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, logname, true);
     log4cxx::helpers::Pool p;
     fileAppender->activateOptions(p);
