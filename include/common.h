@@ -197,7 +197,7 @@ int char_to_int(char c);
 BITBOARD random_int64();
 
 // LOGGING INITIALIZATION
-void setupLogging();
+void setupLogging(std::string filename = "apep.log");
 
 class InternalEngineError {
 	

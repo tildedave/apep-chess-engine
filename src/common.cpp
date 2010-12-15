@@ -401,10 +401,11 @@ short string_to_offset(const std::string& str) {
     #define USING_INTRINSICS
 #endif
 
-void setupLogging()
+void setupLogging(std::string logname)
 {
-    log4cxx::LayoutPtr layoutPtr = log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%r] (%F:%L) - %m%n"));
-    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, "apep.log", true);
+    log4cxx::LayoutPtr layoutPtr = 
+      log4cxx::LayoutPtr(new log4cxx::PatternLayout("%5p [%r] %m%n"));
+    log4cxx::FileAppender *fileAppender = new log4cxx::FileAppender(layoutPtr, logname, true);
     log4cxx::helpers::Pool p;
     fileAppender->activateOptions(p);
     log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));

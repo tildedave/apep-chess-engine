@@ -91,13 +91,13 @@ int main(int argc, char** argv) {
   }
 
   initialize_common_boards();
-  setupLogging();
+
   int timeout = vm["timeout"].as<int>();
 
   if (vm.count("tactics")) {
-    std::cerr << "tactics time" << std::endl;
     TimeoutValue = timeout;
 
+    setupLogging("apep.tactics.log");
     if (!vm.count("file")) {
       if (!vm.count("fen")) {
 	return outputUsage(cmdline_options);
@@ -130,12 +130,14 @@ int main(int argc, char** argv) {
       startingFen = vm["fen"].as<std::string>();
     }
 
+    setupLogging("apep.perft.log");
     PerftModule pm(startingFen, depth, verbose, divide);
     pm.run();
 
     return 0;
   }
 
+  setupLogging();
   loadOpeningBook(vm["book"].as<std::string>());
   
   xboardMainLoop();
