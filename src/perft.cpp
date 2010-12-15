@@ -77,7 +77,7 @@ void PerftModule::run()
     diff += (end.tv_usec - start.tv_usec) / (1000.0 * 1000.0);
 #endif
 
-    std::cout << std::fixed << std::setprecision(4) << diff << "\t" << perftNum;
+    std::cout << std::fixed << std::setprecision(4) << i << "   " << diff << "   " << perftNum;
     if (verbose_) {
       std::cout << " (movegen: " 
 		<< this->moveGenTime 
