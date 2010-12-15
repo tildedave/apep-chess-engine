@@ -503,14 +503,19 @@ int getPawnPositionScore(ChessBoard * board, bool white) {
 
 bool checkForRepetition(ChessBoard * board) {
   std::set<HASHKEY> repetitionSet;
+  std::set<HASHKEY> oneRepetition;
   int i = board->moveIndex;
   repetitionSet.insert(board->boardHashes[i]);
   --i;
 
   while (i >= 0) {
     // if move is a capture or pawn move, w/e
-    if (repetitionSet.find(board->boardHashes[i]) != repetitionSet.end()) {
+    if (oneRepetition.find(board->boardHashes[i]) != oneRepetition.end()) {
       return true;
+    }
+
+    if (repetitionSet.find(board->boardHashes[i]) != repetitionSet.end()) {
+      oneRepetition.insert(board->boardHashes[i]);
     }
 
     int move = board->moveHistory[i];

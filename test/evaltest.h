@@ -152,6 +152,10 @@ class EvalTest : public CppUnit::TestCase {
 	  processMove(&board, CoordStringToMove(&board, "f8f7"));
 	  processMove(&board, CoordStringToMove(&board, "e7d7"));
 	  processMove(&board, CoordStringToMove(&board, "f7f8"));
+	  processMove(&board, CoordStringToMove(&board, "d7e7"));
+	  processMove(&board, CoordStringToMove(&board, "f8f7"));
+	  processMove(&board, CoordStringToMove(&board, "e7d7"));
+	  processMove(&board, CoordStringToMove(&board, "f7f8"));
 
 	  CPPUNIT_ASSERT_EQUAL(true, checkForRepetition(&board));
 	}
@@ -164,7 +168,7 @@ class EvalTest : public CppUnit::TestCase {
 	  processMove(&board, CoordStringToMove(&board, "d7e7"));
 	  processMove(&board, CoordStringToMove(&board, "f8f7"));
 	  processMove(&board, CoordStringToMove(&board, "e7d7"));
-
+	  processMove(&board, CoordStringToMove(&board, "f7f8"));
 	  CPPUNIT_ASSERT_EQUAL(false, checkForRepetition(&board));
 	}
 };
