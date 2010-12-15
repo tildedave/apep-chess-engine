@@ -11,6 +11,8 @@ void
 EvalModule::run() {
   ChessBoard board;
   loadBoardFromFEN(&board, fenString_);
+  board.whiteHasCastled = true;
+  board.blackHasCastled = true;
 
   evaluateBoard<true>(&board, &std::cout);
 }
@@ -43,7 +45,7 @@ EvalParameters::middlegameKingPositionalBonusScale[64] = {
 };
 
 int EvalParameters::middlegameKingCornerBonus = 15;
-int EvalParameters::noPawnCoverBonus = -10;
+int EvalParameters::noPawnCoverBonus = -20;
 int EvalParameters::cannotCastleBonus= -50;
 
 int EvalParameters::whitePassedPawnRankScale[8] = { 0, 1, 1, 1, 2, 3, 8, 0 };
@@ -406,34 +408,51 @@ int getPassedPawnScore(ChessBoard * board, bool white) {
 	return passedPawnScore;
 }
 
+int getKingPawnPlacementScore(ChessBoard* board, bool white) {
+  short kingOffset = white ? board->whiteKingOffset : board->blackKingOffset;
+  BITBOARD pawns = white ? board->whitePawns : board->blackPawns;
+
+  int pawnCover = NumOnes(kingMoves[kingOffset] & pawns);
+  if (pawnCover < 3) {
+    int pawnCoverPenalty = (3 - pawnCover) * EvalParameters::noPawnCoverBonus;
+    return pawnCoverPenalty;
+  }
+
+  return 0;
+}
 
 int getKingPlacementScore(ChessBoard * board, bool white) {
 	short kingOffset = white ? board->whiteKingOffset : board->blackKingOffset;
-	BITBOARD pawns = white ? board->whitePawns : board->blackPawns;
 	int kingScore = 0;
+
 	if (board->gamePhase != PHASE_ENDGAME) {
 		// reward the king being covered by pawns and in the corner.
-		kingScore += EvalParameters::middlegameKingCornerBonus * EvalParameters::middlegameKingPositionalBonusScale[kingOffset];
-		int pawnCover = NumOnes(kingMoves[kingOffset] & pawns);
-		if (pawnCover < 3) {
-		  // TODO: WOW, this is wrong.  this rewards less pawn cover.
-		  kingScore += (3 - pawnCover) * EvalParameters::noPawnCoverBonus;
-		}
+		kingScore += EvalParameters::middlegameKingCornerBonus * 
+		             EvalParameters::middlegameKingPositionalBonusScale[kingOffset];
 
+		kingScore += getKingPawnPlacementScore(board, white);
 		// TODO: penalize not being able to castle ... if you haven't castled.  seems annoying 
 		
 		if (white) {
-			if (board->whiteHasCastled == false && !board->whiteCanCastleKingside && !board->whiteCanCastleQueenside)
-				kingScore += EvalParameters::cannotCastleBonus;
+			if (board->whiteHasCastled == false && 
+			    !board->whiteCanCastleKingside && 
+			    !board->whiteCanCastleQueenside) {
+			  kingScore += EvalParameters::cannotCastleBonus;
+			}
 		}
 		else {
-			if (board->blackHasCastled == false && !board->whiteCanCastleKingside && !board->blackCanCastleQueenside)
-				kingScore += EvalParameters::cannotCastleBonus;
+			if (board->blackHasCastled == false && 
+			    !board->whiteCanCastleKingside && 
+			    !board->blackCanCastleQueenside) {
+			  kingScore += EvalParameters::cannotCastleBonus;
+			}
 		}
 	}
 	else {
 		// reward centralized king
-		kingScore += EvalParameters::endgameCentralizedKingBonus * EvalParameters::endgameKingPositionalBonusScale[kingOffset];
+		kingScore += 
+		  EvalParameters::endgameCentralizedKingBonus * 
+		  EvalParameters::endgameKingPositionalBonusScale[kingOffset];
 	}
 	return kingScore;
 }

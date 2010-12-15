@@ -44,6 +44,31 @@ class EvalTest : public CppUnit::TestCase {
 		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
                                 "testRecognizesNoRepetition",
 				&EvalTest::testRecognizesNoRepetition ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesWhitePawnCover",
+				&EvalTest::testProperlyHandlesWhitePawnCover ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesWhitePawnCoverMissingOne",
+				&EvalTest::testProperlyHandlesWhitePawnCoverMissingOne ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesWhitePawnCoverMissingTwo",
+				&EvalTest::testProperlyHandlesWhitePawnCoverMissingTwo ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesWhitePawnCoverMissingThree",
+				&EvalTest::testProperlyHandlesWhitePawnCoverMissingThree ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesBlackPawnCover",
+				&EvalTest::testProperlyHandlesBlackPawnCover ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesBlackPawnCoverMissingOne",
+				&EvalTest::testProperlyHandlesBlackPawnCoverMissingOne ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesBlackPawnCoverMissingTwo",
+				&EvalTest::testProperlyHandlesBlackPawnCoverMissingTwo ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<EvalTest>(
+                                "testProperlyHandlesBlackPawnCoverMissingThree",
+				&EvalTest::testProperlyHandlesBlackPawnCoverMissingThree ) );
+
 
 		return suiteOfTests;
 	}
@@ -170,5 +195,86 @@ class EvalTest : public CppUnit::TestCase {
 	  processMove(&board, CoordStringToMove(&board, "e7d7"));
 	  processMove(&board, CoordStringToMove(&board, "f7f8"));
 	  CPPUNIT_ASSERT_EQUAL(false, checkForRepetition(&board));
+	}
+
+	void testProperlyHandlesWhitePawnCover() {
+	  ChessBoard board;
+	  std::string startingFEN("8/8/8/8/8/8/PPPPPPPP/6K1 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, true);
+
+	  CPPUNIT_ASSERT_EQUAL(0, pawnScore);
+	}
+
+	void testProperlyHandlesWhitePawnCoverMissingOne() {
+	  ChessBoard board;
+	  std::string startingFEN("8/8/8/8/8/8/PPPPP1PP/6K1 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, true);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus, pawnScore);
+	}
+
+	void testProperlyHandlesWhitePawnCoverMissingTwo() {
+	  ChessBoard board;
+	  std::string startingFEN("8/8/8/8/8/8/PPPPP2P/6K1 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, true);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus * 2, pawnScore);
+	}
+
+	void testProperlyHandlesWhitePawnCoverMissingThree() {
+	  ChessBoard board;
+	  std::string startingFEN("8/8/8/8/8/8/PPPPP3/6K1 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, true);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus * 3, pawnScore);
+	}
+
+	void testProperlyHandlesBlackPawnCover() {
+	  ChessBoard board;
+	  std::string startingFEN("6k1/pppppppp/8/8/8/8/8/8 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, false);
+
+	  CPPUNIT_ASSERT_EQUAL(0, pawnScore);
+	}
+
+
+	void testProperlyHandlesBlackPawnCoverMissingOne() {
+	  ChessBoard board;
+	  std::string startingFEN("6k1/ppppp1pp/8/8/8/8/8/8 w - - 0 1");
+
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, false);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus, pawnScore);
+	}
+
+	void testProperlyHandlesBlackPawnCoverMissingTwo() {
+	  ChessBoard board;
+	  std::string startingFEN("6k1/ppppp2p/8/8/8/8/8/8 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, false);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus * 2, pawnScore);
+	}
+
+	void testProperlyHandlesBlackPawnCoverMissingThree() {
+	  ChessBoard board;
+	  std::string startingFEN("6k1/ppppp3/8/8/8/8/8/8 w - - 0 1");
+	  
+	  loadBoardFromFEN(&board, startingFEN);
+	  int pawnScore = getKingPawnPlacementScore(&board, false);
+
+	  CPPUNIT_ASSERT_EQUAL(EvalParameters::noPawnCoverBonus * 3, pawnScore);
 	}
 };

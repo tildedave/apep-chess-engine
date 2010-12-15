@@ -124,6 +124,7 @@ int getBlackMaterialScore(ChessBoard* board);
 
 int getPassedPawnScore(ChessBoard * board, bool white);
 int getKingPlacementScore(ChessBoard * board, bool white);
+int getKingPawnPlacementScore(ChessBoard* board, bool white);
 int getKingAttackScore(ChessBoard * board, bool white);
 int getDevelopmentScore(ChessBoard * board, bool white);
 int getCenterControlScore(ChessBoard * board, bool white);
