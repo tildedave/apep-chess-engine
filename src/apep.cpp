@@ -32,6 +32,7 @@ using namespace std;
 namespace po = boost::program_options;
 
 int randomSeed = -1;
+extern float TimeoutValue;
 
 int outputUsage(const po::options_description& desc) {
   std::cout << desc << std::endl;
@@ -65,9 +66,11 @@ int main(int argc, char** argv) {
 
   initialize_common_boards();
   setupLogging();
+  int timeout = vm["timeout"].as<int>();
 
   if (vm.count("tactics")) {
     std::cerr << "tactics time" << std::endl;
+    TimeoutValue = timeout;
 
     if (!vm.count("file")) {
       if (!vm.count("fen")) {
@@ -77,7 +80,7 @@ int main(int argc, char** argv) {
       std::string fen = vm["fen"].as<std::string>();
       std::string expected = vm["expected"].as<std::string>();
 
-      TacticsModule tm = TacticsModule(fen, expected);
+      TacticsModule tm = TacticsModule(fen, expected, timeout);
       tm.run();
       return 0;
     }
@@ -85,7 +88,7 @@ int main(int argc, char** argv) {
     std::cerr << vm.count("file") << std::endl;
     if (vm.count("file")) {
       std::string file = vm["file"].as<std::string>();
-      TacticsFileModule tm = TacticsFileModule(file);
+      TacticsFileModule tm = TacticsFileModule(file, timeout);
       tm.run();
 
       return 0;

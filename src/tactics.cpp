@@ -16,9 +16,11 @@ namespace po = boost::program_options;
 extern float TimeoutValue;
 
 TacticsModule::TacticsModule(const std::string& fenString, 
-			     const std::string& expected) : fenString_(fenString), 
-							    expected_(expected),
-							    wasSuccessful_(false)
+			     const std::string& expected,
+			     int timeout) : fenString_(fenString), 
+					    expected_(expected),
+					    wasSuccessful_(false),
+					    timeout_(timeout)
 {
 }
 
@@ -70,11 +72,13 @@ TacticsModule::getMoveString() {
   return moveString_;
 }
 
-TacticsFileModule::TacticsFileModule(const std::string& filename) :
+TacticsFileModule::TacticsFileModule(const std::string& filename, 
+				     int timeout) :
   filename_(filename),
   succeededTestsCount_(0),
   totalTestsCount_(0),
-  failedTestsCount_(0)
+  failedTestsCount_(0),
+  timeout_(timeout)
 {
 }
 
@@ -105,7 +109,7 @@ TacticsFileModule::run() {
 	flush(cout);
 	std::string moveString;
 
-	TacticsModule tm = TacticsModule(fenString, answerString);
+	TacticsModule tm = TacticsModule(fenString, answerString, this->timeout_);
 	tm.run();
 
 	++this->totalTestsCount_;

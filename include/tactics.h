@@ -7,7 +7,7 @@
 class TacticsModule : public Module {
 
  public:
-  TacticsModule(const std::string& fenString, const std::string& expected);
+  TacticsModule(const std::string& fenString, const std::string& expected, int timeout);
 
   void run();
 
@@ -20,13 +20,14 @@ class TacticsModule : public Module {
   std::string expected_;
   bool wasSuccessful_;
   std::string moveString_;
+  int timeout_;
 };
 
 class TacticsFileModule : public Module {
 
  public:
 
-  TacticsFileModule(const std::string& filename);
+  TacticsFileModule(const std::string& filename, int timeout);
 
   void run();
 
@@ -42,6 +43,8 @@ class TacticsFileModule : public Module {
   int succeededTestsCount_;
   int totalTestsCount_;
   int failedTestsCount_;
+  int timeout_;
+
   std::list<std::string> failedNamesTests_;
   std::map<std::string, std::string> testToMoveStringMapping_;
   
