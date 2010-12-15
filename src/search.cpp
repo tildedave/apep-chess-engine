@@ -274,8 +274,10 @@ int alphaBetaSearch(ChessBoard * board,
 		try {
 			int R  = 2;
 			searchInfo->lastMoveWasNullMove = true;
-			int value = -alphaBetaSearch(board, startingDepth, depthLeft - R - 1, ply + 1, false,
-						     -beta, -alpha, searchInfo, stats, options);
+			int value = -alphaBetaSearch(board, startingDepth, 
+						     depthLeft - R - 1, ply + 1, 
+						     false, -beta, -alpha, searchInfo, 
+						     stats, options);
 			searchInfo->lastMoveWasNullMove = false;
 			if (value >= beta) {
 				// cutoff
