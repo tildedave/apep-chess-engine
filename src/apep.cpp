@@ -26,6 +26,8 @@
 #include "xboard.h"
 #include "openbook.h"
 
+// MODULES
+#include "eval.h"
 #include "tactics.h"
 #include "perft.h"
 
@@ -62,6 +64,10 @@ int main(int argc, char** argv) {
     ("timeout", po::value<int>()->default_value(10), 
                 "Seconds per move (default value of 10 seconds/move)");
 
+  po::options_description eval("Evaluation Options");
+  eval.add_options()
+    ("eval", "run board evaluation");
+
   bool verbose;
   bool divide;
   int depth;
@@ -76,7 +82,7 @@ int main(int argc, char** argv) {
 
 
   po::options_description cmdline_options;
-  cmdline_options.add(generic).add(shared).add(tactics).add(perft);
+  cmdline_options.add(generic).add(shared).add(tactics).add(perft).add(eval);
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
@@ -133,6 +139,19 @@ int main(int argc, char** argv) {
     setupLogging("apep.perft.log");
     PerftModule pm(startingFen, depth, verbose, divide);
     pm.run();
+
+    return 0;
+  }
+
+  if (vm.count("eval")) {
+    if (!vm.count("fen")) {
+      return outputUsage(cmdline_options);
+    }
+
+    std::string fenString = vm["fen"].as<std::string>();
+    setupLogging("apep.eval.log");
+    EvalModule em(fenString);
+    em.run();
 
     return 0;
   }
