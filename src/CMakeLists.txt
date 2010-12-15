@@ -12,6 +12,7 @@ file(GLOB_RECURSE SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
                move.cpp
                movepriorityqueue.cpp
                search.cpp   
+	       tactics.cpp
 )
 
 include_directories ("${_ROOT_FOLDER}/include")

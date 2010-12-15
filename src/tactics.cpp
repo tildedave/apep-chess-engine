@@ -8,11 +8,68 @@
 #include "board.h"
 #include "move.h"
 #include "search.h"
+#include "tactics.h"
 
 namespace po = boost::program_options;
 
 int randomSeed = -1;
 extern float TimeoutValue;
+
+TacticsModule::TacticsModule(const std::string& fenString, 
+			     const std::string& expected) : fenString_(fenString), 
+							    expected_(expected),
+							    wasSuccessful_(false)
+{
+}
+
+void
+TacticsModule::run() {
+  ChessBoard board;
+  loadBoardFromFEN(&board, this->fenString_);
+
+  search_options options;
+  options.noisyMode = true;
+  
+  int move = getMove(&board, &options);
+  this->moveString_ = MoveToString(move);
+
+  std::stringstream strStream(this->expected_);
+
+  while (!strStream.eof()) {
+    std::string answerStringWithoutPlusAndSharp;
+    strStream >> answerStringWithoutPlusAndSharp;
+    string::size_type plusIndex = answerStringWithoutPlusAndSharp.find("+");
+    if (plusIndex != string::npos)
+      answerStringWithoutPlusAndSharp.replace(plusIndex, 1, "");
+    string::size_type sharpIndex = answerStringWithoutPlusAndSharp.find("#");
+    if (sharpIndex != string::npos)
+      answerStringWithoutPlusAndSharp.replace(sharpIndex, 1, "");
+    
+    if (answerStringWithoutPlusAndSharp == this->moveString_) {
+      this->wasSuccessful_ = true;
+      return;
+    }
+    
+    std::string fromToString = offset_to_string(GetFrom(move)) + offset_to_string(GetTo(move));
+    
+    if (answerStringWithoutPlusAndSharp == fromToString) {
+      this->wasSuccessful_ = true;
+      return;
+    }
+  }
+  this->wasSuccessful_ = false;
+}
+
+bool 
+TacticsModule::wasSuccessful() {
+  return wasSuccessful_;
+}
+
+std::string
+TacticsModule::getMoveString() {
+  return moveString_;
+}
+
 
 bool doTacticsTest(const std::string& fenString, const std::string& answerString, std::string& moveToString) {
 	ChessBoard board;

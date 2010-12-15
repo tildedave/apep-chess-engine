@@ -16,9 +16,10 @@ class TacticsModule : public Module {
 
  private:
 
+  std::string fenString_;
+  std::string expected_;
   bool wasSuccessful_;
   std::string moveString_;
-
 };
 
 class TacticsFileModule : public Module {
