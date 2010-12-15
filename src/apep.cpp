@@ -33,35 +33,57 @@ namespace po = boost::program_options;
 
 int randomSeed = -1;
 
+int outputUsage(const po::options_description& desc) {
+  std::cout << desc << std::endl;
+  return 1;
+}
+
 int main(int argc, char** argv) {
   po::options_description desc("Allowed options");
   std::string fenFile;
   desc.add_options()
     ("help", "produce help message")
     ("tactics", "run tactics test")
-    ("tacticsfile", "run tactics test from a file")
     ("random", po::value<int>(), "Random seed")
     ("file", po::value<std::string>(), "Read EPD file for perft/tactics file")
     ("book", po::value<std::string>()->default_value("bookl.dat"), "Read book from specified file")
     ("fen", po::value<std::string>(), "Specify FEN on command line")
     ("timeout", po::value<int>()->default_value(10), "Seconds per move (default value of 10 seconds/move)")
-    ("expected", po::value<std::string>(), "Expected solution for FEN");
+    ("expected", po::value<std::string>()->default_value(""), "Expected solution for FEN");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);    
 
+  if (vm.count("help")) {
+    return outputUsage(desc);
+  }
+
   if (vm.count("random")) {
     randomSeed = vm["random"].as<int>();
   }
 
-  if (vm.count("help")) {
-    std::cout << desc << std::endl;
-    exit(0);
-  }
-
   initialize_common_boards();
   setupLogging();
+
+  if (vm.count("tactics")) {
+    if (!vm.count("file")) {
+      if (!vm.count("fen")) {
+	return outputUsage(desc);
+      }
+
+      std::cerr << "tactics time" << std::endl;
+
+      std::string fen = vm["fen"].as<std::string>();
+      std::string expected = vm["expected"].as<std::string>();
+
+      TacticsModule tm = TacticsModule(fen, expected);
+      tm.run();
+      return 0;
+    }
+  }
+
+
   loadOpeningBook(vm["book"].as<std::string>());
   
   xboardMainLoop();

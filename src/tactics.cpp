@@ -12,7 +12,7 @@
 
 namespace po = boost::program_options;
 
-int randomSeed = -1;
+//int randomSeed = -1;
 extern float TimeoutValue;
 
 TacticsModule::TacticsModule(const std::string& fenString, 
@@ -171,7 +171,7 @@ void tacticsTest(const std::string& tacticsFile) {
 	}
 }
 
-int main(int argc, char** argv) {
+int tacticsMain(int argc, char** argv) {
   initialize_common_boards();
   setupLogging();
 
@@ -227,4 +227,6 @@ int main(int argc, char** argv) {
           }
           std::cout << "expected: " << expected << ", received: " << moveString << endl;
   }
+
+  return 0;
 }
