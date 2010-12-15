@@ -23,7 +23,7 @@
 #include "search.h"
 #include "xboard.h"
 #include "openbook.h"
-
+#include "tactics.h"
 
 using namespace std;
 
