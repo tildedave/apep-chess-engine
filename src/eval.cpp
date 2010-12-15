@@ -2,6 +2,19 @@
 #include "move.h"
 #include <set>
 
+EvalModule::EvalModule(std::string fenString) : 
+  fenString_(fenString)
+{
+}
+
+void
+EvalModule::run() {
+  ChessBoard board;
+  loadBoardFromFEN(&board, fenString_);
+
+  evaluateBoard<true>(&board, &std::cout);
+}
+
 EvalParameters evalParameters;
 int
 EvalParameters::endgameKingPositionalBonusScale[64] = {
@@ -403,6 +416,7 @@ int getKingPlacementScore(ChessBoard * board, bool white) {
 		kingScore += EvalParameters::middlegameKingCornerBonus * EvalParameters::middlegameKingPositionalBonusScale[kingOffset];
 		int pawnCover = NumOnes(kingMoves[kingOffset] & pawns);
 		if (pawnCover < 3) {
+		  // TODO: WOW, this is wrong.  this rewards less pawn cover.
 			kingScore += pawnCover * EvalParameters::noPawnCoverBonus;
 		}
 

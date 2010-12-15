@@ -24,6 +24,16 @@
 #define PRIORITY_UNDERPROMOTION 			10
 
 
+class EvalModule {
+ public:
+  EvalModule(std::string fenString);
+  void run();
+
+ private:
+
+  std::string fenString_;
+};
+
 class EvalParameters {
 
 public:
