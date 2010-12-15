@@ -70,46 +70,89 @@ TacticsModule::getMoveString() {
   return moveString_;
 }
 
+TacticsFileModule::TacticsFileModule(const std::string& filename) :
+  filename_(filename),
+  succeededTestsCount_(0),
+  totalTestsCount_(0),
+  failedTestsCount_(0)
+{
+}
 
-bool doTacticsTest(const std::string& fenString, const std::string& answerString, std::string& moveToString) {
-	ChessBoard board;
-	loadBoardFromFEN(&board, fenString);
+void
+TacticsFileModule::run() {
+  std::ifstream wacFileStream(filename_.c_str());
+  if (!wacFileStream) {
+    cerr << "error reading file" << endl;
+  }
+  else {
+    std::string testString;
+    while(wacFileStream.eof() == false) {
+      getline(wacFileStream, testString);
+      string::size_type bmPos = testString.find("bm", 0);
+      if (bmPos != string::npos) {
+	// FEN comes before bm.
+	// TODO: this is pretty awful, just make this a regexp
+	std::string fenString = testString.substr(0, bmPos);
+	int semiPos = testString.find(";", bmPos);
+	std::string answerString = testString.substr(bmPos + 3, semiPos - (bmPos + 3));
+	std::string idString = testString.substr(semiPos + 6, std::string::npos);
 
-	search_options options;
-	options.noisyMode = true;
+	string::size_type lastQuote = idString.find("\";",0);
+	std::string strippedString = idString.substr(0, lastQuote);
 
-	int move = getMove(&board, &options);
-	moveToString = MoveToString(move);
-	std::stringstream strStream(answerString);
-	
-	while (!strStream.eof()) {
-		std::string answerStringWithoutPlusAndSharp;
-		strStream >> answerStringWithoutPlusAndSharp;
-		string::size_type plusIndex = answerStringWithoutPlusAndSharp.find("+");
-		if (plusIndex != string::npos)
-			answerStringWithoutPlusAndSharp.replace(plusIndex, 1, "");
-		string::size_type sharpIndex = answerStringWithoutPlusAndSharp.find("#");
-		if (sharpIndex != string::npos)
-			answerStringWithoutPlusAndSharp.replace(sharpIndex, 1, "");
+	cout << strippedString << "\t\t\t" << fenString << endl;
+	cout << "expected: " << answerString << " ... " << endl;
+	flush(cout);
+	std::string moveString;
 
-		if (answerStringWithoutPlusAndSharp == moveToString)
-			return true;
+	TacticsModule tm = TacticsModule(fenString, answerString);
+	tm.run();
 
-		std::string fromToString = offset_to_string(GetFrom(move)) + offset_to_string(GetTo(move));
+	++this->totalTestsCount_;
+	std::string moveStirng = tm.getMoveString();
+	std::cout << "received: " << moveString << std::endl;
 
-		if (answerStringWithoutPlusAndSharp == fromToString)
-			return true;
+	bool success = 	tm.wasSuccessful();
+	if (success) {
+	  cout << " (SUCCESS)" << endl;
+	  ++this->succeededTestsCount_;
 	}
-	return false;
+	else {
+	  ++this->failedTestsCount_;
+	  cout << " (FAILURE; Expected: " << answerString << ")" << endl;
+	  // for some reason idString is coming with a vtab in it, making output
+	  // difficult
+	  failedNamesTests_.push_back(idString.substr(0, idString.size() - 1));
+	}
+      }
+
+      this->outputStats();
+
+      if (failedNamesTests_.empty())
+	continue;
+
+      std::cout << "incorrect answers: " << std::endl;
+      std::cout << "\t[";
+      for(std::list<std::string>::iterator it = failedNamesTests_.begin(); 
+	  it != failedNamesTests_.end(); 
+	  ++it) {
+	std::cout << " " << *it;
+      }
+      std::cout << " ]" << std::endl;
+    }
+  }  
 }
 
-void outputStats(int succeededTests, int totalTests) {
+void 
+TacticsFileModule::outputStats() {
   std::cout << "succeeded " 
-            << succeededTests << " / " << totalTests 
-            << " (" << std::fixed << std::setprecision(2) << (succeededTests / (totalTests * 1.0)) << "%)" << std::endl;
+            << succeededTestsCount_ << " / " << totalTestsCount_ 
+            << " (" << std::fixed << std::setprecision(2) 
+	    << (succeededTestsCount_ / (totalTestsCount_ * 1.0)) << "%)" 
+	    << std::endl;
 }
 
-
+/*
 void tacticsTest(const std::string& tacticsFile) {
 	std::ifstream wacFileStream(tacticsFile.c_str());
 	if (!wacFileStream) {
@@ -230,3 +273,4 @@ int tacticsMain(int argc, char** argv) {
 
   return 0;
 }
+*/

@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "module.h"
-#include <vector>
+#include <list>
 #include <string>
 
 class TacticsModule : public Module {
@@ -38,10 +38,11 @@ class TacticsFileModule : public Module {
 
   void outputStats();
   
+  std::string filename_;
   int succeededTestsCount_;
   int totalTestsCount_;
   int failedTestsCount_;
-  std::vector<std::string> failedNamesTests_;
+  std::list<std::string> failedNamesTests_;
   std::map<std::string, std::string> testToMoveStringMapping_;
   
 };

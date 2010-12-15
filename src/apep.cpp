@@ -67,18 +67,27 @@ int main(int argc, char** argv) {
   setupLogging();
 
   if (vm.count("tactics")) {
+    std::cerr << "tactics time" << std::endl;
+
     if (!vm.count("file")) {
       if (!vm.count("fen")) {
 	return outputUsage(desc);
       }
-
-      std::cerr << "tactics time" << std::endl;
 
       std::string fen = vm["fen"].as<std::string>();
       std::string expected = vm["expected"].as<std::string>();
 
       TacticsModule tm = TacticsModule(fen, expected);
       tm.run();
+      return 0;
+    }
+
+    std::cerr << vm.count("file") << std::endl;
+    if (vm.count("file")) {
+      std::string file = vm["file"].as<std::string>();
+      TacticsFileModule tm = TacticsFileModule(file);
+      tm.run();
+
       return 0;
     }
   }
