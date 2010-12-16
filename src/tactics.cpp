@@ -107,14 +107,13 @@ TacticsFileModule::run() {
 	cout << strippedString << "\t\t\t" << fenString << endl;
 	cout << "expected: " << answerString << " ... " << endl;
 	flush(cout);
-	std::string moveString;
 
 	TacticsModule tm = TacticsModule(fenString, answerString, this->timeout_);
 	tm.run();
 
 	++this->totalTestsCount_;
-	std::string moveStirng = tm.getMoveString();
-	std::cout << "received: " << moveString << std::endl;
+	std::string moveString = tm.getMoveString();
+	std::cout << "received: " << moveString;
 
 	bool success = 	tm.wasSuccessful();
 	if (success) {
