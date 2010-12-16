@@ -131,7 +131,12 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 #endif
 			double diff = getSecondsDiff(&start, &end);
 			outputStats(board, stats, i, score, extractedPV, diff, options);
+
 			LOG4CXX_DEBUG(logger, "" << i << " " << score << extractedPV.toMoveString(board));
+
+			if (shouldAbortIterativeDeepening(score)) {
+			  break;
+			}
 		}
 		catch (TimeoutException e) {
 			// shouldn't time out before we've gotten at least one move!
@@ -146,6 +151,12 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 
 	ancientSwitch = !ancientSwitch;
 	return theMove;
+}
+
+bool shouldAbortIterativeDeepening(int score) {
+  // should be impossible to get within 50 of
+  // CHECKMATE
+  return score > CHECKMATE - 50;
 }
 
 bool playerToMoveIsInCheck(ChessBoard * board) {

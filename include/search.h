@@ -73,6 +73,7 @@ extern TranspositionTable table;
 int getMove(ChessBoard * board, search_options* options);
 int getMoveFromSearch(ChessBoard * board, search_options* options);
 int getMove_iterativeDeepening(ChessBoard * board, search_options* options);
+bool shouldAbortIterativeDeepening(int score);
 int alphaBetaSearch(ChessBoard * board,  
 		    short startingDepth, short depthLeft, short ply,
 		    bool isInitialCall, 
