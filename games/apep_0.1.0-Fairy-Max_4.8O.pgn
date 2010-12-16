@@ -84,3 +84,23 @@ Bxf5 50. Kd4 h3 51. Ne3 Bd6 52. Nf1 Be6 53. Ke4 a5 54. Ne3 a4 55. Nc2 Bf5+
 62. Kd5 Be5 63. Ke4 Qd1 64. Ke3 Kf5 65. Kf2 Bd6 66. Ke3 Bc5#
 {Xboard adjudication: Checkmate} 0-1
 
+[Event "Computer Chess Game"]
+[Site "hathor"]
+[Date "2010.12.15"]
+[Round "-"]
+[White "apep 0.1.0"]
+[Black "Fairy-Max 4.8O"]
+[Result "1-0"]
+[TimeControl "40/300"]
+
+1. e4 c5 2. Nf3 Nc6 3. d4 Nf6 4. d5 Na5 5. e5 Ng8 6. Bd2 f6 7. Nc3 Qb6 8.
+Na4 Qc7 9. Bc3 fxe5 10. Qd2 b6 11. Nxe5 Nf6 12. O-O-O Bb7 13. Bb5 a6 14.
+Nxb6 Qxb6 15. Ba4 Qd6 16. Rhe1 Nc4 17. Nxc4 Qxh2 18. Nb6 Rd8 19. Qg5 Kf7
+20. Be5 Qh6 21. Qxh6 gxh6 22. Nxd7 Bg7 23. Bxf6 Bxf6 24. Nxf6 exf6 25. d6
+Bxg2 26. Bb3+ Kf8 27. Re7 Rb8 28. Rf7+ Ke8 29. Rxf6 Rb7 30. Re1+ Kd7 31.
+Re5 Rb6 32. Ba4+ Bc6 33. Re7+ Kd8 34. Bxc6 Rxc6 35. Ra7 h5 36. Rff7 Rg8 37.
+d7 Rg1+ 38. Kd2 Rd6+ 39. Kc3 Rxd7 40. Rfxd7+ Kc8 41. Rxh7 Kb8 42. Kc4 Rg4+
+43. Kxc5 Rg5+ 44. Kd4 Rg6 45. Rag7 Rd6+ 46. Kc5 Rd8 47. Kc6 Rc8+ 48. Kb6
+Rd8 49. Rb7+ Ka8 50. Ra7+ Kb8 51. Rhb7+ Kc8 52. Ra8#
+{Xboard adjudication: Checkmate} 1-0
+
