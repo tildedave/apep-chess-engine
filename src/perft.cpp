@@ -18,10 +18,6 @@ namespace po = boost::program_options;
 //  * check if move generator is working correctly: http://www.rocechess.ch/perft.html
 //  * check speed of move generator
 
-double moveGenTime;
-double moveProcessTime;
-double moveUnprocessTime;
-
 PerftModule::PerftModule(const std::string& fenString, 
 			 int depth, 
 			 bool verbose, 
@@ -89,36 +85,3 @@ void PerftModule::run()
     std::cout << std::endl;
   }
 }
-/*
-int main(int argc, char** argv) {
-  po::options_description desc("Allowed options");
-
-  bool verbose;
-  bool divide;
-  int depth = 6;
-  std::string startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
-  desc.add_options()
-    ("help", "produce help message")
-    ("fen", po::value<std::string>()->default_value(startingFen), "FEN to start perft from")
-    ("depth", po::value<int>(&depth)->default_value(6), "Perft depth")
-    ("verbose", po::bool_switch(&verbose)->default_value(false), "Output time for move generation, processing, and unprocessing")
-    ("divide", po::bool_switch(&divide)->default_value(false), "Output divide for each move?");
-
-  po::variables_map vm;
-  po::store(po::parse_command_line(argc, argv, desc), vm);
-  po::notify(vm);    
-  
-  if (vm.count("help")) {
-    std::cout << desc << std::endl;
-    exit(0);
-  }
-
-  std::cout << "caching common boards..." << std::endl;
-  initialize_common_boards();
-  std::cout << "done" << std::endl;
-
-  std::string fenString = vm["fen"].as<std::string>();
-  doPerftTest(depth, verbose, divide, fenString);
-}
-*/
