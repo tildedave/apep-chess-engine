@@ -117,7 +117,6 @@ int main(int argc, char** argv) {
       return 0;
     }
 
-    std::cerr << vm.count("file") << std::endl;
     if (vm.count("file")) {
       std::string file = vm["file"].as<std::string>();
       TacticsFileModule tm(file, timeout);
