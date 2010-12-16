@@ -1,5 +1,5 @@
 #include <istream>
-#include <log4cxx/logger.h>
+#include <log4cplus/logger.h>
 
 #include "move.h"
 #include "moveprocess.h"
@@ -8,10 +8,7 @@
 #include "eval.h"
 #include "search.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-
-extern log4cxx::LoggerPtr logger;
+extern log4cplus::Logger logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 bool forceMode = true;
@@ -164,16 +161,16 @@ bool validateMove(ChessBoard* board, int reply) {
 void protocolMove(std::string & line)
 {
     int move = CoordStringToMove(&xboardBoard, line);
-    LOG4CXX_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
+    LOG4CPLUS_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
 
     if (!validateMove(&xboardBoard, move)) {
-      LOG4CXX_INFO(logger, "got illegal move " << MoveToString(move));
+      LOG4CPLUS_INFO(logger, "got illegal move " << MoveToString(move));
       std::cout << "Illegal move: " << line << std::endl;
       return;
     }
 
     processMove(&xboardBoard, move);
-    LOG4CXX_INFO(logger, "board now " << boardToFEN(&xboardBoard));
+    LOG4CPLUS_INFO(logger, "board now " << boardToFEN(&xboardBoard));
     internalConsistencyCheck(&xboardBoard);
     cerr << board_to_string(&xboardBoard) << endl;
     // TODO: verify that you're not moving into check
@@ -273,7 +270,7 @@ void xboardMainLoop() {
 		  }
 		  else {
 		    std::getline(std::cin, line);
-		    LOG4CXX_INFO(logger, "received message " << line);
+		    LOG4CPLUS_INFO(logger, "received message " << line);
 		    gotMessage = true;
 		  }
 		}
@@ -283,7 +280,7 @@ void xboardMainLoop() {
 			}
 			else {
 				line = analysisMessages.front();
-				LOG4CXX_INFO(logger, "received message during analysis " << line);
+				LOG4CPLUS_INFO(logger, "received message during analysis " << line);
 
 				analysisMessages.pop_front();
 				gotMessage = true;
@@ -408,11 +405,11 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 }
 
 void doMove(ChessBoard* board, int reply) {
-  LOG4CXX_INFO(logger, "made move " << MoveToString(reply));
+  LOG4CPLUS_INFO(logger, "made move " << MoveToString(reply));
   processMove(board, reply);
   sendBoardInformation(board);
   internalConsistencyCheck(board);
-  LOG4CXX_INFO(logger, "board now " << boardToFEN(board));
+  LOG4CPLUS_INFO(logger, "board now " << boardToFEN(board));
   cerr << board_to_string(board) << endl;
   cerr << "ready to wait for another move now " << endl;
 }
@@ -467,7 +464,7 @@ void sendBoardInformation(ChessBoard * board) {
 	}
 
 	if (outputBoardInfo) {
-	  LOG4CXX_INFO(logger, "result " << resultString);
+	  LOG4CPLUS_INFO(logger, "result " << resultString);
 	  cout << resultString << std::endl;
 	}
 }

@@ -1,9 +1,8 @@
-#include <log4cxx/logger.h>
-#include <log4cxx/basicconfigurator.h>
-#include <log4cxx/fileappender.h>
-#include <log4cxx/simplelayout.h>
-#include <log4cxx/patternlayout.h>
-#include <log4cxx/helpers/exception.h>
+#include <log4cplus/logger.h>
+#include <log4cplus/layout.h>
+#include <log4cplus/loglevel.h>
+#include <log4cplus/fileappender.h>
+#include <log4cplus/configurator.h>
 
 #include "common.h"
 #include <sstream>
@@ -11,7 +10,7 @@
 extern short firstOnePrecomputed[65536];
 extern short lastOnePrecomputed[65536];
 
-log4cxx::LoggerPtr logger;
+log4cplus::Logger logger;
 
 const BITBOARD firstOne_mask1 = 0xFFFF000000000000ULL;
 const BITBOARD firstOne_mask2 = 0x0000FFFF00000000ULL;
@@ -403,12 +402,22 @@ short string_to_offset(const std::string& str) {
 
 void setupLogging(std::string logname)
 {
-    log4cxx::LayoutPtr layoutPtr(new log4cxx::PatternLayout("[%5p %8r] %m%n"));
-    log4cxx::FileAppender *fileAppender(new log4cxx::FileAppender(layoutPtr, logname, true));
-    log4cxx::helpers::Pool p;
-    fileAppender->activateOptions(p);
-    log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
-    log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
-    logger = log4cxx::Logger::getLogger("logger");
-    LOG4CXX_INFO(logger, "initialized logging");
+  // log4cxx::LayoutPtr layoutPtr(new log4cxx::PatternLayout("[%5p %8r] %m%n"));
+  // log4cxx::FileAppender *fileAppender(new log4cxx::FileAppender(layoutPtr, logname, true));
+  // log4cxx::helpers::Pool p;
+  // fileAppender->activateOptions(p);
+  // log4cxx::BasicConfigurator::configure(log4cxx::AppenderPtr(fileAppender));
+  // log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getDebug());
+  // logger = log4cxx::Logger::getLogger("logger");
+  
+  log4cplus::SharedAppenderPtr fa(new log4cplus::FileAppender(logname));
+  fa->setName("fileOutput");
+  std::auto_ptr<log4cplus::Layout> layout = 
+    std::auto_ptr<log4cplus::Layout>(new log4cplus::PatternLayout("%-5p (%l) %m%n"));
+  fa->setLayout( layout );
+
+  logger = log4cplus::Logger::getInstance("logger");
+  logger.addAppender(fa);
+  logger.setLogLevel( log4cplus::DEBUG_LOG_LEVEL );
+  LOG4CPLUS_INFO(logger, "initialized logging");
 }

@@ -18,7 +18,7 @@
 #include <csignal>
 
 #include <sstream>
-#include <log4cxx/logger.h>
+#include <log4cplus/logger.h>
 
 #define DO_OLD_SORT 			0
 #define SEARCH_DEBUG			0
@@ -28,7 +28,7 @@
 TranspositionTable transpositionTable;
 int timeToNextCheck;
 float TimeoutValue = TIMEOUT_VALUE;
-extern log4cxx::LoggerPtr logger;
+extern log4cplus::Logger logger;
 
 int getMove(ChessBoard * board, search_options* options) {
 	int bookMove = getMoveForPosition(board);
@@ -132,7 +132,7 @@ int getMove_iterativeDeepening(ChessBoard * board, search_options* options) {
 			double diff = getSecondsDiff(&start, &end);
 			outputStats(board, stats, i, score, extractedPV, diff, options);
 
-			LOG4CXX_DEBUG(logger, "" << i << " " << score << extractedPV.toMoveString(board));
+			LOG4CPLUS_DEBUG(logger, "" << i << " " << score << extractedPV.toMoveString(board));
 
 			if (shouldAbortIterativeDeepening(score)) {
 			  break;
@@ -590,7 +590,7 @@ void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics*
 		if (hasInput) {
 			std::string userInput;
 			std::getline(std::cin, userInput);
-			LOG4CXX_INFO(logger, "received message during search " << userInput);
+			LOG4CPLUS_INFO(logger, "received message during search " << userInput);
 
 			if (userInput == "exit")
 				throw TimeoutException();
@@ -603,7 +603,7 @@ void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics*
 				// should not happen
 			}
 			else {
-				LOG4CXX_INFO(logger, "did not recognize " << userInput);
+				LOG4CPLUS_INFO(logger, "did not recognize " << userInput);
 				cerr << "got " << userInput << " during analysis and did not recognize it -- quitting" << endl;
 				analysisMessages.push_back(userInput);
 				throw TimeoutException();
