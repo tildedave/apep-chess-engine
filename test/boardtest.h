@@ -107,6 +107,22 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
 						"testGameResultDetectsCheckmate",
 						&BoardTest::testGameResultDetectsCheckmate ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KK",
+						&BoardTest::testGameResultLackOfMaterial_KK ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KKN",
+						&BoardTest::testGameResultLackOfMaterial_KKN ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KNK",
+						&BoardTest::testGameResultLackOfMaterial_KNK ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KKB",
+						&BoardTest::testGameResultLackOfMaterial_KKB ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KBK",
+						&BoardTest::testGameResultLackOfMaterial_KBK ) );
+
 		return suiteOfTests;
 	}
 	
@@ -577,6 +593,51 @@ public:
 	    loadBoardFromFEN(&board, checkmateFEN);
 	    int gameResult = getGameResult(&board);
 	    CPPUNIT_ASSERT_EQUAL(gameResult, -1);
+	}
+
+	void testGameResultLackOfMaterial_KK() {
+	  ChessBoard board;
+	  std::string kkFEN("7k/8/8/4K3/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, kkFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KNK() {
+	  ChessBoard board;
+	  std::string knkFEN("7k/8/8/4KN2/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, knkFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KKN() {
+	  ChessBoard board;
+	  std::string kknFEN("6nk/8/8/4K3/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, kknFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KBK() {
+	  ChessBoard board;
+	  std::string kbkFEN("7k/8/8/4KB2/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, kbkFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KKB() {
+	  ChessBoard board;
+	  std::string kkbFEN("6bk/8/8/4K3/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, kkbFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
 	}
 };
 

@@ -962,73 +962,56 @@ bool sideToMoveIsInCheck(ChessBoard* board) {
 }
 
 int getGameResult(ChessBoard * board) {
-	// TODO: faster checkmate testing.  for now we just 
-	// generate all possible moves and test them
-	
-	short kingToCheck;
-	int* startMoves = board->checkmateTestMoves;
-	int* endMoves;
-		
-	if (board->whiteToMove) {
-		//cerr << "generating white moves" << endl;
-		endMoves = generateCaptures(board, true, startMoves);
-		endMoves = generateNonCaptures(board, true, endMoves);
-		/*for(int* ptr = startMoves; ptr < endMoves; ++ptr) {
-			cerr << MoveToString(*ptr) << " ";
-		}
-		cerr << endl;
-		cerr << "VS" << endl;
-		for(int* ptr = board->checkmateTestMoves; ptr < endMoves; ++ptr) {
-			cerr << MoveToString(*ptr) << " ";
-		}
-		cerr << endl;*/
-		kingToCheck = KING_WHITE;
-	}
-	else { 
-		endMoves = generateCaptures(board, false, startMoves);
-		endMoves = generateNonCaptures(board, false, endMoves);
-		kingToCheck = KING_BLACK;
-	}
-	
-//	std::stringstream sstream;
-//	bool notify = false;
-//	for(int* ptr = board->checkmateTestMoves; ptr < endMoves; ++ptr) {
-//		if (GetMovePiece(*ptr) != PAWN && MoveToString(*ptr).find("=Q") != string::npos) {
-//			cerr << "roger roger: " << MoveToString(*ptr) << endl;
-//			cerr << board_to_string(board) << endl;
-//			notify = true;
-//		}
-//		sstream << MoveToString(*ptr) << " ";
-//	}
-//	if (notify) {
-//		std::string str;
-//		sstream >> str;
-//		cerr << str << endl;
-//	}
-	
-	for(int* currentMove = board->checkmateTestMoves; currentMove < endMoves; ++currentMove) {
-		//cerr << "\t" << MoveToString(*currentMove) << endl;
-		int move = *currentMove;
+  // TODO: faster checkmate testing.  for now we just 
+  // generate all possible moves and test them
 
-		processMove(board, move);
-		if (!isKingInCheck(board, kingToCheck)) {
-			unprocessMove(board, move);
-			return 0;
-		}
-		unprocessMove(board, move);
-	}
+  // ABLE-TO-MATE TESTING
+  if (board->whitePawns | board->whitePawns == 0) {
+    // check ability to mate
+    
+  }
+
+  // CHECKMATE/STALEMATE TESTING
+  short kingToCheck;
+  int* startMoves = board->checkmateTestMoves;
+  int* endMoves;
+		
+  if (board->whiteToMove) {
+    endMoves = generateCaptures(board, true, startMoves);
+    endMoves = generateNonCaptures(board, true, endMoves);
+    kingToCheck = KING_WHITE;
+  }
+  else { 
+    endMoves = generateCaptures(board, false, startMoves);
+    endMoves = generateNonCaptures(board, false, endMoves);
+    kingToCheck = KING_BLACK;
+  }
 	
-	// NO LEGAL MOVES -- if it's white to move and white is in check, checkmate
-	if (isKingInCheck(board, kingToCheck)) {
-		if (board->whiteToMove)
-			return -1;
-		else 
-			// opposite for black
-			return 1;
-	}
+  for(int* currentMove = board->checkmateTestMoves; 
+      currentMove < endMoves; 
+      ++currentMove) {
+    //cerr << "\t" << MoveToString(*currentMove) << endl;
+    int move = *currentMove;
+
+    processMove(board, move);
+    if (!isKingInCheck(board, kingToCheck)) {
+      unprocessMove(board, move);
+      return 0;
+    }
+    unprocessMove(board, move);
+  }
 	
-	// STALEMATE
-	return 2;
+  // NO LEGAL MOVES -- if it's white to move and white is in check, checkmate
+  if (isKingInCheck(board, kingToCheck)) {
+    if (board->whiteToMove)
+      return -1;
+    else 
+      // opposite for black
+      return 1;
+  }
+	
+  // STALEMATE
+  return 2;
 }
 
 void setGamePhase(ChessBoard * board) {
