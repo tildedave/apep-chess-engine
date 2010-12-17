@@ -462,6 +462,10 @@ void sendBoardInformation(ChessBoard * board) {
 	  outputBoardInfo = true;
 	  resultString = "result 1/2-1/2 {Draw}";
 	}
+	else if (gameResult == 3) {
+	  outputBoardInfo = true;
+	  resultString = "result 1/2-1/2 {Lack of material to force checkmate}";
+	}
 
 	if (outputBoardInfo) {
 	  LOG4CPLUS_INFO(logger, "result " << resultString);
