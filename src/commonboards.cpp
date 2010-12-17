@@ -41,6 +41,9 @@ BITBOARD zobristBlackCanCastleKingside;
 BITBOARD zobristBlackCanCastleQueenside;
 BITBOARD zobristEnPassantSquare;
 
+BITBOARD lightSquares;
+BITBOARD darkSquares;
+
 BITBOARD MASK[64];
 short firstOnePrecomputed[65536];
 short lastOnePrecomputed[65536];
@@ -146,6 +149,9 @@ void initialize_common_boards() {
 
 	initializePassedPawnMask();
 	initializeDoubledPawnMask();
+	
+	lightSquares = 0xAAAAAAAAAAAAAAAALL;
+	darkSquares = 0x5555555555555555LL;
 
 	loadBoardFromFEN(&defaultStartingBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 	centerSquares = 0;

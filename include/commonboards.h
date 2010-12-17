@@ -32,6 +32,9 @@ extern BITBOARD minus9[64];
 // direction from offset to offset
 extern short direction[64][64]; 
 
+extern BITBOARD lightSquares;
+extern BITBOARD darkSquares;
+
 // and rotated bitboards for queens/rooks/bishops
 extern BITBOARD rankAttacks[64][64];
 extern BITBOARD fileAttacks[64][64];
