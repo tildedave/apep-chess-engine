@@ -100,24 +100,16 @@ int do_evaluateBoard(ChessBoard * board, std::ostream* os) {
 		(*os) << "position score: " << position << endl;
 
 	int gameResult = getGameResult(board);
-	if (gameResult == 1) {
-		// checkmate for white
-		if (board->whiteToMove) {
-			return CHECKMATE;
-		}
-		else {
-			return -CHECKMATE;
-		}
-	}
-	else if (gameResult == -1) {
-		if (board->whiteToMove) {
-			return -CHECKMATE;
-		}
-		else {
-			return CHECKMATE;
-		}
-	}
-	else if (gameResult == 2 || gameResult == 3) {
+
+	switch(gameResult) {
+	case 0:
+	  break;
+	case 1:
+	  return (board->whiteToMove ? CHECKMATE : -CHECKMATE);
+	case -1:
+	  return (board->whiteToMove ? -CHECKMATE : CHECKMATE);
+	case 2:
+	case 3:
 	  return 0;
 	}
 
