@@ -99,8 +99,8 @@ int do_evaluateBoard(ChessBoard * board, std::ostream* os) {
 	if (verbose)
 		(*os) << "position score: " << position << endl;
 
-	int isCheckmate = getGameResult(board);
-	if (isCheckmate == 1) {
+	int gameResult = getGameResult(board);
+	if (gameResult == 1) {
 		// checkmate for white
 		if (board->whiteToMove) {
 			return CHECKMATE;
@@ -109,13 +109,16 @@ int do_evaluateBoard(ChessBoard * board, std::ostream* os) {
 			return -CHECKMATE;
 		}
 	}
-	else if (isCheckmate == -1) {
+	else if (gameResult == -1) {
 		if (board->whiteToMove) {
 			return -CHECKMATE;
 		}
 		else {
 			return CHECKMATE;
 		}
+	}
+	else if (gameResult == 2 || gameResult == 3) {
+	  return 0;
 	}
 
 	int totalScore = material + position;

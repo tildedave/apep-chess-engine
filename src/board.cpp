@@ -961,6 +961,43 @@ bool sideToMoveIsInCheck(ChessBoard* board) {
     (!board->whiteToMove && isKingInCheck(board, KING_BLACK));
 }
 
+bool checkForInsufficientMatingMaterial(ChessBoard* board) {
+
+    if ((board->whiteRooks | board->blackRooks | board->whiteQueens | board->blackQueens) == 0) {
+      // no rooks or queens
+
+      if ((board->whiteBishops | board->blackBishops | board->whiteKnights | board->blackKnights) == 0) {
+	return true;
+      }
+
+      if ((board->blackKnights == 0) && 
+	  ((board->whiteBishops | board->blackBishops) == 0) &&
+	  (NumOnes(board->whiteKnights) <= 1)) {
+	return true;
+      }
+
+      if ((board->whiteKnights == 0) && 
+	  ((board->whiteBishops | board->blackBishops) == 0) &&
+	  (NumOnes(board->blackKnights) <= 1)) {
+	return true;
+      }
+
+      if ((board->blackBishops == 0) && 
+	  ((board->whiteKnights | board->whiteKnights) == 0) &&
+	  (NumOnes(board->whiteBishops) <= 1)) {
+	return true;
+      }
+
+      if ((board->whiteBishops == 0) && 
+	  ((board->blackKnights | board->whiteKnights) == 0) &&
+	  (NumOnes(board->blackKnights) <= 1)) {
+	return true;
+      }
+    }
+
+    return false;
+}
+
 int getGameResult(ChessBoard * board) {
   // TODO: faster checkmate testing.  for now we just 
   // generate all possible moves and test them
@@ -968,33 +1005,8 @@ int getGameResult(ChessBoard * board) {
   // ABLE-TO-MATE TESTING
   if ((board->whitePawns | board->blackPawns) == 0) {
     // check ability to mate
-
-    if ((board->whiteRooks | board->blackRooks | board->whiteQueens | board->blackQueens) == 0) {
-      // no rooks or queens
-
-      /*
-      bool whiteHasBishops = (board->whiteBishops == 0);
-      bool blackHasBishops = (board->blackBishops == 0);
-
-      bool whiteHasKnights = (board->whiteKnights == 0);
-      bool blackHasKnights = (board->blackKnights == 0);
-      */
-
-      if ((board->whiteBishops | board->blackBishops | board->whiteKnights | board->blackKnights) == 0) {
-	return 3;
-      }
-
-      if ((NumOnes(board->whiteKnights) <= 1) && 
-	  (board->blackKnights == 0) && 
-	  ((board->whiteBishops | board->blackBishops) == 0)) {
-	return 3;
-      }
-
-      if ((NumOnes(board->blackKnights) <= 1) && 
-	  (board->whiteKnights == 0) && 
-	  ((board->whiteBishops | board->blackBishops) == 0)) {
-	return 3;
-      }
+    if (checkForInsufficientMatingMaterial(board)) {
+      return 3;
     }
   }
 

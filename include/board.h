@@ -150,6 +150,7 @@ BITBOARD get_black_attacksto_bitboard(ChessBoard* board, short offset);
 
 // TEST FOR CHECKMATE
 
+bool checkForInsufficientMatingMaterial(ChessBoard* board);
 int getGameResult(ChessBoard* board);
 bool sideToMoveIsInCheck(ChessBoard* board);
 
