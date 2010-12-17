@@ -966,9 +966,36 @@ int getGameResult(ChessBoard * board) {
   // generate all possible moves and test them
 
   // ABLE-TO-MATE TESTING
-  if (board->whitePawns | board->whitePawns == 0) {
+  if ((board->whitePawns | board->blackPawns) == 0) {
     // check ability to mate
-    
+
+    if ((board->whiteRooks | board->blackRooks | board->whiteQueens | board->blackQueens) == 0) {
+      // no rooks or queens
+
+      /*
+      bool whiteHasBishops = (board->whiteBishops == 0);
+      bool blackHasBishops = (board->blackBishops == 0);
+
+      bool whiteHasKnights = (board->whiteKnights == 0);
+      bool blackHasKnights = (board->blackKnights == 0);
+      */
+
+      if ((board->whiteBishops | board->blackBishops | board->whiteKnights | board->blackKnights) == 0) {
+	return 3;
+      }
+
+      if ((NumOnes(board->whiteKnights) <= 1) && 
+	  (board->blackKnights == 0) && 
+	  ((board->whiteBishops | board->blackBishops) == 0)) {
+	return 3;
+      }
+
+      if ((NumOnes(board->blackKnights) <= 1) && 
+	  (board->whiteKnights == 0) && 
+	  ((board->whiteBishops | board->blackBishops) == 0)) {
+	return 3;
+      }
+    }
   }
 
   // CHECKMATE/STALEMATE TESTING
