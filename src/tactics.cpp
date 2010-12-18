@@ -13,7 +13,6 @@
 namespace po = boost::program_options;
 
 //int randomSeed = -1;
-extern float TimeoutValue;
 
 TacticsModule::TacticsModule(const std::string& fenString, 
 			     const std::string& expected,
@@ -31,7 +30,8 @@ TacticsModule::run() {
 
   search_options options;
   options.noisyMode = true;
-  
+  options.TimeoutValue = timeout_;
+
   int move = getMove(&board, &options);
   this->moveString_ = MoveToString(move);
 

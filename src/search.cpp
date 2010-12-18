@@ -27,7 +27,6 @@
 // transposition table
 TranspositionTable transpositionTable;
 int timeToNextCheck;
-float TimeoutValue = TIMEOUT_VALUE;
 extern log4cplus::Logger logger;
 
 int getMove(ChessBoard * board, search_options* options) {
@@ -612,7 +611,7 @@ void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics*
 	}
 
 	double secondsDiff = getSecondsDiff(&searchInfo->startTime, &currentTime);
-	if (secondsDiff > TimeoutValue) 
+	if (secondsDiff > options->TimeoutValue) 
 		throw TimeoutException();
 }
 

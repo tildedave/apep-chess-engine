@@ -14,6 +14,7 @@ std::list<std::string> analysisMessages;
 bool forceMode = true;
 bool computerMode = false;
 bool AnalysisMode = false;
+float TimeoutValue = false;
 int timeLeft;
 int opponentTimeLeft;
 

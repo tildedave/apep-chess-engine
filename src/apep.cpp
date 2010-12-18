@@ -36,7 +36,6 @@ using namespace std;
 namespace po = boost::program_options;
 
 int randomSeed = -1;
-extern float TimeoutValue;
 
 int outputUsage(const po::options_description& desc) {
   std::cout << desc << std::endl;
@@ -101,8 +100,6 @@ int main(int argc, char** argv) {
   int timeout = vm["timeout"].as<int>();
 
   if (vm.count("tactics")) {
-    TimeoutValue = timeout;
-
     setupLogging("apep.tactics.log");
     if (!vm.count("file")) {
       if (!vm.count("fen")) {
