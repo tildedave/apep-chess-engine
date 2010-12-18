@@ -4,7 +4,6 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include "commontest.h"
 #include "boardtest.h"
-#include "searchtest.h"
 #include "evaltest.h"
 #include "movetest.h"
 
@@ -18,7 +17,6 @@ int main(int argc, char** argv) {
 	runner.addTest( CommonTest::suite() );
 	runner.addTest( EvalTest::suite() );
 	runner.addTest( MoveTest::suite() );
-	//runner.addTest( SearchTest::suite() );
 
 	runner.run();	
 	return 0;
