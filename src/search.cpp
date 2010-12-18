@@ -205,7 +205,8 @@ int getSearchDepthWithExtensions(short  & depthLeft, ChessBoard *& board, int & 
     	searchDepth += 1;
     }
     else if(movePushesPawnToSixthRank(board, nextMove, !board->whiteToMove)){
-    	searchDepth += 2;
+      // TODO: I think that this extension is causing an unnecessary amount of work
+    	searchDepth += 1;
     }
 
     return searchDepth;
