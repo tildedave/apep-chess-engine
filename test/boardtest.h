@@ -122,6 +122,18 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
 						"testGameResultDetectsLackOfMaterial_KBK",
 						&BoardTest::testGameResultLackOfMaterial_KBK ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KBK",
+						&BoardTest::testGameResultLackOfMaterial_KBK ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KBKB_LightSquares",
+						&BoardTest::testGameResultLackOfMaterial_KBKB_LightSquares ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KBKB_DarkSquares",
+						&BoardTest::testGameResultLackOfMaterial_KBKB_DarkSquares ) );
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+						"testGameResultDetectsLackOfMaterial_KBKB_OppositeSquaresShouldNotEndGame",
+						&BoardTest::testGameResultLackOfMaterial_KBKB_OppositeSquaresShouldNotEndGame ) );
 
 		return suiteOfTests;
 	}
@@ -638,6 +650,34 @@ public:
 	  int gameResult = getGameResult(&board);
 
 	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KBKB_LightSquares() {
+	  ChessBoard board;
+	  std::string kbkbFEN("8/8/2B1K3/8/8/8/4b3/6k1 w - - 0 1");
+
+	  loadBoardFromFEN(&board, kbkbFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KBKB_DarkSquares() {
+	  ChessBoard board;
+	  std::string kbkbFEN("8/8/1B2K3/8/8/8/3b4/6k1 w - - 0 1");
+	  loadBoardFromFEN(&board, kbkbFEN);
+	  int gameResult = getGameResult(&board);
+
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 3);
+	}
+
+	void testGameResultLackOfMaterial_KBKB_OppositeSquaresShouldNotEndGame() {
+	  ChessBoard board;
+	  std::string kbkbFEN("8/8/1B2K3/8/8/8/2b5/6k1 w - - 0 1");
+	  loadBoardFromFEN(&board, kbkbFEN);
+
+	  int gameResult = getGameResult(&board);
+	  CPPUNIT_ASSERT_EQUAL(gameResult, 0);
 	}
 };
 
