@@ -970,29 +970,46 @@ bool checkForInsufficientMatingMaterial(ChessBoard* board) {
 	return true;
       }
 
-      if ((board->blackKnights == 0) && 
-	  ((board->whiteBishops | board->blackBishops) == 0) &&
-	  (NumOnes(board->whiteKnights) <= 1)) {
-	return true;
+      if ((board->whiteBishops | board->blackBishops) == 0) {
+	if ((board->blackKnights == 0) && 
+	    (NumOnes(board->whiteKnights) <= 1)) {
+	  return true;
+	}
+	
+	if ((board->whiteKnights == 0) && 
+	    (NumOnes(board->blackKnights) <= 1)) {
+	  return true;
+	}
       }
 
-      if ((board->whiteKnights == 0) && 
-	  ((board->whiteBishops | board->blackBishops) == 0) &&
-	  (NumOnes(board->blackKnights) <= 1)) {
-	return true;
+      if ((board->whiteKnights | board->blackKnights) == 0) {
+	if ((board->blackBishops == 0) && 
+	    (NumOnes(board->whiteBishops) <= 1)) {
+	  return true;
+	}
+
+	if ((board->whiteBishops == 0) && 
+	    (NumOnes(board->blackKnights) <= 1)) {
+	  return true;
+	}
+
+	bool whiteOnLight = ((board->whiteBishops & lightSquares) != 0);
+	bool whiteOnDark = ((board->whiteBishops & darkSquares) != 0);
+	bool blackOnLight = ((board->blackBishops & lightSquares) != 0);
+	bool blackOnDark = ((board->blackBishops & darkSquares) != 0);
+
+
+	if (whiteOnLight && !whiteOnDark && blackOnLight && !blackOnDark) {
+	  return true;
+	}
+
+	if (whiteOnDark && !whiteOnLight && blackOnDark && !blackOnLight) {
+	  return true;
+	}
       }
 
-      if ((board->blackBishops == 0) && 
-	  ((board->whiteKnights | board->whiteKnights) == 0) &&
-	  (NumOnes(board->whiteBishops) <= 1)) {
-	return true;
-      }
 
-      if ((board->whiteBishops == 0) && 
-	  ((board->blackKnights | board->whiteKnights) == 0) &&
-	  (NumOnes(board->blackKnights) <= 1)) {
-	return true;
-      }
+      // kings and bishops with only 
     }
 
     return false;
