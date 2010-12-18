@@ -575,6 +575,7 @@ double getSecondsDiff(timeval * start, timeval * end) {
 #endif
 
 void checkTimeout(ChessBoard* board, search_info* searchInfo, search_statistics* stats, search_options* options) {
+  std::cerr << "checking timeout: " << options->TimeoutValue << std::endl;
 #ifdef WIN32
 	SYSTEMTIME currentSystemTime;
 	FILETIME currentTime;

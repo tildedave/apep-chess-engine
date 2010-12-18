@@ -14,7 +14,7 @@ std::list<std::string> analysisMessages;
 bool forceMode = true;
 bool computerMode = false;
 bool AnalysisMode = false;
-float TimeoutValue = false;
+float TimeoutValue = TIMEOUT_VALUE;
 int timeLeft;
 int opponentTimeLeft;
 
@@ -395,11 +395,11 @@ void xboardMainLoop() {
 }
 
 void analyzeBoard(ChessBoard * board, bool whiteToMove) {
-	TimeoutValue = INFINITE_VALUE;
 	search_options options;
 	options.analysisMode = true;
 	options.noisyMode = true;
         options.outputNodesPerMove = true;
+	options.TimeoutValue = INFINITE_VALUE;
 
 	int reply = getMove(board, &options);
 	// only get here after we are forced to time out
@@ -420,6 +420,8 @@ void searchForMove(ChessBoard * board, bool white) {
 	if (!forceMode) {
 	        search_options options;
                 options.noisyMode = true;
+		options.TimeoutValue = TimeoutValue;
+
 		int reply = getMove(board, &options);
 
 		cout << "move " << MoveToXboardString(reply) << endl;
