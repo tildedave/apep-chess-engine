@@ -66,7 +66,6 @@ typedef struct search_options {
 
 extern int timeToNextCheck;
 extern int currentSearchDepth;
-extern bool AnalysisMode;
 
 extern TranspositionTable table;
 

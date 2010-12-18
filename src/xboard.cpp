@@ -11,15 +11,19 @@
 extern log4cplus::Logger logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
-bool forceMode = true;
-bool computerMode = false;
-bool AnalysisMode = false;
-float TimeoutValue = TIMEOUT_VALUE;
-int timeLeft;
-int opponentTimeLeft;
+
+XboardModule::XboardModule() : 
+  forceMode_(true),
+  computerMode_(false),
+  AnalysisMode_(false),
+  TimeoutValue_(TIMEOUT_VALUE),
+  timeLeft_(0),
+  opponentTimeLeft_(0)
+{
+}
 
 std::string 
-MoveToXboardString(int move) {
+XboardModule::MoveToXboardString(int move) {
 	short fromOffset = GetFrom(move);
 	short toOffset = GetTo(move);
 	short promotionPiece = GetPromotionPiece(move);
@@ -39,7 +43,8 @@ MoveToXboardString(int move) {
 	return str;
 }
 
-int CoordStringToMove(ChessBoard * board, const std::string& str) {
+int 
+CoordStringToMove(ChessBoard * board, const std::string& str) {
 	std::string firstOffset = str.substr(0, 2);
 	std::string secondOffset = str.substr(2, 2);
 	bool whiteToMove = board->whiteToMove;
@@ -87,7 +92,8 @@ int CoordStringToMove(ChessBoard * board, const std::string& str) {
 	}
 }
 
-void protocolNew()
+void 
+XboardModule::protocolNew()
 {
     // CECP: Reset the board to the standard chess starting position. Set White 
     // on move. Leave force mode and set the engine to play Black. Associate 
@@ -98,11 +104,12 @@ void protocolNew()
     memset(&xboardBoard, 0, sizeof (ChessBoard));
     loadBoardFromFEN(&xboardBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     cerr << board_to_string(&xboardBoard) << endl;
-    forceMode = false;
-    TimeoutValue = TIMEOUT_VALUE;
+    forceMode_ = false;
+    TimeoutValue_ = TIMEOUT_VALUE;
 }
 
-void protocolProtover2()
+void 
+XboardModule::protocolProtover2()
 {
     std::cout << "feature ";
     std::cout << "myname=\"apep 0.1.0\" ";
@@ -113,7 +120,8 @@ void protocolProtover2()
     std::cout << endl;
 }
 
-void protocolRandom()
+void 
+XboardModule::protocolRandom()
 {
     // TODO: random additions to Chess Player's evaluation
     // CECP: This command is specific to GNU Chess 4. You can either ignore it completely 
@@ -123,28 +131,31 @@ void protocolRandom()
     // The "new" command sets random mode off.
 }
 
-void protocolForce()
+void 
+XboardModule::protocolForce()
 {
     // CECP: Set the engine to play neither color ("force mode"). Stop clocks. 
     // The engine should check that moves received in force mode are legal 
     // and made in the proper turn, but should not think, ponder, or make 
     // moves of its own.
-    forceMode = true;
+    forceMode_ = true;
 }
 
-void protocolGo()
+void 
+XboardModule::protocolGo()
 {
     // CECP: Leave force mode and set the engine to play the color that is on move. 
     // Associate the engine's clock with the color that is on move, the opponent's 
     // clock with the color that is not on move. Start the engine's clock. Start 
     // thinking and eventually make a move.
     // TODO: launch thread to find move
-    forceMode = false;
+    forceMode_ = false;
     searchForMove(&xboardBoard, xboardBoard.whiteToMove);
 }
 
 
-bool validateMove(ChessBoard* board, int reply) {
+bool 
+XboardModule::validateMove(ChessBoard* board, int reply) {
   int moveList[MAX_BRANCH];
 
   int* endCaptures = generateCaptures(board, board->whiteToMove, moveList);
@@ -159,7 +170,8 @@ bool validateMove(ChessBoard* board, int reply) {
   return false;
 }
 
-void protocolMove(std::string & line)
+void 
+XboardModule::protocolMove(std::string & line)
 {
     int move = CoordStringToMove(&xboardBoard, line);
     LOG4CPLUS_INFO(logger, "got move string " << line << " (" << MoveToString(move) << ")");
@@ -181,7 +193,9 @@ void protocolMove(std::string & line)
         searchForMove(&xboardBoard, xboardBoard.whiteToMove);
 
 }
-void protocolSetBoard(std::string & line)
+
+void 
+XboardModule::protocolSetBoard(std::string & line)
 {
     // CECP: The setboard command is the new way to set up
     // positions, beginning in protocol version 2. It is not
@@ -193,10 +207,11 @@ void protocolSetBoard(std::string & line)
     memset(&xboardBoard, 0, sizeof (ChessBoard));
     loadBoardFromFEN(&xboardBoard, fenString);
     cout << board_to_string(&xboardBoard) << endl;
-    forceMode = false;
+    forceMode_ = false;
 }
 
-void protocolUndo()
+void 
+XboardModule::protocolUndo()
 {
     if(xboardBoard.moveIndex != 0){
         cerr << "got undo -- " << xboardBoard.moveIndex << endl;
@@ -208,7 +223,8 @@ void protocolUndo()
     }
 }
 
-void protocolRemove()
+void 
+XboardModule::protocolRemove()
 {
 	// If the user asks to retract a move, xboard will send you the "remove" command. It sends
 	// this command only when the user is on move. Your engine should undo the last two moves
@@ -218,28 +234,32 @@ void protocolRemove()
 	protocolUndo();
 }
 
-void protocolAnalyze()
+void 
+XboardModule::protocolAnalyze()
 {
-    AnalysisMode = true;
+    AnalysisMode_ = true;
     analyzeBoard(&xboardBoard, xboardBoard.whiteToMove);
     cout << board_to_string(&xboardBoard) << endl;
 }
 
-void protocolTime(std::string & line)
+void 
+XboardModule::protocolTime(std::string & line)
 {
     std::string::size_type st = line.find(" ", 0);
     std::string timeString = line.substr(st + 1, std::string::npos);
-    timeLeft = string_to_int(timeString);
+    this->timeLeft_ = string_to_int(timeString);
 }
 
-void protocolOtime(std::string & line)
+void 
+XboardModule::protocolOtime(std::string & line)
 {
     std::string::size_type st = line.find(" ", 0);
     std::string timeString = line.substr(st + 1, std::string::npos);
-    opponentTimeLeft = string_to_int(timeString);
+    this->opponentTimeLeft_ = string_to_int(timeString);
 }
 
-void protocolEval()
+void 
+XboardModule::protocolEval()
 {
     cout << board_to_string(&xboardBoard) << endl;
     //int material = getMaterialScore(&xboardBoard);
@@ -249,23 +269,23 @@ void protocolEval()
     cout << "total: " << total << endl;
 }
 
-void protocolSt(std::string & line)
+void 
+XboardModule::protocolSt(std::string & line)
 {
     std::string searchTime = line.substr(3);
-    TimeoutValue = string_to_int(searchTime);
-    std::cout << "got st " << TimeoutValue << endl;
+    TimeoutValue_ = string_to_int(searchTime);
+    std::cout << "got st " << TimeoutValue_ << endl;
 }
 
-void xboardMainLoop() {
-	setupLogging();
-
+void 
+XboardModule::run() {
 	bool shouldContinue = true;
 
 	while (shouldContinue) {
 		std::string line;
 		bool gotMessage = false;
 
-		if (!AnalysisMode) {
+		if (!AnalysisMode_) {
 		  if (std::cin.eof()) {
 		    break;
 		  }
@@ -326,7 +346,7 @@ void xboardMainLoop() {
 			protocolAnalyze();
 		}
 		else if (line == "exit") {
-			AnalysisMode = false;
+			AnalysisMode_ = false;
 		}
 		else if (isMoveString(line)) {
 			protocolMove(line);
@@ -394,7 +414,8 @@ void xboardMainLoop() {
 	}
 }
 
-void analyzeBoard(ChessBoard * board, bool whiteToMove) {
+void 
+XboardModule::analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	search_options options;
 	options.analysisMode = true;
 	options.noisyMode = true;
@@ -405,7 +426,8 @@ void analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	// only get here after we are forced to time out
 }
 
-void doMove(ChessBoard* board, int reply) {
+void 
+XboardModule::doMove(ChessBoard* board, int reply) {
   LOG4CPLUS_INFO(logger, "made move " << MoveToString(reply));
   processMove(board, reply);
   sendBoardInformation(board);
@@ -415,12 +437,13 @@ void doMove(ChessBoard* board, int reply) {
   cerr << "ready to wait for another move now " << endl;
 }
 
-void searchForMove(ChessBoard * board, bool white) {
+void 
+XboardModule::searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
-	if (!forceMode) {
+	if (!forceMode_) {
 	        search_options options;
                 options.noisyMode = true;
-		options.TimeoutValue = TimeoutValue;
+		options.TimeoutValue = TimeoutValue_;
 
 		int reply = getMove(board, &options);
 
@@ -433,7 +456,8 @@ void searchForMove(ChessBoard * board, bool white) {
 	}
 }
 
-bool isMoveString(const std::string& str) {
+bool 
+XboardModule::isMoveString(const std::string& str) {
 
 	if (str.length() >= 4) {
 		char fromFile = str[0];
@@ -447,7 +471,8 @@ bool isMoveString(const std::string& str) {
 	return false;
 }
 
-void sendBoardInformation(ChessBoard * board) {
+void 
+XboardModule::sendBoardInformation(ChessBoard * board) {
 	int gameResult = getGameResult(board);
 	bool outputBoardInfo = false;
 	std::string resultString;
@@ -476,14 +501,15 @@ void sendBoardInformation(ChessBoard * board) {
 	}
 }
 
-void setTimeoutValue(ChessBoard * board) {
+void 
+XboardModule::setTimeoutValue(ChessBoard * board) {
 	// current time left is in global 'timeLeft' variable
 	int movesUntilNextTimeControl = 41 - (board->fullmoveClock % 41);
 	// so we have movesUntilNextTimeControl to distribute these
 	// seconds.
 
-	float amountOfTime = ((float) timeLeft) / (movesUntilNextTimeControl * 100.0);
+	float amountOfTime = ((float) timeLeft_) / (movesUntilNextTimeControl * 100.0);
 	cerr << "searching for " << amountOfTime << " seconds..." << endl;
 
-	TimeoutValue = amountOfTime;
+	TimeoutValue_ = amountOfTime;
 }

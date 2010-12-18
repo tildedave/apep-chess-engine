@@ -154,8 +154,8 @@ int main(int argc, char** argv) {
 
   setupLogging();
   loadOpeningBook(vm["book"].as<std::string>());
-  
-  xboardMainLoop();
+  XboardModule xm;
+  xm.run();
   
   return 0;
 }
