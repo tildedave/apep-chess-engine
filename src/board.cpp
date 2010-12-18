@@ -962,57 +962,56 @@ bool sideToMoveIsInCheck(ChessBoard* board) {
 }
 
 bool checkForInsufficientMatingMaterial(ChessBoard* board) {
+  if ((board->whitePawns | board->blackPawns) != 0)
+    return false;
+  
+  
+  if ((board->whiteRooks | board->blackRooks | board->whiteQueens | board->blackQueens) == 0) {
+    // no rooks or queens, so we can check in depth
 
-    if ((board->whiteRooks | board->blackRooks | board->whiteQueens | board->blackQueens) == 0) {
-      // no rooks or queens
+    if ((board->whiteBishops | board->blackBishops | board->whiteKnights | board->blackKnights) == 0) {
+      return true;
+    }
 
-      if ((board->whiteBishops | board->blackBishops | board->whiteKnights | board->blackKnights) == 0) {
+    if ((board->whiteBishops | board->blackBishops) == 0) {
+      if ((board->blackKnights == 0) && 
+	  (NumOnes(board->whiteKnights) <= 1)) {
+	return true;
+      }
+	
+      if ((board->whiteKnights == 0) && 
+	  (NumOnes(board->blackKnights) <= 1)) {
+	return true;
+      }
+    }
+
+    if ((board->whiteKnights | board->blackKnights) == 0) {
+      if ((board->blackBishops == 0) && 
+	  (NumOnes(board->whiteBishops) <= 1)) {
 	return true;
       }
 
-      if ((board->whiteBishops | board->blackBishops) == 0) {
-	if ((board->blackKnights == 0) && 
-	    (NumOnes(board->whiteKnights) <= 1)) {
-	  return true;
-	}
-	
-	if ((board->whiteKnights == 0) && 
-	    (NumOnes(board->blackKnights) <= 1)) {
-	  return true;
-	}
+      if ((board->whiteBishops == 0) && 
+	  (NumOnes(board->blackKnights) <= 1)) {
+	return true;
       }
 
-      if ((board->whiteKnights | board->blackKnights) == 0) {
-	if ((board->blackBishops == 0) && 
-	    (NumOnes(board->whiteBishops) <= 1)) {
-	  return true;
-	}
+      bool whiteOnLight = ((board->whiteBishops & lightSquares) != 0);
+      bool whiteOnDark = ((board->whiteBishops & darkSquares) != 0);
+      bool blackOnLight = ((board->blackBishops & lightSquares) != 0);
+      bool blackOnDark = ((board->blackBishops & darkSquares) != 0);
 
-	if ((board->whiteBishops == 0) && 
-	    (NumOnes(board->blackKnights) <= 1)) {
-	  return true;
-	}
-
-	bool whiteOnLight = ((board->whiteBishops & lightSquares) != 0);
-	bool whiteOnDark = ((board->whiteBishops & darkSquares) != 0);
-	bool blackOnLight = ((board->blackBishops & lightSquares) != 0);
-	bool blackOnDark = ((board->blackBishops & darkSquares) != 0);
-
-
-	if (whiteOnLight && !whiteOnDark && blackOnLight && !blackOnDark) {
-	  return true;
-	}
-
-	if (whiteOnDark && !whiteOnLight && blackOnDark && !blackOnLight) {
-	  return true;
-	}
+      if (whiteOnLight && !whiteOnDark && blackOnLight && !blackOnDark) {
+	return true;
       }
 
-
-      // kings and bishops with only 
+      if (whiteOnDark && !whiteOnLight && blackOnDark && !blackOnLight) {
+	return true;
+      }
     }
+  }
 
-    return false;
+  return false;
 }
 
 int getGameResult(ChessBoard * board) {
@@ -1020,11 +1019,8 @@ int getGameResult(ChessBoard * board) {
   // generate all possible moves and test them
 
   // ABLE-TO-MATE TESTING
-  if ((board->whitePawns | board->blackPawns) == 0) {
-    // check ability to mate
-    if (checkForInsufficientMatingMaterial(board)) {
-      return 3;
-    }
+  if (checkForInsufficientMatingMaterial(board)) {
+    return 3;
   }
 
   // CHECKMATE/STALEMATE TESTING
