@@ -197,18 +197,12 @@ bool kingIsExposedOnEdgeOfBoard(ChessBoard* board, int move, bool whiteToMove) {
   BITBOARD kingBitboard = (whiteToMove) ? board->blackKings : board->whiteKings;
   short kingOffset = (whiteToMove) ? board->blackKingOffset : board->whiteKingOffset;
 
-  std::cerr << bitboard_to_string(edgeOfBoard) << std::endl;
-  std::cerr << bitboard_to_string(kingBitboard) << std::endl;
-
   if ((kingBitboard & edgeOfBoard) != 0) {
 
-    std::cerr << "sup" << std::endl;
     BITBOARD enemyAttacks = (whiteToMove) ? 
       get_white_attacksto_bitboard(board, kingOffset) :
       get_black_attacksto_bitboard(board, kingOffset);
     BITBOARD kingAttacks = kingMoves[kingOffset];
-    
-  std::cerr << bitboard_to_string(enemyAttacks) << std::endl;
 
     if ((enemyAttacks & kingAttacks) != 0) {
       return true;
@@ -223,7 +217,7 @@ int getSearchDepthWithExtensions(short  & depthLeft, ChessBoard *& board, int & 
 {
     int searchDepth = depthLeft - 1;
     if(playerToMoveIsInCheck(board)){
-        // check extension
+      // check extension
         searchDepth += 1;
     }
     else if(movePushesPawnToSeventhRank(board, nextMove, !board->whiteToMove)){
