@@ -50,12 +50,15 @@ extern BITBOARD zobristBlackCanCastleKingside;
 extern BITBOARD zobristBlackCanCastleQueenside;
 extern BITBOARD zobristEnPassantSquare;
 
+// UTILITY BITBOARDS
+
 extern BITBOARD mask[64];
 extern BITBOARD whitePassedPawnMask[64];
 extern BITBOARD blackPassedPawnMask[64];
 extern BITBOARD whiteDoubledPawnMask[64];
 extern BITBOARD blackDoubledPawnMask[64];
 extern BITBOARD centerSquares;
+extern BITBOARD edgeOfBoard;
 
 // ROTATED BITBOARDS
 

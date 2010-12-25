@@ -192,6 +192,31 @@ bool movePushesPawnToSixthRank(ChessBoard * board, int move, bool whiteToMove) {
 	return false;
 }
 
+bool kingIsExposedOnEdgeOfBoard(ChessBoard* board, int move, bool whiteToMove) {
+  //TODO: cache attacksto board
+  BITBOARD kingBitboard = (whiteToMove) ? board->blackKings : board->whiteKings;
+  short kingOffset = (whiteToMove) ? board->blackKingOffset : board->whiteKingOffset;
+
+  std::cerr << bitboard_to_string(edgeOfBoard) << std::endl;
+  std::cerr << bitboard_to_string(kingBitboard) << std::endl;
+
+  if ((kingBitboard & edgeOfBoard) != 0) {
+
+    std::cerr << "sup" << std::endl;
+    BITBOARD enemyAttacks = (whiteToMove) ? 
+      get_white_attacksto_bitboard(board, kingOffset) :
+      get_black_attacksto_bitboard(board, kingOffset);
+    BITBOARD kingAttacks = kingMoves[kingOffset];
+    
+  std::cerr << bitboard_to_string(enemyAttacks) << std::endl;
+
+    if ((enemyAttacks & kingAttacks) != 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 
 int getSearchDepthWithExtensions(short  & depthLeft, ChessBoard *& board, int & nextMove)
@@ -207,6 +232,9 @@ int getSearchDepthWithExtensions(short  & depthLeft, ChessBoard *& board, int & 
     else if(movePushesPawnToSixthRank(board, nextMove, !board->whiteToMove)){
       // TODO: I think that this extension is causing an unnecessary amount of work
     	searchDepth += 1;
+    }
+    else if (kingIsExposedOnEdgeOfBoard(board, nextMove, !board->whiteToMove)) {
+      searchDepth += 1;
     }
 
     return searchDepth;

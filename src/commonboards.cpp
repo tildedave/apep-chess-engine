@@ -55,6 +55,7 @@ BITBOARD whitePassedPawnMask[64];
 BITBOARD blackPassedPawnMask[64];
 
 BITBOARD centerSquares;
+BITBOARD edgeOfBoard;
 
 short rotate90R[64] = {
 		56, 48, 40, 32, 24, 16,  8,   0,
@@ -163,6 +164,36 @@ void initialize_common_boards() {
 	centerSquares |= offset_to_mask(E5);
 	centerSquares |= offset_to_mask(D6);
 	centerSquares |= offset_to_mask(E6);
+
+	edgeOfBoard = 0;
+	edgeOfBoard |= offset_to_mask(A1);
+	edgeOfBoard |= offset_to_mask(B1);
+	edgeOfBoard |= offset_to_mask(C1);
+	edgeOfBoard |= offset_to_mask(D1);
+	edgeOfBoard |= offset_to_mask(E1);
+	edgeOfBoard |= offset_to_mask(F1);
+	edgeOfBoard |= offset_to_mask(G1);
+	edgeOfBoard |= offset_to_mask(H1);
+	edgeOfBoard |= offset_to_mask(A8);
+	edgeOfBoard |= offset_to_mask(B8);
+	edgeOfBoard |= offset_to_mask(C8);
+	edgeOfBoard |= offset_to_mask(D8);
+	edgeOfBoard |= offset_to_mask(E8);
+	edgeOfBoard |= offset_to_mask(F8);
+	edgeOfBoard |= offset_to_mask(G8);
+	edgeOfBoard |= offset_to_mask(H8);
+	edgeOfBoard |= offset_to_mask(A2);
+	edgeOfBoard |= offset_to_mask(H2);
+	edgeOfBoard |= offset_to_mask(A3);
+	edgeOfBoard |= offset_to_mask(H3);
+	edgeOfBoard |= offset_to_mask(A4);
+	edgeOfBoard |= offset_to_mask(H4);
+	edgeOfBoard |= offset_to_mask(A5);
+	edgeOfBoard |= offset_to_mask(H5);
+	edgeOfBoard |= offset_to_mask(A6);
+	edgeOfBoard |= offset_to_mask(H6);
+	edgeOfBoard |= offset_to_mask(A7);
+	edgeOfBoard |= offset_to_mask(H7);
 }
 
 void initializeZobristArray() {
