@@ -5,6 +5,7 @@
 #include "moveprocess.h"
 #include "xboard.h"
 #include "openbook.h"
+#include "board.h"
 
 #include <stdio.h>
 #ifdef WIN32
@@ -192,6 +193,28 @@ bool movePushesPawnToSixthRank(ChessBoard * board, int move, bool whiteToMove) {
 	return false;
 }
 
+
+bool checkForStalematedEnemyKing(ChessBoard* board, bool whiteToMove) {
+  short offset = (whiteToMove) ? board->blackKingOffset : board->whiteKingOffset;
+
+  BITBOARD moves = kingMoves[offset];
+  BITBOARD ownPieces = (whiteToMove) ? board->blackPieces : board->whitePieces;
+  BITBOARD ownKings = (whiteToMove) ? board->blackKings : board->whiteKings;
+  ownPieces ^= ownKings;
+  
+  if ((ownPieces & moves) == moves) {
+    return false;
+  }
+  
+  BITBOARD otherPieces = (whiteToMove) ? board->whitePieces : board->blackPieces;
+  BITBOARD attacks = getAttacksBitboard(board, whiteToMove) | otherPieces;
+
+  if (((attacks | ownPieces) & moves) == moves) {
+    return true;
+  }
+
+  return false;
+}
 
 
 int getSearchDepthWithExtensions(short  & depthLeft, ChessBoard *& board, int & nextMove)

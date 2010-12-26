@@ -931,6 +931,51 @@ BITBOARD get_black_attacksto_bitboard(ChessBoard* board, short offset) {
 	return attackMask;
 }
 
+BITBOARD getAttacksBitboard(ChessBoard* board, bool whiteToMove) {
+  BITBOARD attackMask = 0;
+  BITBOARD bishops = (whiteToMove) ? 
+    (board->whiteBishops | board->whiteQueens) : 
+    (board->blackBishops | board->blackQueens);
+  while(bishops != 0) {
+    short offset = FirstOne(bishops);
+    bishops ^= offset_to_mask(offset);
+    attackMask |= get_bishop_attack_board(board, offset);
+  }
+
+  BITBOARD rooks = (whiteToMove) ? 
+    (board->whiteRooks | board->whiteQueens) :
+    (board->blackRooks | board->blackQueens);
+  while(rooks != 0) {
+    short offset = FirstOne(rooks);
+    rooks ^= offset_to_mask(offset);
+    attackMask |= get_rook_attack_board(board, offset);
+  }
+
+  BITBOARD knights = (whiteToMove) ? 
+    (board->whiteKnights) : (board->blackKnights);
+  while (knights != 0) {
+    short offset = FirstOne(knights);
+    knights ^= offset_to_mask(offset);
+    attackMask |= knightMoves[offset];
+  }
+
+  BITBOARD pawns = (whiteToMove) ? 
+    (board->whitePawns) : (board->blackPawns);
+  while (pawns != 0) {
+    short offset = FirstOne(pawns);
+    pawns ^= offset_to_mask(offset);
+    attackMask |= (whiteToMove) ? (pawnMovesWhite[offset]) : (pawnMovesBlack[offset]);
+  }
+
+  BITBOARD kings = (whiteToMove) ? (board->whiteKings) : (board->blackKings);
+  while (kings != 0) {
+    short offset = FirstOne(kings);
+    kings ^= offset_to_mask(offset);
+    attackMask |= kingMoves[offset];
+  }
+
+  return attackMask;
+}
 
 void setWhiteCanCastleKingside(ChessBoard * board, bool b) {
 	if (board->whiteCanCastleKingside != b)

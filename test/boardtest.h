@@ -9,6 +9,7 @@
 #include "move.h"
 #include "moveprocess.h"
 #include "movegen.h"
+#include "search.h"
 
 class BoardTest : public CppUnit::TestCase {
 
@@ -134,7 +135,9 @@ public:
 		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
 						"testGameResultDetectsLackOfMaterial_KBKB_OppositeSquaresShouldNotEndGame",
 						&BoardTest::testGameResultLackOfMaterial_KBKB_OppositeSquaresShouldNotEndGame ) );
-
+		suiteOfTests->addTest( new CppUnit::TestCaller<BoardTest>(
+									  "testDetectsStalematedEnemyKing",
+									  &BoardTest::testDetectsStalematedEnemyKing ));
 		return suiteOfTests;
 	}
 	
@@ -678,6 +681,14 @@ public:
 
 	  int gameResult = getGameResult(&board);
 	  CPPUNIT_ASSERT_EQUAL(gameResult, 0);
+	}
+
+	void testDetectsStalematedEnemyKing() {
+	  ChessBoard board;
+	  std::string stalematedBlackKing("pkp/R7/8/8/8/8/8/8 w - - 0 1");
+	  loadBoardFromFEN(&board, stalematedBlackKing);
+
+	  CPPUNIT_ASSERT_EQUAL( true, checkForStalematedEnemyKing(&board, true) );
 	}
 };
 

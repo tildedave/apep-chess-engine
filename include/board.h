@@ -147,6 +147,7 @@ BITBOARD get_rook_attack_board(ChessBoard* board, short offset);
 BITBOARD get_attacksto_bitboard(ChessBoard* board, short offset);
 BITBOARD get_white_attacksto_bitboard(ChessBoard* board, short offset);
 BITBOARD get_black_attacksto_bitboard(ChessBoard* board, short offset);
+BITBOARD getAttacksBitboard(ChessBoard* board, bool whiteToMove);
 
 // TEST FOR CHECKMATE
 

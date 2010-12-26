@@ -116,6 +116,7 @@ int getPriorityForMove(ChessBoard * board, int move);
 
 bool movePushesPawnToSeventhRank(ChessBoard * board, int move, bool whiteToMove);
 bool movePushesPawnToSixthRank(ChessBoard * board, int move, bool whiteToMove);
+bool checkForStalematedEnemyKing(ChessBoard* board, bool whiteToMove);
 
 bool checkForInputDuringSearch();
 
