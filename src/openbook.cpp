@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 
 std::multimap<HASHKEY, Coord> openingBook;
 extern log4cplus::Logger logger;
@@ -58,7 +59,8 @@ int getMoveForPosition(ChessBoard * board) {
 		return -1;
 	}
 
-	LOG4CPLUS_DEBUG(logger, "book move " << MoveToString(theCoord.move));	
+	LOG4CPLUS_DEBUG(logger, LOG4CPLUS_TEXT("book move ")
+		<< (MoveToString(theCoord.move)));
 	return theCoord.move;
 }
 

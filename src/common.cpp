@@ -1,11 +1,13 @@
 #include <log4cplus/logger.h>
 #include <log4cplus/layout.h>
 #include <log4cplus/loglevel.h>
+#include <log4cplus/loggingmacros.h>
 #include <log4cplus/fileappender.h>
 #include <log4cplus/configurator.h>
 
 #include "common.h"
 #include <sstream>
+#include <stdint.h>
 
 extern short firstOnePrecomputed[65536];
 extern short lastOnePrecomputed[65536];
@@ -373,9 +375,9 @@ short string_to_offset(const std::string& str) {
         #define USING_INTRINSICS
     #endif
 #elif defined(__GNUC__) && defined(__LP64__)
-    static INLINE unsigned char _BitScanForward64(unsigned int* const Index, const U64 Mask)
+    static __inline__ unsigned char _BitScanForward64(unsigned int* const Index, const int64_t Mask)
     {
-        U64 Ret;
+        int64_t Ret;
         __asm__
         (
             "bsfq %[Mask], %[Ret]"
@@ -385,9 +387,9 @@ short string_to_offset(const std::string& str) {
         *Index = (unsigned int)Ret;
         return Mask?1:0;
     }
-    static INLINE unsigned char _BitScanReverse64(unsigned int* const Index, const U64 Mask)
+    static __inline__ unsigned char _BitScanReverse64(unsigned int* const Index, const int64_t Mask)
     {
-        U64 Ret;
+        int64_t Ret;
         __asm__
         (
             "bsrq %[Mask], %[Ret]"
