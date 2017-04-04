@@ -1,6 +1,6 @@
 dependencies:
   pre:
-    - sudo apt-get update; sudo apt-get install libcppunit log4cplus
+    - sudo apt-get update; sudo apt-get install libcppunit-dev liblog4cplus-dev libcppunit-1.13-0 liblog4cplus-1.0-4 libboost-program-options1.55-dev libboost-program-options1.55.0
   build:
     - cmake .
     - make
