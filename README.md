@@ -18,7 +18,7 @@ Major points:
 * Fails to castle in "obvious" situations
 
 * Bad at enemy/own king safety (there is code, it doesn't seem to work)
- - I think I fixed this during a 2010 refactor
+ * I think I fixed this during a 2010 refactor
 
 * Need to do a fairly deep search (4M nodes) to work out Lucena endgame
 
@@ -34,4 +34,4 @@ Minor points:
 * There are some epd chess board files that I used to test this engine that I have not included in this repo as they are not open source.
 
 * apep supports parts of the Winboard Protocol v1 http://home.hccnet.nl/h.g.muller/engine-intf.html.  If you load it in xboard/winboard it should play against you without error.  It is a little wonkier with analysis.  Work is in progress to fix these bugs.
- - Work is not in progress, I'm not updating this repo
+ * Work is not in progress, I'm not updating this repo
