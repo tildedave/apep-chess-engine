@@ -1,0 +1,9 @@
+dependencies:
+  pre:
+    - apt-get install libcppunit log4cplus
+  build:
+    - cmake .
+    - make
+  test:
+    - ./bin/apep --perft --depth 5
+    - ./bin/testapep

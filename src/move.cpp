@@ -10,7 +10,7 @@ bool isCapture(ChessBoard * board, short movePiece, short to) {
 	return false;
 }
 
-std::string MoveToString(int move) {
+const std::string MoveToString(int move) {
 	if (move == -1)
 		return "<HT>";
 	

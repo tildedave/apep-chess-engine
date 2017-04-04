@@ -1,5 +1,6 @@
 #include <istream>
 #include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 
 #include "move.h"
 #include "moveprocess.h"
@@ -12,7 +13,7 @@ extern log4cplus::Logger logger;
 ChessBoard xboardBoard;
 std::list<std::string> analysisMessages;
 
-XboardModule::XboardModule() : 
+XboardModule::XboardModule() :
   forceMode_(true),
   computerMode_(false),
   AnalysisMode_(false),
@@ -22,7 +23,7 @@ XboardModule::XboardModule() :
 {
 }
 
-std::string 
+std::string
 XboardModule::MoveToXboardString(int move) {
 	short fromOffset = GetFrom(move);
 	short toOffset = GetTo(move);
@@ -43,7 +44,7 @@ XboardModule::MoveToXboardString(int move) {
 	return str;
 }
 
-int 
+int
 CoordStringToMove(ChessBoard * board, const std::string& str) {
 	std::string firstOffset = str.substr(0, 2);
 	std::string secondOffset = str.substr(2, 2);
@@ -92,14 +93,14 @@ CoordStringToMove(ChessBoard * board, const std::string& str) {
 	}
 }
 
-void 
+void
 XboardModule::protocolNew()
 {
-    // CECP: Reset the board to the standard chess starting position. Set White 
-    // on move. Leave force mode and set the engine to play Black. Associate 
-    // the engine's clock with Black and the opponent's clock with White. 
-    // Reset clocks and time controls to the start of a new game. Stop clocks. 
-    // Do not ponder on this move, even if pondering is on. Remove any search 
+    // CECP: Reset the board to the standard chess starting position. Set White
+    // on move. Leave force mode and set the engine to play Black. Associate
+    // the engine's clock with Black and the opponent's clock with White.
+    // Reset clocks and time controls to the start of a new game. Stop clocks.
+    // Do not ponder on this move, even if pondering is on. Remove any search
     // depth limit previously set by the sd command.
     memset(&xboardBoard, 0, sizeof (ChessBoard));
     loadBoardFromFEN(&xboardBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -108,7 +109,7 @@ XboardModule::protocolNew()
     TimeoutValue_ = TIMEOUT_VALUE;
 }
 
-void 
+void
 XboardModule::protocolProtover2()
 {
     std::cout << "feature ";
@@ -120,33 +121,33 @@ XboardModule::protocolProtover2()
     std::cout << endl;
 }
 
-void 
+void
 XboardModule::protocolRandom()
 {
     // TODO: random additions to Chess Player's evaluation
-    // CECP: This command is specific to GNU Chess 4. You can either ignore it completely 
-    // (that is, treat it as a no-op) or implement it as GNU Chess does. The command 
-    // toggles "random" mode (that is, it sets random = !random). In random mode, the 
-    // engine adds a small random value to its evaluation function to vary its play. 
+    // CECP: This command is specific to GNU Chess 4. You can either ignore it completely
+    // (that is, treat it as a no-op) or implement it as GNU Chess does. The command
+    // toggles "random" mode (that is, it sets random = !random). In random mode, the
+    // engine adds a small random value to its evaluation function to vary its play.
     // The "new" command sets random mode off.
 }
 
-void 
+void
 XboardModule::protocolForce()
 {
-    // CECP: Set the engine to play neither color ("force mode"). Stop clocks. 
-    // The engine should check that moves received in force mode are legal 
-    // and made in the proper turn, but should not think, ponder, or make 
+    // CECP: Set the engine to play neither color ("force mode"). Stop clocks.
+    // The engine should check that moves received in force mode are legal
+    // and made in the proper turn, but should not think, ponder, or make
     // moves of its own.
     forceMode_ = true;
 }
 
-void 
+void
 XboardModule::protocolGo()
 {
-    // CECP: Leave force mode and set the engine to play the color that is on move. 
-    // Associate the engine's clock with the color that is on move, the opponent's 
-    // clock with the color that is not on move. Start the engine's clock. Start 
+    // CECP: Leave force mode and set the engine to play the color that is on move.
+    // Associate the engine's clock with the color that is on move, the opponent's
+    // clock with the color that is not on move. Start the engine's clock. Start
     // thinking and eventually make a move.
     // TODO: launch thread to find move
     forceMode_ = false;
@@ -154,7 +155,7 @@ XboardModule::protocolGo()
 }
 
 
-bool 
+bool
 XboardModule::validateMove(ChessBoard* board, int reply) {
   int moveList[MAX_BRANCH];
 
@@ -170,7 +171,7 @@ XboardModule::validateMove(ChessBoard* board, int reply) {
   return false;
 }
 
-void 
+void
 XboardModule::protocolMove(std::string & line)
 {
     int move = CoordStringToMove(&xboardBoard, line);
@@ -183,7 +184,8 @@ XboardModule::protocolMove(std::string & line)
     }
 
     processMove(&xboardBoard, move);
-    LOG4CPLUS_INFO(logger, "board now " << boardToFEN(&xboardBoard));
+    LOG4CPLUS_INFO(logger, LOG4CPLUS_TEXT("board now ")
+    	<< LOG4CPLUS_TEXT(boardToFEN(&xboardBoard)));
     internalConsistencyCheck(&xboardBoard);
     cerr << board_to_string(&xboardBoard) << endl;
     // TODO: verify that you're not moving into check
@@ -194,7 +196,7 @@ XboardModule::protocolMove(std::string & line)
 
 }
 
-void 
+void
 XboardModule::protocolSetBoard(std::string & line)
 {
     // CECP: The setboard command is the new way to set up
@@ -210,7 +212,7 @@ XboardModule::protocolSetBoard(std::string & line)
     forceMode_ = false;
 }
 
-void 
+void
 XboardModule::protocolUndo()
 {
     if(xboardBoard.moveIndex != 0){
@@ -223,7 +225,7 @@ XboardModule::protocolUndo()
     }
 }
 
-void 
+void
 XboardModule::protocolRemove()
 {
 	// If the user asks to retract a move, xboard will send you the "remove" command. It sends
@@ -234,7 +236,7 @@ XboardModule::protocolRemove()
 	protocolUndo();
 }
 
-void 
+void
 XboardModule::protocolAnalyze()
 {
     AnalysisMode_ = true;
@@ -242,7 +244,7 @@ XboardModule::protocolAnalyze()
     cout << board_to_string(&xboardBoard) << endl;
 }
 
-void 
+void
 XboardModule::protocolTime(std::string & line)
 {
     std::string::size_type st = line.find(" ", 0);
@@ -250,7 +252,7 @@ XboardModule::protocolTime(std::string & line)
     this->timeLeft_ = string_to_int(timeString);
 }
 
-void 
+void
 XboardModule::protocolOtime(std::string & line)
 {
     std::string::size_type st = line.find(" ", 0);
@@ -258,7 +260,7 @@ XboardModule::protocolOtime(std::string & line)
     this->opponentTimeLeft_ = string_to_int(timeString);
 }
 
-void 
+void
 XboardModule::protocolEval()
 {
     cout << board_to_string(&xboardBoard) << endl;
@@ -269,7 +271,7 @@ XboardModule::protocolEval()
     cout << "total: " << total << endl;
 }
 
-void 
+void
 XboardModule::protocolSt(std::string & line)
 {
     std::string searchTime = line.substr(3);
@@ -277,7 +279,7 @@ XboardModule::protocolSt(std::string & line)
     std::cout << "got st " << TimeoutValue_ << endl;
 }
 
-void 
+void
 XboardModule::run() {
 	bool shouldContinue = true;
 
@@ -309,10 +311,10 @@ XboardModule::run() {
 		}
 
 		if (line.find("xboard",0) == 0) {
-			// CECP: This command will be sent once immediately after your engine 
-			// process is started. You can use it to put your engine into 
-			// "xboard mode" if that is needed. If your engine prints a prompt 
-			// to ask for user input, you must turn off the prompt and output 
+			// CECP: This command will be sent once immediately after your engine
+			// process is started. You can use it to put your engine into
+			// "xboard mode" if that is needed. If your engine prints a prompt
+			// to ask for user input, you must turn off the prompt and output
 			// a newline when the "xboard" command comes in.
 			std::cout << endl;
 		}
@@ -335,11 +337,11 @@ XboardModule::run() {
 			protocolGo();
 		}
 		else if (line == "playother") {
-			// CECP: This command is new in protocol version 2. It is not sent unless you enable it 
-			// with the feature command.) Leave force mode and set the engine to play the color 
-			// that is not on move. Associate the opponent's clock with the color that is on 
-			// move, the engine's clock with the color that is not on move. Start the opponent's 
-			// clock. If pondering is enabled, the engine should begin pondering. If the engine 
+			// CECP: This command is new in protocol version 2. It is not sent unless you enable it
+			// with the feature command.) Leave force mode and set the engine to play the color
+			// that is not on move. Associate the opponent's clock with the color that is on
+			// move, the engine's clock with the color that is not on move. Start the opponent's
+			// clock. If pondering is enabled, the engine should begin pondering. If the engine
 			// later receives a move, it should start thinking and eventually reply.
 		}
 		else if (line == "analyze") {
@@ -409,12 +411,12 @@ XboardModule::run() {
 			protocolRemove();
 		}
 		else {
-			cout << "didn't understand " << line << endl; 
+			cout << "didn't understand " << line << endl;
 		}
 	}
 }
 
-void 
+void
 XboardModule::analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	search_options options;
 	options.analysisMode = true;
@@ -426,7 +428,7 @@ XboardModule::analyzeBoard(ChessBoard * board, bool whiteToMove) {
 	// only get here after we are forced to time out
 }
 
-void 
+void
 XboardModule::doMove(ChessBoard* board, int reply) {
   LOG4CPLUS_INFO(logger, "made move " << MoveToString(reply));
   processMove(board, reply);
@@ -437,7 +439,7 @@ XboardModule::doMove(ChessBoard* board, int reply) {
   cerr << "ready to wait for another move now " << endl;
 }
 
-void 
+void
 XboardModule::searchForMove(ChessBoard * board, bool white) {
 	setTimeoutValue(board);
 	if (!forceMode_) {
@@ -456,14 +458,14 @@ XboardModule::searchForMove(ChessBoard * board, bool white) {
 	}
 }
 
-bool 
+bool
 XboardModule::isMoveString(const std::string& str) {
 
 	if (str.length() >= 4) {
 		char fromFile = str[0];
 		char fromRank = str[1];
 		char toFile = str[2];
-		char toRank = str[3]; 
+		char toRank = str[3];
 
 		return file_to_column(fromFile) >= 0 && char_to_int(fromRank) > 0 &&
 		file_to_column(toFile) >= 0 && char_to_int(toRank) > 0;
@@ -471,7 +473,7 @@ XboardModule::isMoveString(const std::string& str) {
 	return false;
 }
 
-void 
+void
 XboardModule::sendBoardInformation(ChessBoard * board) {
 	int gameResult = getGameResult(board);
 	bool outputBoardInfo = false;
@@ -496,12 +498,13 @@ XboardModule::sendBoardInformation(ChessBoard * board) {
 	}
 
 	if (outputBoardInfo) {
-	  LOG4CPLUS_INFO(logger, "result " << resultString);
+	  LOG4CPLUS_INFO(logger, LOG4CPLUS_TEXT("result ")
+	  		<< LOG4CPLUS_TEXT(resultString));
 	  cout << resultString << std::endl;
 	}
 }
 
-void 
+void
 XboardModule::setTimeoutValue(ChessBoard * board) {
 	// current time left is in global 'timeLeft' variable
 	int movesUntilNextTimeControl = 41 - (board->fullmoveClock % 41);

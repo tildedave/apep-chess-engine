@@ -33,7 +33,7 @@
 #define IsKingsideCastleMove(move)				(GetMovePiece(move) == KING && (GetFrom(move) == GetTo(move) - 2))
 #define IsQueensideCastleMove(move)				(GetMovePiece(move) == KING && (GetFrom(move) == GetTo(move) + 2))
 
-std::string MoveToString(int move);
+const std::string MoveToString(int move);
 bool MoveIsLegal(ChessBoard * chessBoard, int currentMove);
 
 std::string piece_to_notation_string(short contents, short offset, bool isCapture);
